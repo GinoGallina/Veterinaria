@@ -1,0 +1,48 @@
+body {
+	padding: 0;
+	margin: 0;
+}
+
+main {
+    min-height: 85vh;
+}
+
+.contenedor-modal {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    justify-content: start;
+}
+
+#datos-cliente {
+    display: grid;
+    grid-template-columns: 15% 35% 15% 35%;
+}
+
+#datos-cliente label {
+    align-self: center;
+}
+
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.error::after {
+    content: "*";
+    color:red;
+    font-size: 1rem;
+}
+
+.table-oscura {
+    --bs-table-bg: #212529;
+    --bs-table-striped-bg: #2c3034;
+    --bs-table-striped-color: #fff;
+    --bs-table-active-bg: #373b3e;
+    --bs-table-active-color: #fff;
+    --bs-table-hover-bg: #1c365a;
+    --bs-table-hover-color: #fff;
+    color: #fff;
+    border-color: #373b3e;
+}
+
