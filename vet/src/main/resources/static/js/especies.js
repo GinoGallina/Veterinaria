@@ -9,214 +9,265 @@ $.ajaxSetup({
     }
 });
 
+// function completarCampos(data) {
+// 	$("#txtDescripcion").val(data["descripcion"]);
+// }
 
+// function modalEdit(data) {
+//     json = JSON.parse(data);
+//     $("#staticBackdropLabel").text("Editar especie");
+//     limpiarCampos();
+//     habilitarCampos();
+// 	completarCampos(json);
+//   $("#btnAceptar").addClass("modificar");
+// }
 
+// function modalDelete(data) {
+//     json = JSON.parse(data);
+//     $("#staticBackdropLabel").text("Eliminar especie");
+//     limpiarCampos();
+//     deshabilitarCampos();
+// 	completarCampos(json);
+// 	$("#btnAceptar").addClass("eliminar");
+// }
 
+// $('#btnAgregar').on('click', function () {
+//     limpiarCampos();
+//     habilitarCampos();
+//     $("#staticBackdropLabel").text("Agregar especie");
+// });
 
-function completarCampos(id) {
-	$.ajax({
-			url : 'Especies/'+id,
-			method: 'get',
-			data : {
-				id : id,
-			},
-			success : function(data) {
-		        $('#txtID').val(data['id']);
-	        	$('#txtDescripcion').val(data['descripcion']);
-			}
-		});
-}
+// function limpiarCampos() {
+//     $(".limpiarCampo").val("");
+//     campos = $(".required");
+//     for (let i = 0; i < campos.length; i++) {
+//         $("#campo" + i).removeClass("error");
+//     }
+//     $("#btnAceptar").removeClass("eliminar");
+//     $("#btnAceptar").removeClass("modificar");
+// }
 
-function modalEdit(data) {
-    //datos= JSON.parse(data);
-    console.log(data);
-    console.log(datos);
-    $("#staticBackdropLabel").text("Editar especie");
-    limpiarCampos();
-    habilitarCampos();
-	completarCampos(id);
-  $("#btnAceptar").addClass("modificar");
-}
+// function habilitarCampos() {
+//     $(".habilitarCampo").removeAttr("disabled");
+// }
 
-function modalDelete(data) {
-    //datos= JSON.parse(data);
-    console.log(data);
-    console.log(datos);
-    $("#staticBackdropLabel").text("Eliminar especie");
-    limpiarCampos();
-    deshabilitarCampos();
-	completarCampos(id);
-	$("#btnAceptar").addClass("eliminar");
-}
+// function deshabilitarCampos() {
+//     $(".deshabilitarCampo").attr("disabled", "disabled");
+// }
 
-jQuery('#btnAgregar').on('click', function () {
-    limpiarCampos();
-    habilitarCampos();
-    $("#staticBackdropLabel").text("Agregar especie");
-});
+// function campoRequired() {
+//     campos = $(".required");
+//     for (let i = 0; i < campos.length; i++) {
+//         if (campos[i].value == "") {
+//             $("#campo" + i).addClass("error");
+//             return false;
+//         } else {
+//             $("#campo" + i).removeClass("error");
+//         }
+//     }
+//     return true;
+// }
 
-function limpiarCampos() {
-    $(".limpiarCampo").val("");
-    campos = $(".required");
-    for (let i = 0; i < campos.length; i++) {
-        $("#campo" + i).removeClass("error");
-    }
-    $("#btnAceptar").removeClass("eliminar");
-    $("#btnAceptar").removeClass("modificar");
-}
-
-function habilitarCampos() {
-    $(".habilitarCampo").removeAttr("disabled");
-}
-
-function deshabilitarCampos() {
-    $(".deshabilitarCampo").attr("disabled", "disabled");
-}
-
-function campoRequired() {
-    campos = $(".required");
-    for (let i = 0; i < campos.length; i++) {
-        if (campos[i].value == "") {
-            $("#campo" + i).addClass("error");
-            return false;
-        } else {
-            $("#campo" + i).removeClass("error");
-        }
-    }
-    return true;
-}
-
-function confirmarCambios() {
-    if (campoRequired()) {
-        let id = $("#txtID").val();
-        let descripcion = $("#txtDescripcion").val();
-        let json = {
-			"id": id,
-			"descripcion": descripcion,
-			"action": ""
-		};
-        if ($("#btnAceptar").hasClass("eliminar")) {
-            if (confirm("Seguro que desea eliminar la especie?") == 1) {
-				json["action"] = "delete";
-                crudEspecie(json);
-            }
-        } else if($("#btnAceptar").hasClass("modificar")){
-			      json["action"] = "update";
-            crudEspecie(json);
-        }
-         else {
-			json["action"] = "save";
-            crudEspecie(json);
-        }
-    }
-}
+// function confirmarCambios() {
+//     if (campoRequired()) {
+//         let id = $("#txtID").val();
+//         let descripcion = $("#txtDescripcion").val();
+//         let json = {
+// 			"id": id,
+// 			"descripcion": descripcion,
+// 			"action": ""
+// 		};
+//         if ($("#btnAceptar").hasClass("eliminar")) {
+//             if (confirm("Seguro que desea eliminar la especie?") == 1) {
+// 				json["action"] = "delete";
+//                 crudEspecie(json);
+//             }
+//         } else if($("#btnAceptar").hasClass("modificar")){
+// 			      json["action"] = "update";
+//             crudEspecie(json);
+//         }
+//          else {
+// 			json["action"] = "save";
+//             crudEspecie(json);
+//         }
+//     }
+// }
 
 // function crudEspecie(json) {
-//     let datos= JSON.stringify(json);
-//     if(json.action=="save"){
-//     $.ajax({	
-//          type: "POST",
-//          url: "Especies",
-//          contentType: "application/json",
-//          //dataType: 'json',
-//          data: datos,
-//          success: function (data) {
-//             alert("La especie se guardo correctamente");
-//             location.reload();
-//          },
-//          error: function (xhr, status, error) {
-//             // Ocurrió un error en la solicitud
-//             console.log(xhr,status,error)
-//             if (xhr.status === 400) {
-//                 // Si la respuesta es un código 400, significa que ya existe un especie con la misma matrícula
-//                 alert("Ya existe una especie con la misma descripcion");
-//             } else {
-//                 // Si se produce otro error, muestra un mensaje genérico
-//                 alert("Error al guardar la especie");
-//             }
-//         }
-//           });
-//     }else if(json.action=="delete"){
+//     let datos = JSON.stringify(json);
+//     let url = "Especies";
+//     let method = "POST";
+//     let message = "La especie se guardo correctamente";
 
-//     $.ajax({	
-//         type: "DELETE",
-//         url: "Especies",
-//         data : {
-// 			  	id : json.id,
-// 			  },
-//          success: function (data) {
-//             alert("La especie se eliminó correctamente");
-//             location.reload();
-//          },
-//          error: function (xhr, status, error) {
-//             // Ocurrió un error en la solicitud
-//             console.log(xhr,status,error)
-//             if (xhr.status === 404) {
-//                 alert("No existe dicha especie");
-//             } else {
-//                 // Si se produce otro error, muestra un mensaje genérico
-//                 alert("Error al eliminar la especie");
-//             }
-//         }
-//           });
-//     }else{
-//     $.ajax({	
-//          type: "PUT",
-//          url: "Especies",
-//          contentType: "application/json",
-//          //dataType: 'json',
-//          data: datos,
-//          success: function (data) {
-//             alert("La especie se actualizó correctamente");
-//             location.reload();
-//          },
-//          error: function (xhr, status, error) {
-//             // Ocurrió un error en la solicitud
-//             console.log(xhr,status,error)
-//             if (xhr.status === 400) {
-//                 alert("Ya existe una especie con la misma descripción");
-//             } else {
-//                 // Si se produce otro error, muestra un mensaje genérico
-//                 alert("Error al guardar la especie");
-//             }
-//         }
-//           });   
+//     if (json.action == "delete") {
+//         method = "DELETE";
+//         message = "La especie se eliminó correctamente";
+//     } else if (json.action == "update") {
+//         method = "PUT";
+//         message = "La especie se actualizó correctamente";
 //     }
-   
-//  }
 
- function crudEspecie(json) {
-    let datos = JSON.stringify(json);
-    let url = "Especies";
-    let method = "POST";
-    let message = "La especie se guardo correctamente";
+//     $.ajax({
+//         type: method,
+//         url: url,
+//         contentType: "application/json",
+//         data: datos
+//     })
+//     .done(function(data) {
+//         alert(message);
+//         location.reload();
+//     })
+//     .fail(function(xhr, status, error) {
+//         console.log(xhr, status, error);
+//         if (xhr.status === 400) {
+//             alert("Ya existe una especie con la misma desc");
+//         } else if (xhr.status === 404) {
+//             alert("No existe dicha especie");
+//         } else {
+//             alert("Error al procesar la solicitud");
+//         }
+//     });
+// }
 
-    if (json.action == "delete") {
-        method = "DELETE";
-        message = "El especie se eliminó correctamente";
-    } else if (json.action == "update") {
-        method = "PUT";
-        message = "El especie se actualizó correctamente";
-    }
 
-    $.ajax({
-        type: method,
-        url: url,
-        contentType: "application/json",
-        data: datos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function fillTable(item) {
+    let content = `
+        <tr data-id='${item.id}'>
+            <td>${item.descripcion}</td>
+            <td class='d-flex flex-row justify-content-center'>
+                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-especie="${JSON.stringify(item)}" onclick='onclick="edit(this.getAttribute('data-especie'))"' data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id="${item.id}" onclick='deleteObj(this.getAttribute('data-id'))'><i class='bi bi-trash3'></i></button>
+            </td>
+        </tr>`;
+    $('#DataTable').DataTable().row.add($(content)).draw();
+}
+
+function removeFromTable(id) {
+    $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
+}
+
+function deleteObj(id) {
+    Swal.fire({
+        title: "¿Seguro deseas eliminar esta especie?",
+        text: "Esta acción no se puede deshacer",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        buttonsStyling: false,
+        customClass: {
+            confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+            cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+        }
     })
-    .done(function(data) {
-        alert(message);
-        location.reload();
-    })
-    .fail(function(xhr, status, error) {
-        console.log(xhr, status, error);
-        if (xhr.status === 400) {
-            alert("Ya existe una especie con la misma desc");
-        } else if (xhr.status === 404) {
-            alert("No existe dicha especie");
-        } else {
-            alert("Error al procesar la solicitud");
+    .then((result) => {
+        if (result.isConfirmed) {
+            $("#form-delete input[name='id']").val(id);
+            sendForm("delete");
         }
     });
 }
+
+function sendForm(action) {
+    let form = document.getElementById(`form-${action}`);
+
+    let formData = {
+      descripcion: $(form).find('[name="descripcion"]').val(), // Ajusta el nombre del campo según tu formulario
+      // Otros campos del formulario aquí
+    };
+    // Enviar solicitud AJAX
+    $.ajax({
+        url: $(form).attr("action"), // Utiliza la ruta del formulario
+        method: $(form).attr("method"), // Utiliza el método del formulario
+        data: JSON.stringify(formData), // Utiliza los datos del formulario
+        contentType: "application/json",
+        success: function (response) {
+            let data = JSON.parse(response.data);
+            Swal.fire({
+            icon: "success",
+            title: response.message,
+            confirmButtonColor: "#1e88e5",
+            });
+            $("#btnCloseModalCreate").click();
+            if (action === "create") {
+                fillTable(data);
+            } else if (action === "edit") {
+                fillTable(data);
+                removeFromTable(data.id);
+            } else {
+                removeFromTable(data);
+            }
+        },
+        error: function (errorThrown) {
+            Swal.fire({
+            icon: "error",
+            title: errorThrown.responseJSON.title,
+            text: errorThrown.responseJSON.message,
+            confirmButtonColor: "#1e88e5",
+            });
+        },
+    });
+}
+
+function edit(json) {
+    let entity = JSON.parse(json);
+    $("#formContainer form input:not([type='hidden']").val("");
+    $("input[name='id']").val(entity.id);
+    $("input[name='id']").prop("disabled", false);
+
+    $("#modalTitle").text("Editar especie");
+    $("#formContainer form").attr("method", "PUT");
+    $("#formContainer form").attr("id", "form-edit");
+    $("#btnSendModal").text("Confirmar");
+
+    $("input[name='descripcion']").val(entity.descripcion);
+} 
+
+$("#btnSendModal").on("click", function () {
+    if ($("#formContainer form").attr('id') === 'form-create') {
+        sendForm("create");
+    } else if ($("#formContainer form").attr('id') === 'form-edit') {
+        sendForm("edit");
+    }
+});
+$("#btnAdd").on("click", function () {
+    $("#modalTitle").text("Agregar especie");
+    $("#formContainer form").attr("method", "POST");
+    $("#formContainer form").attr("id", "form-create");
+    $("#formContainer form input:not([type='hidden']").val("");
+    $("input[name='id']").prop("disabled", true);
+    $("#btnSendModal").text("Agregar");
+});
+
+$('#DataTable').DataTable({
+    "language": {
+        "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ especies",
+        "sInfoEmpty": "Mostrando 0 a 0 de 0 especies",
+        "sInfoFiltered": "(filtrado de _MAX_ especies en total)",
+        "emptyTable": 'No hay especies que coincidan con la búsqueda',
+        "sLengthMenu": "Mostrar _MENU_ especies",
+        "sSearch": "Buscar:",
+        "oPaginate": {
+            "sFirst": "Primero",
+            "sLast": "Último",
+            "sNext": "Siguiente",
+            "sPrevious": "Anterior",
+        },
+    },
+});

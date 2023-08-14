@@ -5,6 +5,10 @@ package com.veterinaria.vet.Models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +36,12 @@ public class Especie {
     private LocalDateTime updatedAt;
     @Column(name = "DeletedAt")
     private LocalDateTime deletedAt;
+
+    public String toJson() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule()); 
+        return objectMapper.writeValueAsString(this);
+    }
 
     public Long getID() {
         return ID;
