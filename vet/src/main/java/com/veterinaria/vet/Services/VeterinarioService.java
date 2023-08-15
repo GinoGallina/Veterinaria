@@ -23,9 +23,7 @@ public class VeterinarioService {
     return (ArrayList<Veterinario>) veterinarioRepository.findByDeletedAtIsNull();
   }
 
- /*public Optional<Veterinario> getById(Long id){
-    return veterinarioRepository.findById(id);
-  }*/
+
   public Optional<Veterinario> getById(Long id){
     return veterinarioRepository.findByIDAndDeletedAtIsNull(id);
   }
@@ -51,14 +49,7 @@ public class VeterinarioService {
    }
    
 
-  /*public Boolean deleteVeterinario(Long id){
-    try{
-      veterinarioRepository.deleteById(id);
-      return true; 
 
-    }catch(Exception e){
-      return false;
-    }*/
     public void eliminarLogico(Long id){
       veterinarioRepository.eliminarLogico(id);
     }

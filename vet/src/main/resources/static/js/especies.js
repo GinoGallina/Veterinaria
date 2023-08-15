@@ -9,134 +9,6 @@ $.ajaxSetup({
     }
 });
 
-// function completarCampos(data) {
-// 	$("#txtDescripcion").val(data["descripcion"]);
-// }
-
-// function modalEdit(data) {
-//     json = JSON.parse(data);
-//     $("#staticBackdropLabel").text("Editar especie");
-//     limpiarCampos();
-//     habilitarCampos();
-// 	completarCampos(json);
-//   $("#btnAceptar").addClass("modificar");
-// }
-
-// function modalDelete(data) {
-//     json = JSON.parse(data);
-//     $("#staticBackdropLabel").text("Eliminar especie");
-//     limpiarCampos();
-//     deshabilitarCampos();
-// 	completarCampos(json);
-// 	$("#btnAceptar").addClass("eliminar");
-// }
-
-// $('#btnAgregar').on('click', function () {
-//     limpiarCampos();
-//     habilitarCampos();
-//     $("#staticBackdropLabel").text("Agregar especie");
-// });
-
-// function limpiarCampos() {
-//     $(".limpiarCampo").val("");
-//     campos = $(".required");
-//     for (let i = 0; i < campos.length; i++) {
-//         $("#campo" + i).removeClass("error");
-//     }
-//     $("#btnAceptar").removeClass("eliminar");
-//     $("#btnAceptar").removeClass("modificar");
-// }
-
-// function habilitarCampos() {
-//     $(".habilitarCampo").removeAttr("disabled");
-// }
-
-// function deshabilitarCampos() {
-//     $(".deshabilitarCampo").attr("disabled", "disabled");
-// }
-
-// function campoRequired() {
-//     campos = $(".required");
-//     for (let i = 0; i < campos.length; i++) {
-//         if (campos[i].value == "") {
-//             $("#campo" + i).addClass("error");
-//             return false;
-//         } else {
-//             $("#campo" + i).removeClass("error");
-//         }
-//     }
-//     return true;
-// }
-
-// function confirmarCambios() {
-//     if (campoRequired()) {
-//         let id = $("#txtID").val();
-//         let descripcion = $("#txtDescripcion").val();
-//         let json = {
-// 			"id": id,
-// 			"descripcion": descripcion,
-// 			"action": ""
-// 		};
-//         if ($("#btnAceptar").hasClass("eliminar")) {
-//             if (confirm("Seguro que desea eliminar la especie?") == 1) {
-// 				json["action"] = "delete";
-//                 crudEspecie(json);
-//             }
-//         } else if($("#btnAceptar").hasClass("modificar")){
-// 			      json["action"] = "update";
-//             crudEspecie(json);
-//         }
-//          else {
-// 			json["action"] = "save";
-//             crudEspecie(json);
-//         }
-//     }
-// }
-
-// function crudEspecie(json) {
-//     let datos = JSON.stringify(json);
-//     let url = "Especies";
-//     let method = "POST";
-//     let message = "La especie se guardo correctamente";
-
-//     if (json.action == "delete") {
-//         method = "DELETE";
-//         message = "La especie se eliminó correctamente";
-//     } else if (json.action == "update") {
-//         method = "PUT";
-//         message = "La especie se actualizó correctamente";
-//     }
-
-//     $.ajax({
-//         type: method,
-//         url: url,
-//         contentType: "application/json",
-//         data: datos
-//     })
-//     .done(function(data) {
-//         alert(message);
-//         location.reload();
-//     })
-//     .fail(function(xhr, status, error) {
-//         console.log(xhr, status, error);
-//         if (xhr.status === 400) {
-//             alert("Ya existe una especie con la misma desc");
-//         } else if (xhr.status === 404) {
-//             alert("No existe dicha especie");
-//         } else {
-//             alert("Error al procesar la solicitud");
-//         }
-//     });
-// }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -152,8 +24,8 @@ function fillTable(item) {
         <tr data-id='${item.id}'>
             <td>${item.descripcion}</td>
             <td class='d-flex flex-row justify-content-center'>
-                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-especie="${JSON.stringify(item)}" onclick='onclick="edit(this.getAttribute('data-especie'))"' data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id="${item.id}" onclick='deleteObj(this.getAttribute('data-id'))'><i class='bi bi-trash3'></i></button>
+                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-especie=${JSON.stringify(item)} onclick="edit(this.getAttribute('data-especie'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id=${item.id} onclick="deleteObj(this.getAttribute('data-id'))"><i class='bi bi-trash3'></i></button>
             </td>
         </tr>`;
     $('#DataTable').DataTable().row.add($(content)).draw();
@@ -188,6 +60,7 @@ function sendForm(action) {
     let form = document.getElementById(`form-${action}`);
 
     let formData = {
+      id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
       descripcion: $(form).find('[name="descripcion"]').val(), // Ajusta el nombre del campo según tu formulario
       // Otros campos del formulario aquí
     };
@@ -211,7 +84,7 @@ function sendForm(action) {
                 fillTable(data);
                 removeFromTable(data.id);
             } else {
-                removeFromTable(data);
+                removeFromTable(data.id);
             }
         },
         error: function (errorThrown) {

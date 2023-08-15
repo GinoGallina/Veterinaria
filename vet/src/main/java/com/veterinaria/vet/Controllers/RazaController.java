@@ -4,78 +4,108 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.veterinaria.vet.DTO.RazaDTO;
+import com.veterinaria.vet.Models.Especie;
 import com.veterinaria.vet.Models.Raza;
+import com.veterinaria.vet.Models.Response;
+import com.veterinaria.vet.Services.EspecieService;
 import com.veterinaria.vet.Services.RazaService;
 
 import jakarta.transaction.Transactional;
 
-@RestController
+@Controller
 @RequestMapping("/Razas")
 public class RazaController {
-    @Autowired
-    private RazaService razaService;
+      @Autowired
+      private RazaService razaService;
+      @Autowired
+      private EspecieService especieService;
 
-    @GetMapping
-    public ArrayList<Raza> getRazas(){
-      return this.razaService.getAllRazas();
-    }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<?> getRazaById(@RequestParam("id") Long id){
-      Optional<Raza> existingRaza = razaService.getById(id);
-      if(!existingRaza.isPresent()){
-        // return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario con ID " + id + " no fue encontrado.");
-        return ResponseEntity.notFound().build();
+      @GetMapping
+      public ModelAndView getRazas(){
+          ArrayList<Raza> razas =  this.razaService.getAllRazas();
+          ArrayList<Especie> especies =  this.especieService.getAllEspecies();
+          ArrayList<String> header = new ArrayList<>();
+          header.add("Descripcion");
+          header.add("Especie");
+          ModelAndView modelAndView = new ModelAndView("Raza");
+          modelAndView.addObject("razas", razas);
+          modelAndView.addObject("especies", especies);
+          modelAndView.addObject("header", header);
+          return modelAndView;
       }
-      return ResponseEntity.ok(existingRaza);
+
+      @PostMapping(produces = "application/json", consumes = "application/json")
+      public ResponseEntity<Object> save(@Validated @RequestBody RazaDTO razaDTO) throws JsonProcessingException {
+          Optional<Raza> existingRaza = razaService.findByDescripcion(razaDTO.getDescripcion());
+          Response json = new Response();
+          if (existingRaza.isPresent()) {
+              if (!especieService.getById(existingRaza.get().getID()).isPresent()) {
+                  especieService.saveLogico(existingRaza.get().getID());
+                  json.setMessage("La raza se encontraba eliminada y se ha recuperado");
+                  json.setData(existingRaza.get().toJson());
+                  return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+              } else {
+                  json.setMessage("La raza ingresada ya existe");
+                  json.setTitle("ERROR");
+                  return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+              }
+          }
+          Raza raza = new Raza();
+          raza.setDescripcion(razaDTO.getDescripcion());
+          raza.setEspecie(razaDTO.getEspecie());
+          Raza savedRaza = razaService.saveRaza(raza);
+          json.setMessage("Se ha guardado la raza");
+          json.setData(savedRaza.toJson());
+          return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<?> save(@RequestBody Raza Raza){
-
-      Optional<Raza> existingRaza = razaService.findByDescripcion(Raza.getDescripcion());
-      if(existingRaza.isPresent()){
-        if(!razaService.getById(existingRaza.get().getID()).isPresent()){
-          razaService.saveLogico(existingRaza.get().getID());
-          return ResponseEntity.ok(existingRaza.get());
-        }else{
-        return ResponseEntity.badRequest().body("Ya existe un Raza con la misma descripcion");
-      }}
-      Raza savedRaza = razaService.saveRaza(Raza);
-      return ResponseEntity.ok(savedRaza);
-    }
-
-    @PutMapping()
-    public ResponseEntity<?>  updateRaza(@RequestBody Raza Raza){
-      Optional<Raza> existingRaza = razaService.findByDescripcion(Raza.getDescripcion());
-      if(existingRaza.isPresent() && (existingRaza.get().getID()!=Raza.getID())){
-        return ResponseEntity.badRequest().body("Ya existe un Raza con la misma matrícula");
+    @PutMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> updateRaza( @Validated(RazaDTO.PutAndDelete.class) @RequestBody RazaDTO razaDTO) throws JsonProcessingException {
+      Optional<Raza> existingRaza = razaService.findByDescripcion(razaDTO.getDescripcion());
+      Response json = new Response();
+      if (existingRaza.isPresent()) {
+        json.setMessage("La raza ingresada ya existe");
+        json.setTitle("ERROR");
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
       }
-       Raza updatedRaza=this.razaService.updateById(Raza,(long) Raza.getID());
-       return ResponseEntity.ok(updatedRaza);
+      Raza raza = new Raza();
+      raza.setDescripcion(razaDTO.getDescripcion());
+      raza.setEspecie(razaDTO.getEspecie());
+      Raza updatedRaza=this.razaService.updateById(raza,(long) raza.getID());
+      json.setMessage("Se ha actualizado la raza");
+      json.setData(updatedRaza.toJson());
+      return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @DeleteMapping(produces = "application/json", consumes = "application/json")
     @Transactional
-    public ResponseEntity<?> eliminarRaza(@RequestBody Raza raza) throws Exception {
-      Long id = (long) raza.getID();
-      System.out.println(id);
-      Optional<Raza> Raza = razaService.getById(id);
-      System.out.println(Raza.get());
-      if(Raza.isEmpty()){
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Object> eliminarRaza(@Validated(RazaDTO.PutAndDelete.class) @RequestBody RazaDTO razaDTO) throws JsonProcessingException {
+      Optional<Raza> existingRaza = razaService.getById(razaDTO.getID());
+      Response json = new Response();
+      if (existingRaza.isEmpty()) {
+        json.setMessage("La raza no existe");
+        json.setTitle("ERROR");
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
       }
-      razaService.eliminarLogico(id);
-      return ResponseEntity.ok().build();
+      especieService.eliminarLogico(razaDTO.getID());
+      json.setMessage("Se ha eliminado la raza");
+      json.setData(razaDTO.toJson());
+      return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
+
 }

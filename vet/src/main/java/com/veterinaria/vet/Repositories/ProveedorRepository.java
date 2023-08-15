@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.veterinaria.vet.Models.Proveedor;
+
+import jakarta.transaction.Transactional;
 @Repository
 public interface ProveedorRepository extends JpaRepository<Proveedor, Long>{
   
@@ -17,9 +19,15 @@ public interface ProveedorRepository extends JpaRepository<Proveedor, Long>{
   
   Optional<Proveedor> findByEmail(String desc);
 
+  @Transactional
   @Modifying
   @Query(value = "UPDATE proveedores p SET p.DeletedAt = CURRENT_TIMESTAMP WHERE p.id = :id",nativeQuery = true)
   void eliminarLogico(@Param("id") Long id);
+
+  @Transactional
+  @Modifying
+  @Query(value = "UPDATE proveedores p SET p.DeletedAt = null WHERE p.id = :id",nativeQuery = true)
+  void saveLogico(@Param("id") Long id);
   
 
   ArrayList<Proveedor> findByDeletedAtIsNull();

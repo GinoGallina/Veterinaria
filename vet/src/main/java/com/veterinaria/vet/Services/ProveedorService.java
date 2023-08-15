@@ -58,6 +58,9 @@ public class ProveedorService {
     public void eliminarLogico(Long id){
       proveedorRepository.eliminarLogico(id);
     }
+    public void saveLogico(Long id){
+      proveedorRepository.saveLogico(id);
+    }
 
 }
 
