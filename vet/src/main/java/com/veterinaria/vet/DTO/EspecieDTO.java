@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 
 
@@ -14,11 +15,11 @@ import jakarta.validation.groups.Default;
 
 
 public class EspecieDTO {
-    @NotBlank(groups = { PutAndDelete.class })
+    @NotNull(message = "El campo ID no puede estar vacío",groups = { PutAndDelete.class })
     private Long ID;
 
 
-    @NotBlank(message = "El campo descripción no puede estar vacío")
+    @NotBlank(message = "El campo descripción no puede estar vacío",groups = { PutAndPost.class })
     private String descripcion;
 
     public String toJson() throws JsonProcessingException {
@@ -40,7 +41,7 @@ public class EspecieDTO {
         ID = iD;
     }
 
-    public EspecieDTO(@NotBlank(groups = PutAndDelete.class) Long iD,
+    public EspecieDTO(@NotNull(groups = PutAndDelete.class) Long iD,
             @NotBlank(message = "El campo descripción no puede estar vacío") String descripcion) {
         ID = iD;
         this.descripcion = descripcion;
@@ -49,5 +50,7 @@ public class EspecieDTO {
     }
 
     public interface PutAndDelete extends Default {
+    }
+    public interface PutAndPost extends Default {
     }
 }

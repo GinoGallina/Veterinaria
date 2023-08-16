@@ -9,202 +9,139 @@ $.ajaxSetup({
     }
 });
 
-let header = ["id","Descripcion","Precio"];
-listar();
 
 
-function listar() {
-    $.get("Practicas", function (data) {
-    listadoPracticas(header, data);
+
+
+
+
+
+
+
+
+function fillTable(item) {
+    let content = `
+        <tr data-id='${item.id}'>
+            <td>${item.descripcion}</td>
+            <td class='d-flex flex-row justify-content-center'>
+                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-practica=${JSON.stringify(item)} onclick="edit(this.getAttribute('data-practica'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id=${item.id} onclick="deleteObj(this.getAttribute('data-id'))"><i class='bi bi-trash3'></i></button>
+            </td>
+        </tr>`;
+    $('#DataTable').DataTable().row.add($(content)).draw();
+}
+
+function removeFromTable(id) {
+    $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
+}
+
+function deleteObj(id) {
+    Swal.fire({
+        title: "¿Seguro deseas eliminar esta practica?",
+        text: "Esta acción no se puede deshacer",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        buttonsStyling: false,
+        customClass: {
+            confirmButton: 'btn btn-danger waves-effect waves-light px-3 py-2',
+            cancelButton: 'btn btn-default waves-effect waves-light px-3 py-2'
+        }
+    })
+    .then((result) => {
+        if (result.isConfirmed) {
+            $("#form-delete input[name='id']").val(id);
+            sendForm("delete");
+        }
     });
 }
 
-let precio;
-async function listadoPracticas(arrayHeader, data) {
-    let contenido = "";
-    contenido += "<table id='tabla-generic' class='table table-oscura table-striped table-bordered table-hover'>";
-    contenido += "<thead>";
-    contenido += "<tr class='fw-bold'>";
-    for (let i = 0; i < arrayHeader.length; i++) {
-        contenido += "<td class='text-center'>";
-        contenido += arrayHeader[i];
-        contenido += "</td>";
-    }
-    contenido += "<td class='no-sort text-center'>Accion</td>";
-    contenido += "</tr>";
-    contenido += "</thead>";
-    contenido += "<tbody>";
-    for (let i = 0; i < data.length; i++) {
-        contenido += "<tr>";
-        contenido += "<td class='text-center'>" + data[i].id+ "</td>";
-        contenido += "<td>" + data[i].descripcion + "</td>";
-        precio= await findPrecio(data[i].id);
-        contenido += "<td class='text-center'>$" + precio.valor+ "</td>";
+function sendForm(action) {
+    let form = document.getElementById(`form-${action}`);
 
-        
-        contenido += "<td class='d-flex justify-content-center'>";
-        contenido += "<button class='btn btn-outline-success me-4' onclick='modalEdit(" + data[i].id + ")' data-bs-toggle='modal' data-bs-target='#staticBackdrop'><i class='bi bi-pencil-square'></i></button>";
-        contenido += "<button class='btn btn-outline-danger ms-4' onclick='modalDelete(" + data[i].id + ")' data-bs-toggle='modal' data-bs-target='#staticBackdrop'><i class='bi bi-trash3'></i></button>";
-        contenido += "</td>";
-        contenido += "</tr>";
-    
-    }
-    contenido += "</tbody>";
-    contenido += "</table>";
-    $("#tabla-practica").html(contenido);
-    
-}
-
-
-async function findPrecio(id){
-    try{
-        let precio = await $.ajax({
-            type: 'GET',
-            url: 'Precios',
-            contentType: "application/json",
-            data: {
-                id:id
+    let formData = {
+      id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
+      descripcion: $(form).find('[name="descripcion"]').val(), // Ajusta el nombre del campo según tu formulario
+      // Otros campos del formulario aquí
+    };
+    // Enviar solicitud AJAX
+    $.ajax({
+        url: $(form).attr("action"), // Utiliza la ruta del formulario
+        method: $(form).attr("method"), // Utiliza el método del formulario
+        data: JSON.stringify(formData), // Utiliza los datos del formulario
+        contentType: "application/json",
+        success: function (response) {
+            let data = JSON.parse(response.data);
+            Swal.fire({
+            icon: "success",
+            title: response.message,
+            confirmButtonColor: "#1e88e5",
+            });
+            $("#btnCloseModalCreate").click();
+            if (action === "create") {
+                fillTable(data);
+            } else if (action === "edit") {
+                fillTable(data);
+                removeFromTable(data.id);
+            } else {
+                removeFromTable(data.id);
             }
-        });
-        return precio
-    }catch(e){
-        console.log(e);
+        },
+        error: function (errorThrown) {
+            Swal.fire({
+            icon: "error",
+            title: errorThrown.responseJSON.title,
+            text: errorThrown.responseJSON.message,
+            confirmButtonColor: "#1e88e5",
+            });
+        },
+    });
+}
+
+function edit(json) {
+    let entity = JSON.parse(json);
+    $("#formContainer form input:not([type='hidden']").val("");
+    $("input[name='id']").val(entity.id);
+    $("input[name='id']").prop("disabled", false);
+
+    $("#modalTitle").text("Editar practica");
+    $("#formContainer form").attr("method", "PUT");
+    $("#formContainer form").attr("id", "form-edit");
+    $("#btnSendModal").text("Confirmar");
+
+    $("input[name='descripcion']").val(entity.descripcion);
+    $("input[name='precio']").val(entity.descripcion);
+} 
+
+$("#btnSendModal").on("click", function () {
+    if ($("#formContainer form").attr('id') === 'form-create') {
+        sendForm("create");
+    } else if ($("#formContainer form").attr('id') === 'form-edit') {
+        sendForm("edit");
     }
-}
-
-function completarCampos(id) {
-	$.ajax({
-			url : 'Practicas/'+id,
-			method: 'get',
-			data : {
-				id : id,
-			},
-			success : function(data) {
-			 $("#txtID").val(data['id']);
-       		 $("#txtDescripcion").val(data['descripcion']);
-       		 $("#txtPrecio").val(data.precio.valor);
-
-			}
-		});
-}
-
-function modalEdit(id) {
-    $("#staticBackdropLabel").text("Editar practica");
-    limpiarCampos();
-    habilitarCampos();
-	completarCampos(id);
-  $("#btnAceptar").addClass("modificar");
-}
-
-function modalDelete(id) {
-    $("#staticBackdropLabel").text("Eliminar practica");
-    limpiarCampos();
-    deshabilitarCampos();
-	completarCampos(id);
-	$("#btnAceptar").addClass("eliminar");
-}
-
-jQuery('#btnAgregar').on('click', function () {
-    limpiarCampos();
-    habilitarCampos();
-    $("#staticBackdropLabel").text("Agregar practica");
+});
+$("#btnAdd").on("click", function () {
+    $("#modalTitle").text("Agregar practica");
+    $("#formContainer form").attr("method", "POST");
+    $("#formContainer form").attr("id", "form-create");
+    $("#formContainer form input:not([type='hidden']").val("");
+    $("input[name='id']").prop("disabled", true);
+    $("#btnSendModal").text("Agregar");
 });
 
-function limpiarCampos() {
-    $(".limpiarCampo").val("");
-    campos = $(".required");
-    for (let i = 0; i < campos.length; i++) {
-        $("#campo" + i).removeClass("error");
-    }
-    $("#btnAceptar").removeClass("eliminar");
-    $("#btnAceptar").removeClass("modificar");
-}
-
-function habilitarCampos() {
-    $(".habilitarCampo").removeAttr("disabled");
-}
-
-function deshabilitarCampos() {
-    $(".deshabilitarCampo").attr("disabled", "disabled");
-}
-
-function campoRequired() {
-    campos = $(".required");
-    for (let i = 0; i < campos.length; i++) {
-        if (campos[i].value == "") {
-            $("#campo" + i).addClass("error");
-            return false;
-        } else {
-            $("#campo" + i).removeClass("error");
-        }
-    }
-    return true;
-}
-
-function confirmarCambios() {
-    if (campoRequired()) {
-        let id = $("#txtID").val();
-        let descripcion = $("#txtDescripcion").val();
-        let precio = $("#txtPrecio").val();
-        let json = {
-			"id": id,
-			"descripcion": descripcion,
-			"precio": precio,
-			"action": ""
-		};
-        if ($("#btnAceptar").hasClass("eliminar")) {
-            if (confirm("Seguro que desea eliminar la practica?") == 1) {
-				json["action"] = "delete";
-                crudPractica(json);
-            }
-        }else if($("#btnAceptar").hasClass("modificar")){
-			      json["action"] = "update";
-            crudPractica(json);
-        }
-         else {
-			json["action"] = "save";
-            crudPractica(json);
-        }
-    }
-}
-
-
-
-function crudPractica(json) {
-    let datosPractica = JSON.stringify({
-        "id":json.id,
-        "descripcion":json.descripcion,
-    });
-    let url = "Practicas";
-    let method = "POST";
-    let message = "La raza se guardo correctamente";
-
-    if (json.action == "delete") {
-        method = "DELETE";
-        message = "La raza se eliminó correctamente";
-    } else if (json.action == "update") {
-        method = "PUT";
-        message = "La raza se actualizó correctamente";
-    }
-    console.log(json)
-    $.ajax({
-        type: method,
-        url: url + "?precio=" + json.precio,
-        contentType: "application/json",
-        data: datosPractica
-    })
-    .done(function(data) {
-        alert(message);
-        location.reload();
-    })
-    .fail(function(xhr, status, error) {
-        console.log(xhr, status, error);
-        if (xhr.status === 400) {
-            alert("Ya existe una  raza con la misma descripcion");
-        } else if (xhr.status === 404) {
-            alert("No existe dicha raza");
-        } else {
-            alert("Error al procesar la solicitud");
-        }
-    });
-}
+$('#DataTable').DataTable({
+    "language": {
+        "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ practicas",
+        "sInfoEmpty": "Mostrando 0 a 0 de 0 practicas",
+        "sInfoFiltered": "(filtrado de _MAX_ practicas en total)",
+        "emptyTable": 'No hay practicas que coincidan con la búsqueda',
+        "sLengthMenu": "Mostrar _MENU_ practicas",
+        "sSearch": "Buscar:",
+        "oPaginate": {
+            "sFirst": "Primero",
+            "sLast": "Último",
+            "sNext": "Siguiente",
+            "sPrevious": "Anterior",
+        },
+    },
+});

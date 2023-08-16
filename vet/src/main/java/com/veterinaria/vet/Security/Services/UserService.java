@@ -77,7 +77,6 @@ public class UserService {
     public ResponseEntity<?> save(NewUser nuevoUser){
         if(userRepository.existsByEmail(nuevoUser.getEmail()))
             return ResponseEntity.badRequest().body("Email de usuario ya existe");
-            //throw new CustomException(HttpStatus.BAD_REQUEST, "ese email de User ya existe");
         User User =
                 new User(nuevoUser.getEmail(), 
                         passwordEncoder.encode(nuevoUser.getPassword()));

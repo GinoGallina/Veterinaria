@@ -4,10 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public class NewUser {
-    @Email(message = "dirección de email no válida")
-    @NotBlank(message = "email obligatorio")
+    @Email(message = "Dirección de email no válida")
+    @NotBlank(message = "Email obligatorio")
     private String Email;
-    @NotBlank
+    @NotBlank(message = "Password obligatoria")
     private String Password;
     private String rol;
     public String getEmail() {

@@ -23,7 +23,6 @@ import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.ProveedorService;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/Proveedores")
@@ -51,7 +50,7 @@ public class ProveedorController {
 
 
       @PostMapping(produces = "application/json", consumes = "application/json")
-      public ResponseEntity<Object> save(@Valid @RequestBody ProveedorDTO proveedorDTO) throws JsonProcessingException {
+      public ResponseEntity<Object> save(@Validated(ProveedorDTO.PutAndPost.class) @RequestBody ProveedorDTO proveedorDTO) throws JsonProcessingException {
           Optional<Proveedor> existingProveedorEmail = proveedorService.findByEmail(proveedorDTO.getEmail());
           Optional<Proveedor> existingProveedorCuil = proveedorService.findByCuil(proveedorDTO.getCuil());
           Optional<Proveedor> existingProveedor = existingProveedorEmail.or(() -> existingProveedorCuil);
@@ -84,7 +83,7 @@ public class ProveedorController {
 
 
       @PutMapping(produces = "application/json", consumes = "application/json")
-      public ResponseEntity<Object> updateProveedor(@Validated(ProveedorDTO.PutAndDelete.class) @RequestBody ProveedorDTO proveedorDTO) throws JsonProcessingException{
+      public ResponseEntity<Object> updateProveedor(@Validated({ProveedorDTO.PutAndDelete.class,ProveedorDTO.PutAndPost.class}) @RequestBody ProveedorDTO proveedorDTO) throws JsonProcessingException{
         Optional<Proveedor> existingProveedorEmail = proveedorService.findByEmail(proveedorDTO.getEmail());
         Optional<Proveedor> existingProveedorCuil = proveedorService.findByCuil(proveedorDTO.getCuil());
         Optional<Proveedor> existingProveedor = existingProveedorEmail.or(() -> existingProveedorCuil);

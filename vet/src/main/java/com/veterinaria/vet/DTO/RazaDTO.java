@@ -3,20 +3,21 @@ package com.veterinaria.vet.DTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.veterinaria.vet.Models.Especie;
+
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 
 
 public class RazaDTO {
-    @NotBlank(groups = { PutAndDelete.class })
+    @NotNull(message = "El campo ID no puede estar vacío",groups = { PutAndDelete.class })
     private Long ID;
 
-    @NotBlank
-    private Especie especie;
+    @NotNull(message = "El campo especie no puede estar vacío",groups = { PostAndPut.class })
+    private Long especieID;
 
-    @NotBlank
+    @NotBlank(message = "El campo descripción no puede estar vacío",groups = { PostAndPut.class })
     private String descripcion;
 
     public String toJson() throws JsonProcessingException {
@@ -33,12 +34,12 @@ public class RazaDTO {
       ID = iD;
     }
 
-    public Especie getEspecie() {
-      return especie;
+    public Long getEspecieID() {
+      return especieID;
     }
 
-    public void setEspecie(Especie especie) {
-      this.especie = especie;
+    public void setEspecieID(Long especieID) {
+      this.especieID = especieID;
     }
 
     public String getDescripcion() {
@@ -49,6 +50,9 @@ public class RazaDTO {
       this.descripcion = descripcion;
     }
     public interface PutAndDelete extends Default {
+    }
+
+    public interface PostAndPut extends Default {
     }
     
 }

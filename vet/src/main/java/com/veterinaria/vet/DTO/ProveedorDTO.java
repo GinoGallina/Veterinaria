@@ -4,28 +4,32 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 
 public class ProveedorDTO {
     
-    @NotBlank(groups = { PutAndDelete.class })
+    @NotNull(message = "El campo descripción no puede estar vacía",groups = { PutAndDelete.class })
     private Long ID;
 
-
+    @NotBlank(message = "El campo cuil no puede estar vacía",groups = { PutAndPost.class })
     private String cuil;
 
-
+    @NotBlank(message = "El campo direccion no puede estar vacía",groups = { PutAndPost.class })
     private String direccion;
 
-
+    @NotBlank(message = "El campo email no puede estar vacía",groups = { PutAndPost.class })
+    @Email(message = "El campo email debe ser una dirección de correo electrónico válida")
     private String email;
 
-
+    @NotBlank(message = "El campo razonSocial no puede estar vacía",groups = { PutAndPost.class })
     private String razonSocial;
 
-
+    @NotBlank(message = "El campo telefono no puede estar vacía",groups = { PutAndPost.class })
     private String telefono;
+    
 
     public String toJson() throws JsonProcessingException {
       ObjectMapper objectMapper = new ObjectMapper();
@@ -94,5 +98,7 @@ public class ProveedorDTO {
 
 
     public interface PutAndDelete extends Default {
+    }
+    public interface PutAndPost extends Default {
     }
   }

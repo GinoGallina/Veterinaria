@@ -56,9 +56,10 @@ function sendForm(action) {
     let formData = {
       id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
       descripcion: $(form).find('[name="descripcion"]').val(), // Ajusta el nombre del campo según tu formulario
-      especie:JSON.parse($(form).find('[name="comboEspecies"]').val()), // Ajusta el nombre del campo según tu formulario
+      especieID:$(form).find('[name="comboEspecies"]').val(), // Ajusta el nombre del campo según tu formulario
       // Otros campos del formulario aquí
     };
+    console.log(formData)
     // Enviar solicitud AJAX
     $.ajax({
         url: $(form).attr("action"), // Utiliza la ruta del formulario
@@ -105,7 +106,7 @@ function edit(json) {
     $("#btnSendModal").text("Confirmar");
 
     $("input[name='descripcion']").val(entity.descripcion);
-    $("input[name='especie']").val(entity.especie.descripcion);
+    $("select[name='comboEspecies']").val(entity.especie.id);
 } 
 
 $("#btnSendModal").on("click", function () {

@@ -9,13 +9,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 
-public class VeterinarioDTO {
-    
+public class ClienteDTO {
     @NotNull(message = "El campo id no puede estar vacío",groups = { PutAndDelete.class })
     private Long ID;
 
-    @NotBlank(message = "El campo matricula no puede estar vacío", groups = { PutAndPost.class })
-    private String matricula;
+    @NotBlank(message = "El campo dni no puede estar vacío", groups = { PutAndPost.class })
+    private String dni;
 
     @NotBlank(message = "El campo nombre no puede estar vacío", groups = { PutAndPost.class })
     private String nombre;
@@ -51,14 +50,7 @@ public class VeterinarioDTO {
       return objectMapper.writeValueAsString(this);
     }
 
-    public String getMatricula() {
-      return matricula;
-    }
 
-
-    public void setMatricula(String matricula) {
-      this.matricula = matricula;
-    }
 
 
     public String getNombre() {
@@ -124,5 +116,15 @@ public class VeterinarioDTO {
 
     public void setPassword(String password) {
       this.password = password;
+    }
+
+
+    public String getDni() {
+      return dni;
+    }
+
+
+    public void setDni(String dni) {
+      this.dni = dni;
     }
   }

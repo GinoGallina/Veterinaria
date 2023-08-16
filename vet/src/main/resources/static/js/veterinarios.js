@@ -10,15 +10,6 @@ $.ajaxSetup({
 });
 
 
-
-
-
-
-
-
-
-
-
 function fillTable(item) {
     let content = `
         <tr data-id='${item.id}'>
@@ -26,6 +17,7 @@ function fillTable(item) {
             <td>${item.nombre}</td>
             <td>${item.apellido}</td>
             <td>${item.telefono}</td>
+            <td>${item.direccion}</td>
             <td>${item.direccion}</td>
             <td class='d-flex flex-row justify-content-center'>
                 <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-veterinario=${JSON.stringify(item)} onclick="edit(this.getAttribute('data-veterinario'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -64,9 +56,15 @@ function sendForm(action) {
     let form = document.getElementById(`form-${action}`);
 
     let formData = {
-      id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
-      descripcion: $(form).find('[name="descripcion"]').val(), // Ajusta el nombre del campo según tu formulario
-      // Otros campos del formulario aquí
+        id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
+        matricula: $(form).find('[name="matricula"]').val(), // Ajusta el nombre del campo según tu formulario
+        nombre: $(form).find('[name="nombre"]').val(), // Ajusta el nombre del campo según tu formulario
+        apellido: $(form).find('[name="apellido"]').val(), // Ajusta el nombre del campo según tu formulario
+        direccion: $(form).find('[name="direccion"]').val(), // Ajusta el nombre del campo según tu formulario
+        telefono: $(form).find('[name="telefono"]').val(), // Ajusta el nombre del campo según tu formulario
+        email:$(form).find('[name="email"]').val(), // Ajusta el nombre del campo según tu formulario,
+        password:$(form).find('[name="password"]').val(),
+        // Otros campos del formulario aquí
     };
     // Enviar solicitud AJAX
     $.ajax({
@@ -118,6 +116,7 @@ function edit(json) {
     $("input[name='apellido']").val(entity.apellido);
     $("input[name='telefono']").val(entity.telefono);
     $("input[name='direccion']").val(entity.direccion);
+    $("input[name='email']").val(entity.direccion);
 } 
 
 $("#btnSendModal").on("click", function () {
