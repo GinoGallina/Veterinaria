@@ -18,6 +18,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "practicas")
@@ -30,6 +31,9 @@ public class Practica {
         @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
         @JoinColumn(name = "PracticaID")
         private List<Precio> precios;
+
+        @Transient
+        private Precio ultimoPrecio;
 
         @Column(name = "Descripcion",nullable = false)
         private String descripcion;
@@ -106,5 +110,11 @@ public class Practica {
             this.precios = precios;
         }
 
-   
+        public Precio getUltimoPrecio() {
+            return ultimoPrecio;
+        }
+
+        public void setUltimoPrecio(Precio ultimoPrecio) {
+            this.ultimoPrecio = ultimoPrecio;
+        }
   }

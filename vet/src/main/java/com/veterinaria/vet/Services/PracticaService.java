@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.veterinaria.vet.Models.Practica;
+import com.veterinaria.vet.Models.Precio;
 import com.veterinaria.vet.Repositories.PracticaRepository;
 
 

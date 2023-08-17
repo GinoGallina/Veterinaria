@@ -10,28 +10,28 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-
 import com.veterinaria.vet.Models.Practica;
+import com.veterinaria.vet.Models.Precio;
 
 import jakarta.transaction.Transactional;
 
 @Repository
-public interface PracticaRepository extends JpaRepository<Practica, Long>{
-  Optional<Practica> findByDescripcion(String desc);
+public interface PracticaRepository extends JpaRepository<Practica, Long> {
+    Optional<Practica> findByDescripcion(String desc);
 
-  @Transactional
-  @Modifying
-  @Query(value = "UPDATE practicas p SET p.DeletedAt = CURRENT_TIMESTAMP WHERE p.id = :id",nativeQuery = true)
-  void eliminarLogico(@Param("id") Long id);
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE practicas p SET p.DeletedAt = CURRENT_TIMESTAMP WHERE p.id = :id", nativeQuery = true)
+    void eliminarLogico(@Param("id") Long id);
 
-  @Transactional
-  @Modifying
-  @Query(value = "UPDATE practicas p SET p.DeletedAt = null WHERE p.id = :id", nativeQuery = true)
-  void saveLogico(@Param("id") Long id);
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE practicas p SET p.DeletedAt = null WHERE p.id = :id", nativeQuery = true)
+    void saveLogico(@Param("id") Long id);
 
-  ArrayList<Practica> findByDeletedAtIsNull();
-  
-  Optional<Practica> findByIDAndDeletedAtIsNull(Long id);
+    ArrayList<Practica> findByDeletedAtIsNull();
 
-  ArrayList<Practica> findByIDIn(List<Long> ids);
+    Optional<Practica> findByIDAndDeletedAtIsNull(Long id);
+
+    ArrayList<Practica> findByIDIn(List<Long> ids);
 }
