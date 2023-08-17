@@ -53,7 +53,8 @@ public class Veterinario {
 
   @Column(name = "DeletedAt")
   private LocalDateTime deletedAt;
-    public String toJson() throws JsonProcessingException {
+
+  public String toJson() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule()); 
         return objectMapper.writeValueAsString(this);

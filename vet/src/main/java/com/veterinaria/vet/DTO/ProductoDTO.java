@@ -24,6 +24,7 @@ public class ProductoDTO {
     private byte[] img;
 
     @NotNull(message = "El campo razonSocial no puede estar vacía",groups = { PutAndPost.class })
+    //TAMBIEN DEBE DER MAYOR A CERO
     private int stock;
 
 
