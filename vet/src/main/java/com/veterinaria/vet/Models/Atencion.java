@@ -3,6 +3,10 @@ package com.veterinaria.vet.Models;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -56,6 +60,26 @@ public class Atencion {
 
     @Column(name = "DeletedAt")
     private LocalDateTime deletedAt;
+
+    public String toJson() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        //String atencionesJSON=objectMapper.writeValueAsString(this.getPracticas());
+        System.out.println("ACA VAN PRACTICAS");
+        System.out.println(objectMapper.writeValueAsString(this.getPracticas()));
+        System.out.println(this.getPracticas());
+        System.out.println(this);
+        //atencionesJSON+=atencionesJSON+objectMapper.writeValueAsString(this.practicas);
+        return "atencionesJSON";
+    }
+
+    // Método para convertir la instancia en formato JSON
+    public String toJsonWithLists() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        return objectMapper.writeValueAsString(this);
+    }
 
     public Long getID() {
         return ID;

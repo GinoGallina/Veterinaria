@@ -117,7 +117,7 @@ public class RazaController {
 		}
 		especieService.eliminarLogico(razaDTO.getID());
 		json.setMessage("Se ha eliminado la raza");
-		json.setData(razaDTO.toJson());
+		json.setData(existingRaza.get().toJson());
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 		}
 

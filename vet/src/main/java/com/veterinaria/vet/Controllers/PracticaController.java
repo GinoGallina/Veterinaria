@@ -1,38 +1,27 @@
 package com.veterinaria.vet.Controllers;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.veterinaria.vet.DTO.EspecieDTO;
-import com.veterinaria.vet.DTO.PracticaDTO;
-import com.veterinaria.vet.Models.Especie;
 import com.veterinaria.vet.Models.Practica;
-import com.veterinaria.vet.Models.Precio;
-import com.veterinaria.vet.Models.Practica;
-import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.PracticaService;
 import com.veterinaria.vet.Services.PrecioService;
 
 
-@RestController
+@Controller
 @RequestMapping("/Practicas")
 public class PracticaController {
       @Autowired

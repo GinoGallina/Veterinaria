@@ -30,8 +30,7 @@ import jakarta.transaction.Transactional;
 public class EspecieController {
         @Autowired
         private EspecieService especieService;
-        /*@Autowired
-        private Validator validator;*/
+
 
         @GetMapping
         public ModelAndView getEspecies(){
@@ -98,10 +97,7 @@ public class EspecieController {
                 json.setTitle("ERROR");
                 return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
             }
-            Especie especie = new Especie();
-            especie.setID(especieDTO.getID());
-            especie.setDescripcion(especieDTO.getDescripcion());
-            especieService.eliminarLogico(especie.getID());
+            especieService.eliminarLogico(especieDTO.getID());
             json.setMessage("Se ha eliminado la especie");
             json.setData(existingEspecie.get().toJson());
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);

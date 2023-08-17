@@ -6,15 +6,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,17 +23,23 @@ import com.veterinaria.vet.DTO.ClienteDTO;
 import com.veterinaria.vet.Models.Atencion;
 import com.veterinaria.vet.Models.Cliente;
 import com.veterinaria.vet.Models.Mascota;
+import com.veterinaria.vet.Models.Practica;
+import com.veterinaria.vet.Models.Raza;
 import com.veterinaria.vet.Models.Response;
+import com.veterinaria.vet.Models.Veterinario;
 import com.veterinaria.vet.Security.DTO.NewUser;
 import com.veterinaria.vet.Security.Models.User;
 import com.veterinaria.vet.Security.Services.UserService;
 import com.veterinaria.vet.Services.AtencionService;
 import com.veterinaria.vet.Services.ClienteService;
 import com.veterinaria.vet.Services.MascotaService;
+import com.veterinaria.vet.Services.PracticaService;
+import com.veterinaria.vet.Services.RazaService;
+import com.veterinaria.vet.Services.VeterinarioService;
 
 import jakarta.transaction.Transactional;
 
-@RestController
+@Controller
 @RequestMapping("/Clientes")
 public class ClienteController {
   
@@ -44,6 +51,12 @@ public class ClienteController {
     private MascotaService mascotaService;
     @Autowired
     private AtencionService atencionService;
+    @Autowired
+    private RazaService razaService;
+    @Autowired
+    private VeterinarioService veterinarioService;
+    @Autowired
+    private PracticaService practicaService;
 
 
 	@GetMapping
@@ -62,22 +75,28 @@ public class ClienteController {
 		return modelAndView;
 	}
 
-	/*@GetMapping(path = "/{id}")
-	public String getClienteSeleccionado(@PathVariable Long id, Model model){
+	@GetMapping(path = "/datos")
+	public String getClienteSeleccionado(@RequestParam Long id, Model model){
 		Optional<Cliente> cliente =  clienteService.getById(id);
-		Response json = new Response();
+		//Response json = new Response();
 		if (!cliente.isPresent()) {
 			//return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+			//VER Q DEVUELVO
 		}
 		ArrayList<Mascota> mascotas=mascotaService.getAllMascotasCliente(id);
 		ArrayList<Atencion> atenciones=atencionService.getAllAtencionesCliente(id);
-		ModelAndView modelAndView = new ModelAndView("DatosCliente");
-		modelAndView.addObject("mascotas", mascotas);
-		modelAndView.addObject("atenciones", atenciones);
-		modelAndView.addObject("cliente", cliente);
+		ArrayList<Raza> razas=razaService.getAllRazas();
+		ArrayList<Veterinario> veterinarios=veterinarioService.getAllVeterinarios();
+		ArrayList<Practica> practicas=practicaService.getAllPracticas();
+		model.addAttribute("mascotas", mascotas);
+		model.addAttribute("atenciones", atenciones);
+		model.addAttribute("razas", razas);
+		model.addAttribute("veterinarios", veterinarios);
+		model.addAttribute("practicas", practicas);
+		model.addAttribute("cliente", cliente.get());
 
-		return modelAndView;
-	}*/
+		return "DatosCliente";
+	}
 
 
 

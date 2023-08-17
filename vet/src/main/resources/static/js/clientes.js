@@ -153,5 +153,5 @@ $('#DataTable').DataTable({
 });
 
 function selectPersona(id) {
-    window.location.href = "/Clientes?id=" + id;
+    window.location.href = "/Clientes/datos?id=" + id;
 }

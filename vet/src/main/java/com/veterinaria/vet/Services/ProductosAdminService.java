@@ -51,16 +51,12 @@ public class ProductosAdminService {
    }
    
 
-  /*public Boolean deleteProducto(Long id){
-    try{
-      productosAdminRepository.deleteById(id);
-      return true; 
-
-    }catch(Exception e){
-      return false;
-    }*/
     public void eliminarLogico(Long id){
       productosAdminRepository.eliminarLogico(id);
+    }
+
+    public void saveLogico(Long id){
+      productosAdminRepository.saveLogico(id);
     }
 
 }
