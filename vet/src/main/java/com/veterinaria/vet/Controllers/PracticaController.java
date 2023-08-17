@@ -37,14 +37,14 @@ public class PracticaController {
         return this.practicaService.getPracticasElegidas(ids);
       }
 
-      @GetMapping
+      @GetMapping(path = "/Index")
       public ModelAndView getPracticas(){
           ArrayList<Practica> practicas =  this.practicaService.getAllPracticas();
 
           ArrayList<String> header = new ArrayList<>();
           header.add("Descripcion");
           header.add("Precio");
-          ModelAndView modelAndView = new ModelAndView("Practica");
+          ModelAndView modelAndView = new ModelAndView("Practicas/Index");
           modelAndView.addObject("practicas", practicas);
           modelAndView.addObject("header", header);
           return modelAndView;

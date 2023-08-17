@@ -32,12 +32,12 @@ public class EspecieController {
         private EspecieService especieService;
 
 
-        @GetMapping
+        @GetMapping(path = "/Index")
         public ModelAndView getEspecies(){
             ArrayList<Especie> especies =  this.especieService.getAllEspecies();
             ArrayList<String> header = new ArrayList<>();
             header.add("Descripcion");
-            ModelAndView modelAndView = new ModelAndView("Especie");
+            ModelAndView modelAndView = new ModelAndView("Especies/Index");
             modelAndView.addObject("especies", especies);
             modelAndView.addObject("header", header);
             return modelAndView;

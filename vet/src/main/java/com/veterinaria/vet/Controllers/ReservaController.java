@@ -39,7 +39,7 @@ public class ReservaController {
         private ClienteService clienteService;
 
 
-        @GetMapping
+        @GetMapping(path = "/Index")
         public ModelAndView getReservas(){
             ArrayList<Reserva> reservas =  this.reservaService.getAllReservas();
             ArrayList<Cliente> clientes =  this.clienteService.getAllClientes();
@@ -51,7 +51,7 @@ public class ReservaController {
             header.add("Cantidad");
             header.add("Subtotal");
             header.add("Total");
-            ModelAndView modelAndView = new ModelAndView("Reserva");
+            ModelAndView modelAndView = new ModelAndView("Reservas/Index");
             modelAndView.addObject("clientes", clientes);
             modelAndView.addObject("reservas", reservas);
             modelAndView.addObject("productos", productos);

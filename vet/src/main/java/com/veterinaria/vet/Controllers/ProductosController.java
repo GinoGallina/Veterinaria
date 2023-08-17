@@ -25,14 +25,14 @@ import com.veterinaria.vet.Services.ProductosAdminService;
 
 
 @RestController
-@RequestMapping("/ProductosAdmin")
-public class ProductosAdminController{
+@RequestMapping("/Productos")
+public class ProductosController{
       @Autowired
       private ProductosAdminService productosAdminService;
 
 
 
-      @GetMapping
+      @GetMapping(path = "/Index")
       public ModelAndView getProductos(){
           ArrayList<Producto> productos =  this.productosAdminService.getAllProductos();
           ArrayList<String> header = new ArrayList<>();
@@ -40,7 +40,7 @@ public class ProductosAdminController{
           header.add("Precio");
           header.add("Imagen");
           header.add("Stock");
-          ModelAndView modelAndView = new ModelAndView("ProductosAdmin");
+          ModelAndView modelAndView = new ModelAndView("Productos/Index");
           modelAndView.addObject("productos", productos);
           modelAndView.addObject("header", header);
           return modelAndView;

@@ -6,14 +6,14 @@
 		<title>Especies</title>
 
 		<!-- Genéricos -->
-		<link rel="icon" type="image/jpg" href="../static/images/favicon.png" />
+		<link rel="icon" type="image/jpg" href="../../static/images/favicon.png" />
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-		<link href="../static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="../static/css/mis-estilos.css" rel="stylesheet" type="text/css" />
+		<link href="../../static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="../../static/css/mis-estilos.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
-	<div th:replace="header :: header"></div>
+	<div th:replace="Shared/Header:: header"></div>
 
 	<!-- Modal -->
 	<div class="modal fade" id="modalCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
@@ -79,16 +79,16 @@
 		</form>
 
 	</main>
-	<div th:replace="footer :: footer"></div>
+	<div th:replace="Shared/Footer :: footer"></div>
 	
 	<!-- Genéricos -->
-	<script src="../static/js/bootstrap.min.js"></script>
-	<script src="../static/js/modernizr-2.8.3.js"></script>
-	<script src="../static/js/jquery-3.6.0.min.js"></script>
+	<script src="../../static/js/bootstrap.min.js"></script>
+	<script src="../../static/js/modernizr-2.8.3.js"></script>
+	<script src="../../static/js/jquery-3.6.0.min.js"></script>
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	<!-- De la página -->
-	<script src="../static/js/especies.js"></script> 
+	<script src="../../static/js/especies.js"></script> 
 	</body>
 </html>

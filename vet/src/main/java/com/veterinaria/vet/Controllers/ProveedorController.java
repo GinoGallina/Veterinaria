@@ -32,7 +32,7 @@ public class ProveedorController {
     private ProveedorService proveedorService;
 
 
-      @GetMapping
+      @GetMapping(path = "/Index")
       public ModelAndView getProveedores(){
           ArrayList<Proveedor> proveedores =  this.proveedorService.getAllProveedores();
           ArrayList<String> header = new ArrayList<>();
@@ -41,7 +41,7 @@ public class ProveedorController {
           header.add("Email");
           header.add("Teléfono");
           header.add("Razón Social");
-          ModelAndView modelAndView = new ModelAndView("Proveedor");
+          ModelAndView modelAndView = new ModelAndView("Proveedores/Index");
           modelAndView.addObject("proveedores", proveedores);
           modelAndView.addObject("header", header);
           return modelAndView;

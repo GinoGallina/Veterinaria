@@ -39,7 +39,7 @@ public class VeterinarioController{
 
 
 
-	@GetMapping
+	@GetMapping(path = "/Index")
 	public ModelAndView getVeterinarios(){
 		ArrayList<Veterinario> veterinarios =  this.veterinarioService.getAllVeterinarios();
 		ArrayList<String> header = new ArrayList<>();
@@ -49,7 +49,7 @@ public class VeterinarioController{
 		header.add("Direccion");
 		header.add("Telefono");
 		header.add("User");
-		ModelAndView modelAndView = new ModelAndView("Veterinario");
+		ModelAndView modelAndView = new ModelAndView("Veterinarios/Index");
 		modelAndView.addObject("veterinarios", veterinarios);
 		modelAndView.addObject("header", header);
 		return modelAndView;

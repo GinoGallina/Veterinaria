@@ -59,7 +59,7 @@ public class ClienteController {
     private PracticaService practicaService;
 
 
-	@GetMapping
+	@GetMapping(path = "/Index")
 	public ModelAndView getClientes(){
 		ArrayList<Cliente> clientes =  clienteService.getAllClientes();
 		ArrayList<String> header = new ArrayList<>();
@@ -69,13 +69,13 @@ public class ClienteController {
 		header.add("Direccion");
 		header.add("Telefono");
 		header.add("User");
-		ModelAndView modelAndView = new ModelAndView("Cliente");
+		ModelAndView modelAndView = new ModelAndView("Clientes/Index");
 		modelAndView.addObject("clientes", clientes);
 		modelAndView.addObject("header", header);
 		return modelAndView;
 	}
 
-	@GetMapping(path = "/datos")
+	@GetMapping(path = "/Details")
 	public String getClienteSeleccionado(@RequestParam Long id, Model model){
 		Optional<Cliente> cliente =  clienteService.getById(id);
 		//Response json = new Response();
@@ -95,7 +95,7 @@ public class ClienteController {
 		model.addAttribute("practicas", practicas);
 		model.addAttribute("cliente", cliente.get());
 
-		return "DatosCliente";
+		return "Clientes/Details";
 	}
 
 
