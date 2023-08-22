@@ -39,13 +39,9 @@ public class RazaController {
       public ModelAndView getRazas(){
           ArrayList<Raza> razas =  this.razaService.getAllRazas();
           ArrayList<Especie> especies =  this.especieService.getAllEspecies();
-          ArrayList<String> header = new ArrayList<>();
-          header.add("Descripcion");
-          header.add("Especie");
           ModelAndView modelAndView = new ModelAndView("Razas/Index");
           modelAndView.addObject("razas", razas);
           modelAndView.addObject("especies", especies);
-          modelAndView.addObject("header", header);
           return modelAndView;
       }
 

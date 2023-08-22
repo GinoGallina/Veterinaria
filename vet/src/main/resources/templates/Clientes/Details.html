@@ -52,13 +52,13 @@
 		
 	<!-- Modal Mascotas-->
 	<div class="modal fade" id="modalCreateMascota" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-		<div id="formContainer" class="modal-dialog">
-			<form action="Mascotas" method="post" id="form-create">
+		<div id="formContainerM" class="modal-dialog">
+			<form action="/Mascotas" method="POST" id="form-createM">
 				<input type="hidden" name="id" value="" />
 				<input type="hidden" name="idCliente" th:value="${cliente.ID}" />
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="modalTitle"></h5>
+						<h5 class="modal-title" id="modalTitleM"></h5>
 						<button id="btnCloseModalCreate" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
@@ -112,7 +112,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default waves-effect" data-bs-dismiss="modal">Cerrar</button>
-						<button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+						<button id="btnSendModalM" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
 					</div>
 				</div>
 			</form>
@@ -123,12 +123,12 @@
 		
 	<!-- Modal Atenciones-->
 	<div class="modal fade" id="modalCreateAtencion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-		<div id="formContainer" class="modal-dialog">
-			<form action="Atenciones" method="post" id="form-create">
+		<div id="formContainerA" class="modal-dialog">
+			<form action="/Atenciones" method="post" id="form-createA">
 				<input type="hidden" name="id" value="" />
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="modalTitle"></h5>
+						<h5 class="modal-title" id="modalTitleA"></h5>
 						<button id="btnCloseModalCreate" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
@@ -194,7 +194,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default waves-effect" data-bs-dismiss="modal">Cerrar</button>
-						<button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+						<button id="btnSendModalA" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
 					</div>
 				</div>
 			</form>
@@ -219,15 +219,18 @@
 						<h5 class='card-title'>Especie:<span th:text="${mascota.raza.especie.descripcion}"></span></h5>
 						<p class='card-text'>Nombre:<span th:text="${mascota.nombre}"></span></p>
 						<p class='card-text'>Fecha de nacimiento:<span th:text="${mascota.nacimiento}"></span></p>
-						<p class='card-text'>Sexo:<span th:text="${mascota.sexo == 'm' ? 'Masculino' : 'Femenino'}"></span></p>
+						<p class='card-text'>Sexo:<span th:text="${mascota.sexo=='m'?'Masculino':'Femenino'}"></span></p>
+						<p class='card-text'>Sexo:<span th:text="${mascota.sexo}"></span></p>
 						<div class='d-flex justify-content-between mt-auto'>
-							<button class='btn btn-outline-dark' th:attr="data-mascota=${mascota.toJson()}" onclick="edit(this.getAttribute('data-mascota'),'mascota')" data-bs-toggle='modal' data-bs-target='#modalCreateMascota'><i class="bi bi-pencil"></i></button>
-							<button class='btn btn-danger' th:attr="data-mascota=${mascota.toJson()}" onclick="deleteObj(this.getAttribute('data-mascota'),'mascota')"><i class='bi bi-trash3'></i></button>
+							<button class='btn btn-outline-dark' th:attr="data-mascota=${mascota.toJson()}" onclick="editM(this.getAttribute('data-mascota'),'mascota')" data-bs-toggle='modal' data-bs-target='#modalCreateMascota'><i class="bi bi-pencil"></i></button>
+							<button class='btn btn-danger' th:attr="mascota-id=${mascota.ID}" onclick="deleteObjM(this.getAttribute('mascota-id'),'mascota')"><i class='bi bi-trash3'></i></button>
 						</div>
 					</div>
 				</div>
 				<br/>
 			</div>
+
+			<!-- Tarjetas Atenciones -->
 			<hr class="mt-5" />
 
 			<h2 class="text-center mb-4">Atenciones</h2>
@@ -237,13 +240,13 @@
 					<div class='card-body d-flex flex-column'>
 						<h5 class='card-title'>Nombre Mascota:<span th:text="${atencion.mascota.nombre}"></span></h5>
 						<h5 class='card-title'>Veterinario:<span th:text="${atencion.veterinario.nombre}"></span></h5>
-						<p class='card-text'>Practicas:<span th:each="practica : ${atencion.practicas}" th:text="${practica.descripcion}"></span></p>
+						<p class='card-text'>Practicas:<span th:each="practicaAtencion : ${atencion.practicasAtenciones}" th:text="${practicaAtencion.practica.descripcion}+'-'"></span></p>
+						<p class='card-text'>Precio Pactado:<span th:each="practicaAtencion : ${atencion.practicasAtenciones}" th:text="${practicaAtencion.precioPactado}+'-'"></span></p>
 						<p class='card-text'>Fecha de Atención:<span th:text="${atencion.fechaAtencion}"></span></p>
-						<p class='card-text'>Precio Pactado:<span th:text="${atencion.fechaPago}"></span></p>
 						<p class='card-text'>Fecha de Pago:<span th:text="${atencion.fechaPago}"></span></p>
 						<div class='d-flex justify-content-between mt-auto'>
-							<button class='btn btn-outline-dark' th:attr="data-atencion=${atencion.toJson()}" onclick="edit(this.getAttribute('data-atencion'),'atencion')" data-bs-toggle='modal' data-bs-target='#modalCreateAtencion'><i class="bi bi-pencil"></i></button>
-							<button class='btn btn-danger' th:attr="data-atencion=${atencion}" onclick="deleteObj(this.getAttribute('data-atencion'),'atencion')"><i class='bi bi-trash3'></i></button>
+							<button class='btn btn-outline-dark' th:attr="data-atencion=${atencion.toJson()}" onclick="editA(this.getAttribute('data-atencion'),'atencion')" data-bs-toggle='modal' data-bs-target='#modalCreateAtencion'><i class="bi bi-pencil"></i></button>
+							<button class='btn btn-danger' th:attr="atencion-id=${atencion.ID}" onclick="deleteObjA(this.getAttribute('atencion-id'),'atencion')"><i class='bi bi-trash3'></i></button>
 						</div>
 					</div>
 				</div>
@@ -270,7 +273,5 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	
 	<script src="../../static/js/datosClientes.js"></script>
-	<!-- <script src="../static/js/clienteMascotas.js"></script>
-	<script src="../static/js/clienteAtenciones.js"></script> -->
 </body>
 </html>

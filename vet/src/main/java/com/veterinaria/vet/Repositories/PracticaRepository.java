@@ -11,8 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.veterinaria.vet.Models.Practica;
-import com.veterinaria.vet.Models.Precio;
-
 import jakarta.transaction.Transactional;
 
 @Repository

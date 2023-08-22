@@ -21,7 +21,8 @@ public class ProductoDTO {
     @NotNull(message = "El campo precio no puede estar vacía", groups = { PutAndPost.class })
     private BigDecimal precio;
     @NotBlank(message = "El campo img no puede estar vacía",groups = { PutAndPost.class })
-    private byte[] img;
+    private String imgRuta;
+    
 
     @NotNull(message = "El campo razonSocial no puede estar vacía",groups = { PutAndPost.class })
     //TAMBIEN DEBE DER MAYOR A CERO
@@ -58,13 +59,6 @@ public class ProductoDTO {
       this.precio = precio;
     }
 
-    public byte[] getImg() {
-      return img;
-    }
-
-    public void setImg(byte[] img) {
-      this.img = img;
-    }
 
     public int getStock() {
       return stock;
@@ -77,6 +71,17 @@ public class ProductoDTO {
     }
     public interface PutAndPost extends Default {
     }
+    public String getImgRuta() {
+      return imgRuta;
+    }
+
+    public void setImgRuta(String imgRuta) {
+      this.imgRuta = imgRuta;
+    }
+
+
+
+
 
 
   }

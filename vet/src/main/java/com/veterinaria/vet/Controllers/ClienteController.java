@@ -94,7 +94,6 @@ public class ClienteController {
 		model.addAttribute("veterinarios", veterinarios);
 		model.addAttribute("practicas", practicas);
 		model.addAttribute("cliente", cliente.get());
-
 		return "Clientes/Details";
 	}
 

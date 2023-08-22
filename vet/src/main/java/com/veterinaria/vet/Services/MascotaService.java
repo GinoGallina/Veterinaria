@@ -25,7 +25,7 @@ public class MascotaService {
    }
   
    public ArrayList<Mascota> getAllMascotasCliente(long id){
-     return (ArrayList<Mascota>) mascotaRepository.findByClienteID(id);
+     return (ArrayList<Mascota>) mascotaRepository.findByClienteIDAndDeletedAtIsNull(id);
    }
 
  /*public Optional<Mascota> getById(Long id){

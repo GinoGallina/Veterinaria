@@ -82,7 +82,6 @@ public class MascotaController {
               json.setTitle("ERROR");
               return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);   
             }
-
             Mascota mascota = new Mascota();
             mascota.setNacimiento(mascotaDTO.getNacimiento());
             mascota.setNombre(mascotaDTO.getNombre());
@@ -118,6 +117,7 @@ public class MascotaController {
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);   
           }
           Mascota mascota = new Mascota();
+          mascota.setID(mascotaDTO.getID());
           mascota.setNacimiento(mascotaDTO.getNacimiento());
           mascota.setNombre(mascotaDTO.getNombre());
           mascota.setSexo(mascotaDTO.getSexo().charAt(0));
@@ -136,7 +136,7 @@ public class MascotaController {
           Optional<Mascota> existingMascota = mascotaService.getById(mascotaDTO.getID());
           Response json = new Response();
           if (existingMascota.isEmpty()) {
-            json.setMessage("La madcota no existe");
+            json.setMessage("La mascota no existe");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
           }

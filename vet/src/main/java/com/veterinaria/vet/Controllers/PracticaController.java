@@ -8,26 +8,35 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.veterinaria.vet.DTO.PracticaDTO;
 import com.veterinaria.vet.Models.Practica;
 import com.veterinaria.vet.Models.Precio;
+import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.PracticaService;
+import com.veterinaria.vet.Services.PrecioService;
 
 @Controller
 @RequestMapping("/Practicas")
 public class PracticaController {
     @Autowired
     private PracticaService practicaService;
+    @Autowired
+    private PrecioService precioService;
 
     @GetMapping(path = "/elegidas")
     public ArrayList<Practica> getPracticasElegidas(@RequestParam("ids") List<Long> ids) {
@@ -39,7 +48,8 @@ public class PracticaController {
         ArrayList<Practica> practicas = this.practicaService.getAllPracticas();
 
         for (Practica practica : practicas) {
-            // Obtener todos los precios de la practica y setear el ultimo ordenado por el campo CreatedAt descendiente
+            // Obtener todos los precios de la practica y setear el ultimo ordenado por el
+            // campo CreatedAt descendiente
             List<Precio> precios = new LinkedList<Precio>(practica.getPrecios());
             Collections.sort(precios, Comparator.comparing(Precio::getCreatedAt).reversed());
             if (precios.size() > 0) {
@@ -47,80 +57,88 @@ public class PracticaController {
             }
         }
 
-
         ModelAndView modelAndView = new ModelAndView("Practicas/Index");
         modelAndView.addObject("practicas", practicas);
         return modelAndView;
     }
 
-    /*
-     * @PostMapping(produces = "application/json", consumes = "application/json")
-     * public ResponseEntity<Object>
-     * save(@Validated(PracticaDTO.PutAndPost.class) @RequestBody PracticaDTO
-     * practicaDTO) throws JsonProcessingException {
-     * Optional<Practica> existingPractica =
-     * practicaService.findByDescripcion(practicaDTO.getDescripcion());
-     * Response json = new Response();
-     * if (existingPractica.isPresent()) {
-     * if (!practicaDTO.getById(existingPractica.get().getID()).isPresent()) {
-     * practicaDTO.saveLogico(existingPractica.get().getID());
-     * json.setMessage("La especie se encontraba eliminada y se ha recuperado");
-     * json.setData(existingPractica.get().toJson());
-     * return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-     * } else {
-     * json.setMessage("La especie ingresada ya existe");
-     * json.setTitle("ERROR");
-     * return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-     * }
-     * }
-     * Especie especie = new Especie();
-     * especie.setDescripcion(practicaDTO.getDescripcion());
-     * Especie savedEspecie = practicaService.saveEspecie(especie);
-     * json.setMessage("Se ha guardado la especie");
-     * json.setData(savedEspecie.toJson());
-     * return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-     * }
-     * 
-     * @PostMapping()
-     * public ResponseEntity<?> save(@RequestBody Practica
-     * Practica,@RequestParam("precio") BigDecimal precio){
-     * Optional<Practica> existingPractica =
-     * practicaService.findByDescripcion(Practica.getDescripcion());
-     * if(existingPractica.isPresent()){
-     * if (!practicaService.getById(existingPractica.get().getID()).isPresent()) {
-     * practicaService.saveLogico(existingPractica.get().getID());
-     * return ResponseEntity.ok(existingPractica.get());
-     * } else {
-     * return ResponseEntity.badRequest().
-     * body("Ya existe un Practica con la misma descripcion");
-     * }}
-     * Practica savedPractica = practicaService.savePractica(Practica);
-     * Precio savedPrecio= new Precio(savedPractica,precio);
-     * precioService.savePrecio(savedPrecio);
-     * return ResponseEntity.ok(savedPractica);
-     * }
-     */
-
-    @PutMapping()
-    public ResponseEntity<?> updatePractica(@RequestBody Practica Practica) {
-        Optional<Practica> existingPractica = practicaService.findByDescripcion(Practica.getDescripcion());
-        if (existingPractica.isPresent() && (existingPractica.get().getID() != Practica.getID())) {
-            return ResponseEntity.badRequest().body("Ya existe un Practica con la misma descripcion");
+    @PostMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> save(@Validated(PracticaDTO.PutAndPost.class) @RequestBody PracticaDTO practicaDTO)
+            throws JsonProcessingException {
+        Optional<Practica> existingPractica = practicaService.findByDescripcion(practicaDTO.getDescripcion());
+        Response json = new Response();
+        Precio precio = new Precio();
+        if (existingPractica.isPresent()) {
+            if (!practicaService.getById(existingPractica.get().getID()).isPresent()) {
+                practicaService.saveLogico(existingPractica.get().getID());
+                json.setMessage("La pracrica se encontraba eliminada y se ha recuperado");
+                json.setData(existingPractica.get().toJson());
+                precio.setPractica(existingPractica.get());
+                precio.setValor(practicaDTO.getPrecio());
+                precioService.savePrecio(precio);
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+            } else {
+                json.setMessage("La práctica ingresada ya existe");
+                json.setTitle("ERROR");
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+            }
         }
-        Practica updatedPractica = this.practicaService.updateById(Practica, (long) Practica.getID());
-        return ResponseEntity.ok(updatedPractica);
+        Practica practica = new Practica();
+        practica.setDescripcion(practicaDTO.getDescripcion());
+        Practica savedPractica = practicaService.savePractica(practica);
+        
+        precio.setPractica(savedPractica);
+        precio.setValor(practicaDTO.getPrecio());
+        precioService.savePrecio(precio);
+        
+        json.setMessage("Se ha guardado la práctica");
+        json.setData(savedPractica.toJson());
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @PutMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> updateEspecie(
+            @Validated({ PracticaDTO.PutAndDelete.class,
+                    PracticaDTO.PutAndPost.class }) @RequestBody PracticaDTO practicaDTO)
+            throws JsonProcessingException {
+        Optional<Practica> existingPractica = practicaService.findByDescripcion(practicaDTO.getDescripcion());
+        Response json = new Response();
+        if (existingPractica.isPresent()) {
+            json.setMessage("La práctica ingresada ya existe");
+            json.setTitle("ERROR");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+        }
+        Practica practica = new Practica();
+        practica.setID(practicaDTO.getID());
+        practica.setDescripcion(practicaDTO.getDescripcion());
+        Practica updatedPractica = this.practicaService.updateById(practica, (long) practica.getID());
+        json.setMessage("Se ha actualizado la practica");
+        json.setData(updatedPractica.toJson());
+        Precio precio = new Precio();
+        precio.setPractica(updatedPractica);
+        precio.setValor(practicaDTO.getPrecio());
+        precioService.savePrecio(precio);
+
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+    }
+
+    @DeleteMapping(produces = "application/json", consumes = "application/json")
     @Transactional
-    public ResponseEntity<?> eliminarPractica(@RequestBody Practica Practica) throws Exception {
-        Long id = (long) Practica.getID();
-        Optional<Practica> practica = practicaService.getById(id);
-        if (practica.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> eliminarPractica(
+            @Validated(PracticaDTO.PutAndDelete.class) @RequestBody PracticaDTO practicaDTO)
+            throws JsonProcessingException {
+        Optional<Practica> existingPractica = practicaService.getById(practicaDTO.getID());
+        Response json = new Response();
+        if (existingPractica.isEmpty()){
+                json.setMessage("La especie no existe");
+                json.setTitle("ERROR");
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
         }
-        practicaService.eliminarLogico(id);
-        return ResponseEntity.ok().build();
+        practicaService.eliminarLogico(practicaDTO.getID());
+        json.setMessage("Se ha eliminado la práctica");
+        json.setData(existingPractica.get().toJson());
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
+
 
 }

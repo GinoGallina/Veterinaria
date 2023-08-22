@@ -24,9 +24,7 @@ public class AtencionService {
 
 
    public ArrayList<Atencion> getAllAtencionesCliente(long clienteID){
-     System.out.println("hola");
-    System.out.println(atencionRepository.findByClienteID(clienteID));
-     return (ArrayList<Atencion>) atencionRepository.findByClienteID(clienteID);
+     return (ArrayList<Atencion>) atencionRepository.findByClienteIDAndDeletedAtIsNull(clienteID);
    }
   public Optional<Atencion> getById(Long id){
     return atencionRepository.findByIDAndDeletedAtIsNull(id);

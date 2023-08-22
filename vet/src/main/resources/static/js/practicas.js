@@ -10,19 +10,13 @@ $.ajaxSetup({
 });
 
 
-
-
-
-
-
-
-
-
-
 function fillTable(item) {
     let content = `
         <tr data-id='${item.id}'>
             <td>${item.descripcion}</td>
+            <td>${item.ultimoPrecio.valor}</td>
+            <td>${item.ultimoPrecio.createdAt}</td>
+            <td>${item.updatedAt}</td>
             <td class='d-flex flex-row justify-content-center'>
                 <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-practica=${JSON.stringify(item)} onclick="edit(this.getAttribute('data-practica'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                 <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id=${item.id} onclick="deleteObj(this.getAttribute('data-id'))"><i class='bi bi-trash3'></i></button>
@@ -62,9 +56,11 @@ function sendForm(action) {
     let formData = {
       id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
       descripcion: $(form).find('[name="descripcion"]').val(), // Ajusta el nombre del campo según tu formulario
+      precio: $(form).find('[name="precio"]').val(), // Ajusta el nombre del campo según tu formulario
       // Otros campos del formulario aquí
     };
     // Enviar solicitud AJAX
+    console.log(formData)
     $.ajax({
         url: $(form).attr("action"), // Utiliza la ruta del formulario
         method: $(form).attr("method"), // Utiliza el método del formulario
@@ -100,8 +96,9 @@ function sendForm(action) {
 
 function edit(json) {
     let entity = JSON.parse(json);
+    console.log(entity)
     $("#formContainer form input:not([type='hidden']").val("");
-    $("input[name='id']").val(entity.id);
+    $("input[name='id']").val(entity.ID);
     $("input[name='id']").prop("disabled", false);
 
     $("#modalTitle").text("Editar practica");
@@ -110,7 +107,7 @@ function edit(json) {
     $("#btnSendModal").text("Confirmar");
 
     $("input[name='descripcion']").val(entity.descripcion);
-    $("input[name='precio']").val(entity.descripcion);
+    $("input[name='precio']").val(entity.ultimoPrecio.valor);
 } 
 
 $("#btnSendModal").on("click", function () {

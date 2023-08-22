@@ -1,5 +1,6 @@
 package com.veterinaria.vet.Controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,16 +38,21 @@ public class ProductosController{
       @GetMapping(path = "/Index")
       public ModelAndView getProductos(){
           ArrayList<Producto> productos =  this.productosAdminService.getAllProductos();
-          ArrayList<String> header = new ArrayList<>();
-          header.add("Descripcion");
-          header.add("Precio");
-          header.add("Imagen");
-          header.add("Stock");
           ModelAndView modelAndView = new ModelAndView("Productos/Index");
           modelAndView.addObject("productos", productos);
-          modelAndView.addObject("header", header);
           return modelAndView;
       }
+      /* @PostMapping(path = "/imagen")
+      public  uploadImage(@RequestParam("imageFile") MultipartFile imageFile,@RequestParam("id") Long id) {
+        if (!imageFile.isEmpty()) {
+        try {
+            byte[] imageData = imageFile.getBytes();
+
+        }catch(IOException e){
+
+        }
+        }
+      }*/
 
 
 
@@ -67,7 +75,9 @@ public class ProductosController{
           Producto Producto = new Producto();
           Producto.setDescripcion(productoDTO.getDescripcion());
           Producto.setPrecio(productoDTO.getPrecio());
-          Producto.setImg(productoDTO.getImg());
+          //Producto.setImg(productoDTO.getImg());
+          System.out.println("aa");
+
           Producto.setStock(productoDTO.getStock());
           Producto savedProducto = productosAdminService.saveProducto(Producto);
           json.setMessage("Se ha guardado el Producto");
@@ -90,7 +100,7 @@ public class ProductosController{
           Producto.setID(productoDTO.getID());
           Producto.setDescripcion(productoDTO.getDescripcion());
           Producto.setPrecio(productoDTO.getPrecio());
-          Producto.setImg(productoDTO.getImg());
+          //Producto.setImg(productoDTO.getImg());
           Producto.setStock(productoDTO.getStock());
           Producto updatedProducto=this.productosAdminService.updateById(Producto,(long) Producto.getID());
           json.setMessage("Se ha actualizado la Producto");

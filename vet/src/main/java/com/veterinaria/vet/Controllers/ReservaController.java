@@ -44,18 +44,10 @@ public class ReservaController {
             ArrayList<Reserva> reservas =  this.reservaService.getAllReservas();
             ArrayList<Cliente> clientes =  this.clienteService.getAllClientes();
             ArrayList<Producto> productos =  this.productosAdminService.getAllProductos();
-            ArrayList<String> header = new ArrayList<>();
-            header.add("Cliente");
-            header.add("Producto");
-            header.add("Precio pactado");
-            header.add("Cantidad");
-            header.add("Subtotal");
-            header.add("Total");
             ModelAndView modelAndView = new ModelAndView("Reservas/Index");
             modelAndView.addObject("clientes", clientes);
             modelAndView.addObject("reservas", reservas);
             modelAndView.addObject("productos", productos);
-            modelAndView.addObject("header", header);
             return modelAndView;
         }
 
@@ -90,7 +82,7 @@ public class ReservaController {
             Reserva.setCliente(existingCliente.get());
             Reserva savedReserva = reservaService.saveReserva(Reserva);
             json.setMessage("Se ha guardado la Reserva");
-            json.setData(savedReserva.toJson());
+            //json.setData(savedReserva.toJson());
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
         }
 

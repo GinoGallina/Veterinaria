@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 	<head>
@@ -18,7 +17,7 @@
 <!-- Modal -->
 	<div class="modal fade" id="modalCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
 		<div id="formContainer" class="modal-dialog">
-			<form action="Reservas" method="post" id="form-create">
+			<form action="/Reservas" method="post" id="form-create">
 				<input type="hidden" name="id" value="" />
 				<div class="modal-content">
 					<div class="modal-header">
@@ -57,7 +56,7 @@
                 <div class="form-column">
 									<div class="col-12 mb-3">
 										<label for="txtPrecio" class="mb-0">Precio Pactado (Ver para cad producto): </label>
-										<input id="txtPrecio" name="precio" type="text" th:value="" class="form-control" />
+										<input id="txtPrecio" name="precio" type="text" th:value="a" class="form-control"/>
 									</div>
 								</div>
 							</div>
@@ -88,7 +87,12 @@
 			<table id='DataTable' class='table table-oscura table-striped table-bordered table-hover'>
 				<thead>
 					<tr class='fw-bold'>
-						<th th:each="header : ${header}" th:text="${header}"></th>
+						<td>Cliente</td>
+						<td>Producto</td>
+						<td>Precio pactado</td>
+						<td>Cantidad</td>
+						<td>Subtotal</td>
+						<td>Total</td>
 						<td class='no-sort text-center'>Accion</td>
 					</tr>
 				</thead>
@@ -111,7 +115,7 @@
 							<span th:each="reservaProducto : ${reserva.reservasProductos}" th:utext="CALCULAR+ '<br>'"></span>
 						</td>
 						<td class='d-flex justify-content-center'>
-							<button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-reserva=${reserva}" onclick="edit(this.getAttribute('data-reserva'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+							<button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-reserva=${reserva.toJson()}" onclick="edit(this.getAttribute('data-reserva'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
 							<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' th:attr="data-id=${reserva.ID}" onclick="deleteObj(this.getAttribute('data-id'))"><i class='bi bi-trash3'></i></button>
 						</td>
 					</tr>
@@ -125,7 +129,7 @@
 			</button>
 		</div>
 
-		<form id="form-delete" method="DELETE" action="Reservas">
+		<form id="form-delete" method="DELETE" action="/Reservas">
 			<input type="hidden" name="id" value="">
 		</form>
 

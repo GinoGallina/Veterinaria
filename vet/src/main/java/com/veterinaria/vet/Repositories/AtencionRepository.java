@@ -18,7 +18,7 @@ public interface AtencionRepository extends JpaRepository<Atencion, Long>{
   //Optional<Atencion> findByDni(String dni);
   
   @Query("SELECT a FROM Atencion a WHERE a.mascota.cliente.ID = :clienteID")
-  ArrayList<Atencion> findByClienteID(@Param("clienteID") Long clienteID);
+  ArrayList<Atencion> findByClienteIDAndDeletedAtIsNull(@Param("clienteID") Long clienteID);
 
   @Transactional
   @Modifying

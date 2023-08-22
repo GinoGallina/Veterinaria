@@ -35,11 +35,8 @@ public class EspecieController {
         @GetMapping(path = "/Index")
         public ModelAndView getEspecies(){
             ArrayList<Especie> especies =  this.especieService.getAllEspecies();
-            ArrayList<String> header = new ArrayList<>();
-            header.add("Descripcion");
             ModelAndView modelAndView = new ModelAndView("Especies/Index");
             modelAndView.addObject("especies", especies);
-            modelAndView.addObject("header", header);
             return modelAndView;
         }
 

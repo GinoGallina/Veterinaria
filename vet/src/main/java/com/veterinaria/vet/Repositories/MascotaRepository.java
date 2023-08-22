@@ -16,16 +16,16 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface MascotaRepository extends JpaRepository<Mascota, Long>{
  
-  ArrayList<Mascota> findByClienteID(Long clienteId);
+  ArrayList<Mascota> findByClienteIDAndDeletedAtIsNull(Long clienteId);
   
   @Transactional
   @Modifying
-  @Query(value = "UPDATE clientes c SET c.DeletedAt = CURRENT_TIMESTAMP WHERE c.id = :id",nativeQuery = true)
+  @Query(value = "UPDATE mascotas m SET m.DeletedAt = CURRENT_TIMESTAMP WHERE m.id = :id",nativeQuery = true)
   void eliminarLogico(@Param("id") Long id);
 
   @Transactional
   @Modifying
-  @Query(value = "UPDATE clientes c SET c.DeletedAt = null WHERE c.id = :id", nativeQuery = true)
+  @Query(value = "UPDATE mascotas m SET m.DeletedAt = null WHERE m.id = :id", nativeQuery = true)
   void saveLogico(@Param("id") Long id);
 
   ArrayList<Mascota> findByDeletedAtIsNull();

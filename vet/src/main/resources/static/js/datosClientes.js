@@ -73,7 +73,6 @@ $('#txtAtencion').daterangepicker({
     },
     
     singleDatePicker: true,     
-    maxDate: hoy,
     opens: 'right',
     /*isInvalidDate: function (date) {
         if (date.day() == 1 ||  date.day() == 2  || date.day() == 3 ||  date.day() == 4 ||  date.day() == 5)
@@ -94,7 +93,6 @@ $('#txtPago').daterangepicker({
     },
     
     singleDatePicker: true,     
-    maxDate: hoy,
     opens: 'right',
     /*isInvalidDate: function (date) {
         if (date.day() == 1 ||  date.day() == 2  || date.day() == 3 ||  date.day() == 4 ||  date.day() == 5)
@@ -124,9 +122,17 @@ function removeFromTable(id) {
     $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
 }
 
-function deleteObj(id) {
+function deleteObj(id,tipo) {
+	let title;
+	if(tipo=='mascota'){
+		title= "¿Seguro deseas eliminar esta mascota?";
+		action="/Mascotas";
+	}else{
+		title= "¿Seguro deseas eliminar esta atención?";
+		action="/Atenciones";
+	}
     Swal.fire({
-        title: "¿Seguro deseas eliminar esta veterinario?",
+        title: title,
         text: "Esta acción no se puede deshacer",
         icon: 'warning',
         showCancelButton: true,
@@ -140,6 +146,7 @@ function deleteObj(id) {
     .then((result) => {
         if (result.isConfirmed) {
             $("#form-delete input[name='id']").val(id);
+						$("#form-delete").attr("action", action);
             sendForm("delete");
         }
     });
@@ -148,7 +155,7 @@ function deleteObj(id) {
 function sendForm(action) {
     let form = document.getElementById(`form-${action}`);
     let formData;
-    if($(form).attr("action")=='Mascotas'){
+    if($(form).attr("action")=='/Mascotas'){
           formData = {
           id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
           clienteID: $(form).find('[name="idCliente"]').val(), // Ajusta el nombre del campo según tu formulario
@@ -161,13 +168,11 @@ function sendForm(action) {
     }else{
           formData = {
           id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
-          dni: $(form).find('[name="dni"]').val(), // Ajusta el nombre del campo según tu formulario
-          nombre: $(form).find('[name="nombre"]').val(), // Ajusta el nombre del campo según tu formulario
-          apellido: $(form).find('[name="apellido"]').val(), // Ajusta el nombre del campo según tu formulario
-          direccion: $(form).find('[name="direccion"]').val(), // Ajusta el nombre del campo según tu formulario
-          telefono: $(form).find('[name="telefono"]').val(), // Ajusta el nombre del campo según tu formulario
-          email:$(form).find('[name="email"]').val(), // Ajusta el nombre del campo según tu formulario,
-          password:$(form).find('[name="password"]').val(),
+          veterinario: $(form).find('[name="comboVeterinarios"]').val(), // Ajusta el nombre del campo según tu formulario
+          mascota: $(form).find('[name="comboMascotas"]').val(), // Ajusta el nombre del campo según tu formulario
+          practicas: $(form).find('[name="comboPracticas"]').val(), // Ajusta el nombre del campo según tu formulario
+          fechaAtencion: $(form).find('[name="atencion"]').val(), // Ajusta el nombre del campo según tu formulario
+          fechaPago: $(form).find('[name="pago"]').val(), // Ajusta el nombre del campo según tu formulario
           // Otros campos del formulario aquí
         };
 
@@ -175,7 +180,7 @@ function sendForm(action) {
     console.log(formData)
     // Enviar solicitud AJAX
     $.ajax({
-        url: "/"+$(form).attr("action"), // Utiliza la ruta del formulario
+        url: $(form).attr("action"), // Utiliza la ruta del formulario
         method: $(form).attr("method"), // Utiliza el método del formulario
         data: JSON.stringify(formData), // Utiliza los datos del formulario
         contentType: "application/json",
@@ -185,16 +190,12 @@ function sendForm(action) {
             icon: "success",
             title: response.message,
             confirmButtonColor: "#1e88e5",
-            });
-            $("#btnCloseModalCreate").click();
-            if (action === "create") {
-                fillTable(data);
-            } else if (action === "edit") {
-                fillTable(data);
-                removeFromTable(data.id);
-            } else {
-                removeFromTable(data.id);
-            }
+            }).then((result)=>{
+							if(result.isConfirmed){
+								location.reload();
+							}
+						}
+						);
         },
         error: function (errorThrown) {
             Swal.fire({
@@ -207,62 +208,89 @@ function sendForm(action) {
     });
 }
 
-function edit(json,tipo) {
+function editM(json) {
   let entity = JSON.parse(json);
-  console.log(entity)
-  $("#formContainer form input:not([type='hidden']").val("");
+  $("#formContainerM form input:not([type='hidden']").val("");
   $("input[name='id']").val(entity.id);
   $("input[name='id']").prop("disabled", false);
   
-  $("#formContainer form").attr("method", "PUT");
-  $("#formContainer form").attr("id", "form-edit");
+  $("#formContainerM form").attr("method", "PUT");
+  $("#formContainerM form").attr("id", "form-editM");
   $("#btnSendModal").text("Confirmar");
-  if(tipo=='mascota'){
-    $("input[name='idCliente']").val(entity.cliente.id);
-    $("input[name='idCliente']").prop("disabled", false);
-    $("#modalTitle").text("Editar Mascota");
-    $("input[name='nombre']").val(entity.nombre);
-    $("input[name='nacimiento']").val(entity.nacimiento);
-    $("select[name='comboRazas']").val(entity.raza.id);
-    $("select[name='comboSexo']").val(entity.sexo);
-    
-  }else if(tipo=='atencion'){
-    console.log(entity)
-    $("#modalTitle").text("Editar Atencion");
-    $("select[name='comboVeterinarios']").val(entity.veterinario.id);
-    $("select[name='comboMascotas']").val(entity.mascota.id);
-    $("select[name='comboPracticas']").val('');
-    $("select[name='precioPactado']").val('');
-    $("input[name='atencion']").val(entity.fechaAtencion);
-    $("input[name='pago']").val(entity.fechaPago);
+	const formattedDate = moment(entity.nacimiento).format('YYYY-MM-DD');
+	$("input[name='idCliente']").val(entity.cliente.id);
+	$("input[name='idCliente']").prop("disabled", false);
+	$("#modalTitleM").text("Editar Mascota");
+	$("input[name='nombre']").val(entity.nombre);
+	$("input[name='nacimiento']").val(formattedDate)
+	$("select[name='comboRazas']").val(entity.raza.id);
+	$("select[name='comboSexo']").val(entity.sexo);
     
   }
+  
+
+
+function editA(json) {
+  let entity = JSON.parse(json);
+  $("#formContainerA form input:not([type='hidden']").val("");
+  $("input[name='id']").val(entity.id);
+  $("input[name='id']").prop("disabled", false);
+  
+  $("#formContainerA form").attr("method", "PUT");
+  $("#formContainerA form").attr("id", "form-editA");
+  $("#btnSendModal").text("Confirmar");
+
+	console.log(entity)
+	const formattedDateTimeAtencion = moment(entity.fechaAtencion).format('YYYY-MM-DD || HH:mm:ss');
+	let formattedDateTimePago='No hay fecha'; 
+	if(entity.fechaPago!=null){
+		formattedDateTimePago	=moment(entity.fechaPago).format('YYYY-MM-DD HH:mm:ss');
+	} 
+	$("#modalTitleA").text("Editar Atencion");
+	$("select[name='comboVeterinarios']").val(entity.veterinario.id);
+	$("select[name='comboMascotas']").val(entity.mascota.id);
+	$("select[name='comboPracticas']").val('');
+	$("select[name='precioPactado']").val('');
+	$("input[name='atencion']").val(formattedDateTimeAtencion);
+	$("input[name='pago']").val(formattedDateTimePago);
+	
+  
   
 
 } 
 
 
-$("#btnSendModal").on("click", function () {
-    if ($("#formContainer form").attr('id') === 'form-create') {
-        sendForm("create");
-    } else if ($("#formContainer form").attr('id') === 'form-edit') {
-        sendForm("edit");
+$("#btnSendModalM").on("click", function () {
+    if ($("#formContainerM form").attr('id') === 'form-createM') {
+        sendForm("createM");
+    } else if ($("#formContainerM form").attr('id') === 'form-editM') {
+        sendForm("editM");
     }
 });
+$(" #btnSendModalA").on("click", function () {
+    if ($("#formContainerA form").attr('id') === 'form-createA') {
+        sendForm("createA");
+    } else if ($("#formContainerA form").attr('id') === 'form-editA') {
+        sendForm("editA");
+    }
+});
+
+
 $("#btnAddMascota").on("click", function () {
-    $("#modalTitle").text("Agregar mascota");
-    $("#formContainer form").attr("method", "POST");
-    $("#formContainer form").attr("id", "form-create");
-    $("#formContainer form input:not([type='hidden']").val("");
+    $("#modalTitleM").text("Agregar mascota");
+    $("#formContainerM form").attr("method", "POST");
+    $("#formContainerM form").attr("id", "form-createM");
+    $("#formContainerM form input:not([type='hidden']").val("");
     $("input[name='id']").prop("disabled", true);
     $("input[name='id-cliente']").prop("disabled", true);
     $("#btnSendModal").text("Agregar");
 });
+
 $("#btnAddAtencion").on("click", function () {
-    $("#modalTitle").text("Agregar veterinario");
-    $("#formContainer form").attr("method", "POST");
-    $("#formContainer form").attr("id", "form-create");
-    $("#formContainer form input:not([type='hidden']").val("");
+    $("#modalTitleA").text("Agregar atencion");
+    $("#formContainerA form").attr("method", "POST");
+    $("#formContainerA form").attr("id", "form-createA");
+    $("#formContainerA form input:not([type='hidden']").val("");
     $("input[name='id']").prop("disabled", true);
     $("#btnSendModal").text("Agregar");
 });
@@ -284,6 +312,3 @@ $('#DataTable').DataTable({
     },
 });
 
-function selectPersona(id) {
-    window.location.href = "Clientes/datos?id=" + id;
-}

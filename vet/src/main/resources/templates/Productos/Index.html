@@ -16,7 +16,7 @@
 	<!-- Modal -->
 	<div class="modal fade" id="modalCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
 		<div id="formContainer" class="modal-dialog">
-			<form action="ProductosAdmin" method="post" id="form-create">
+			<form action="/Productos" method="post" id="form-create">
 				<input type="hidden" name="id" value="" />
 				<div class="modal-content">
 					<div class="modal-header">
@@ -49,7 +49,7 @@
                 <div class="form-column">
 									<div class="col-12 mb-3">
 										<label for="txtImagen" class="mb-0">Imagen: </label>
-										<input id="txtImg" name="img" type="text" class="form-control" />
+										<input id="txtImg" name="img" type="file"  accept="image/*" class="form-control" />
 									</div>
 								</div>
 							</div>
@@ -80,15 +80,18 @@
 			<table id='DataTable' class='table table-oscura table-striped table-bordered table-hover'>
 				<thead>
 					<tr class='fw-bold'>
-						<td th:each="header : ${header}" th:text="${header}"></td>
+						<td>Descripción</td>
+						<td>Precio</td>
+						<td>Imagen</td>
+						<td>Stock</td>
 						<td class='no-sort text-center'>Accion</td>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="producto : ${productos}" th:attr="data-id=${producto.ID}">
 						<td th:text="${producto.descripcion}"></td>
-						<td th:text="${producto.precio}"></td>
-						<img th:src="@{/ruta-de-imagenes/${imagen.ruta}}" alt="Imagen" />
+						<td th:text="'$'+${producto.precio}"></td>
+						<td><img th:src="@{../../static/images/.png}" alt="Imagen" /></td>
 						<td th:text="${producto.stock}"></td>
 						<td class='d-flex justify-content-center'>
 							<button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-producto=${producto.toJson()}" onclick="edit(this.getAttribute('data-producto'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -105,63 +108,13 @@
 			</button>
 		</div>
 
-		<form id="form-delete" method="DELETE" action="ProductosAdmin">
+		<form id="form-delete" method="DELETE" action="/Productos">
 			<input type="hidden" name="id" value="">
 		</form>
 
 	</main>
 
 
-	<main>
-		<h1 class="text-center mt-5">Administrar productos</h1>
-		
-		
-			<div id="tabla-producto" class="container body-content mt-5">
-			</div>
-			<hr />
-			
-			
-			<div class="container">
-				<button id="btnAgregar" class="btn btn-success mb-5 mt-2 px-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-					Agregar
-				</button>
-			</div>
-			
-			
-			<!-- Modal -->
-			<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-			    <div class="modal-dialog modal-dialog-centered">
-			        <div class="modal-content">
-			            <div class="modal-header">
-			                <h5 class="modal-title" id="staticBackdropLabel"></h5>
-			                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			            </div>
-			           
-			            <div class="modal-body contenedor-modal align-items-center">
-			                <label class="mb-3">ID: </label>
-			                <input id="txtID" type="text" class="form-control limpiarCampo w-25 mb-3" disabled />
-			                
-			                <label id="campo0" class="mb-3">Descripcion: </label>
-			                <input id="txtDescripcion" type="text" class="form-control limpiarCampo habilitarCampo deshabilitarCampo required mb-3" />
-
-			                <label id="campo1" class="mb-3">Stock: </label>
-			                <input id="txtStock" type="text" class="form-control limpiarCampo habilitarCampo deshabilitarCampo required mb-3" />
-			                
-			                <label id="campo2" class="mb-3">Tipo: </label>
-			                <input id="txtTipo" type="text" class="form-control limpiarCampo habilitarCampo deshabilitarCampo required mb-3" />
-			                
-			                <label id="campo3" class="mb-3">Precio: </label>
-			                <input id="txtPrecio" type="number" step=".01" class="form-control limpiarCampo habilitarCampo deshabilitarCampo required mb-3" />
-
-			            </div>
-			            <div class="modal-footer">
-			                <button id="btnCancelar" type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-			                <button id="btnAceptar" onclick="confirmarCambios()" type="button" class="btn btn-success">Aceptar</button>
-			            </div>
-			        </div>
-			    </div>
-			</div>
-	</main>
 	<div th:replace="Shared/Footer :: footer"></div>
 	
 
@@ -171,7 +124,7 @@
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	
-	<script src="../../static/js/productosAdmin.js"></script>
+	<script src="../../static/js/productos.js"></script>
 
 	</body>
 </html>

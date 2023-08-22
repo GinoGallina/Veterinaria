@@ -1,21 +1,24 @@
 package com.veterinaria.vet.Models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -23,6 +26,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "atenciones")
 public class Atencion {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,26 +40,19 @@ public class Atencion {
     @JoinColumn(name = "MascotaID", nullable = false)
     private Mascota mascota;
 
-    
-    @ManyToMany
-    @JoinTable(
-        name = "atencionpractica",
-        joinColumns = @JoinColumn(name = "AtencionID"),
-        inverseJoinColumns = @JoinColumn(name = "PracticaID")
-    )
-    private List<Practica> practicas;
+    @OneToMany(mappedBy = "atencion", cascade = CascadeType.ALL)
+    private List<PracticaAtencion> practicasAtenciones;
 
-    @Column(name = "FechaAtencion",nullable = false)
+    @Column(name = "FechaAtencion", nullable = false)
     private LocalDateTime fechaAtencion;
 
     @Column(name = "FechaPago")
     private LocalDateTime fechaPago;
 
-    @Column(name = "CreatedAt",nullable = false, insertable = false)
+    @Column(name = "CreatedAt", nullable = false, insertable = false)
     private LocalDateTime createdAt;
-    
 
-    @Column(name = "UpdatedAt",nullable = false, insertable = false)
+    @Column(name = "UpdatedAt", nullable = false, insertable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "DeletedAt")
@@ -64,22 +61,48 @@ public class Atencion {
     public String toJson() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        //String atencionesJSON=objectMapper.writeValueAsString(this.getPracticas());
-        System.out.println("ACA VAN PRACTICAS");
-        System.out.println(objectMapper.writeValueAsString(this.getPracticas()));
-        System.out.println(this.getPracticas());
-        System.out.println(this);
-        //atencionesJSON+=atencionesJSON+objectMapper.writeValueAsString(this.practicas);
-        return "atencionesJSON";
-    }
 
-    // Método para convertir la instancia en formato JSON
-    public String toJsonWithLists() throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+        // Crear una lista de atencionesJson en formato JSON
+        List<Map<String, Object>> practicasAtencionesJson = new ArrayList<>();
+        if (practicasAtenciones != null) {
+            for (PracticaAtencion practicaAtencion : practicasAtenciones) {
+                Map<String, Object> practicaAtencionMap = new HashMap<>();
+                practicaAtencionMap.put("id", practicaAtencion.getId());
+                practicaAtencionMap.put("precioPactado", practicaAtencion.getPrecioPactado());
+                Map<String, Object>  practicaMap = new HashMap<>();
+                Practica practica= practicaAtencion.getPractica();
+                practicaMap.put("id", practica.getID());
+                practicaMap.put("descripcion", practica.getDescripcion());
+                practicaMap.put("createdAt", practica.getCreatedAt());
+                practicaMap.put("updatedAt", practica.getUpdatedAt());
+                practicaMap.put("deletedAt", practica.getDeletedAt());
+                practicaMap.put("precios", practica.preciosJson());
+                practicaMap.put("ultimoPrecio", practica.getLastPrice().getValor());
+                practicaAtencionMap.put("practica", practicaMap);
+                
+                
+                
+                practicasAtencionesJson.add(practicaAtencionMap);
+            }
+        }
 
-        return objectMapper.writeValueAsString(this);
-    }
+        // Crear un mapa para representar el objeto Practica en JSON
+        Map<String, Object> atencionMap = new HashMap<>();
+        atencionMap.put("id", ID);
+        atencionMap.put("veterinario", veterinario);
+        atencionMap.put("mascota", mascota);
+        atencionMap.put("fechaAtencion", fechaAtencion);
+        atencionMap.put("fechaPago", fechaPago);
+        atencionMap.put("createdAt", updatedAt);
+        atencionMap.put("updatedAt", updatedAt);
+        atencionMap.put("deletedAt", deletedAt);
+
+        if (!practicasAtencionesJson.isEmpty()) {
+            atencionMap.put("practicasAtenciones", practicasAtencionesJson);
+        };
+
+        return objectMapper.writeValueAsString(atencionMap);
+    } 
 
     public Long getID() {
         return ID;
@@ -103,14 +126,6 @@ public class Atencion {
 
     public void setMascota(Mascota mascota) {
         this.mascota = mascota;
-    }
-
-    public List<Practica> getPracticas() {
-        return practicas;
-    }
-
-    public void setPracticas(List<Practica> practicas) {
-        this.practicas = practicas;
     }
 
     public LocalDateTime getFechaAtencion() {
@@ -158,11 +173,18 @@ public class Atencion {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
-        @PreUpdate
+
+    @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
-    
+    public List<PracticaAtencion> getPracticasAtenciones() {
+        return practicasAtenciones;
+    }
+
+    public void setPracticasAtenciones(List<PracticaAtencion> practicasAtenciones) {
+        this.practicasAtenciones = practicasAtenciones;
+    }
 
 }

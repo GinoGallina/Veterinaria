@@ -2,14 +2,8 @@ package com.veterinaria.vet.DTO;
 
 import java.math.BigDecimal;
 
-import com.veterinaria.vet.Models.Producto;
-import com.veterinaria.vet.Models.Reserva;
 import com.veterinaria.vet.Models.ReservaProductoId;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 

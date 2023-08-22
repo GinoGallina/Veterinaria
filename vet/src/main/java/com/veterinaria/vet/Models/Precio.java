@@ -24,7 +24,7 @@ public class Precio {
     @JoinColumn(name = "PracticaID", nullable = false)
     private Practica practica;
 
-    @Column(name = "Valor",nullable = false, insertable = false)
+    @Column(name = "valor",nullable = false)
     private BigDecimal valor;
 
     @Column(name = "CreatedAt",nullable = false, insertable = false)

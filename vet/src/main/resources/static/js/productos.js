@@ -53,14 +53,18 @@ function deleteObj(id) {
 function sendForm(action) {
     let form = document.getElementById(`form-${action}`);
 
+
+    
+    
     let formData = {
         id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
         precio: $(form).find('[name="precio"]').val(), // Ajusta el nombre del campo según tu formulario
         descripcion: $(form).find('[name="descripcion"]').val(), // Ajusta el nombre del campo según tu formulario
-        img: $(form).find('[name="img"]').val(), // Ajusta el nombre del campo según tu formulario
+        img: $(form).find('[name="img"]').val(), 
         stock: $(form).find('[name="stock"]').val(), // Ajusta el nombre del campo según tu formulario
         // Otros campos del formulario aquí
     };
+    console.log(formData)
     // Enviar solicitud AJAX
     $.ajax({
         url: $(form).attr("action"), // Utiliza la ruta del formulario
