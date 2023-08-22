@@ -15,16 +15,16 @@ public class HomeController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             // El usuario está autenticado, redirigir a la página de inicio
-            return "redirect:/loginN";
+            return "redirect:/login";
         } else {
             // El usuario no está autenticado, redirigir a la página de inicio de sesión
             return "index";  
         }
     }
 
-    @GetMapping("/loginN")
+    @GetMapping("/login")
     public String login() {
-        return "login"; // Nombre de la vista Thymeleaf (index.html)
+        return "/Auth/Login"; // Nombre de la vista Thymeleaf (index.html)
     }
     @GetMapping("/inicio")
     public String inicio() {
