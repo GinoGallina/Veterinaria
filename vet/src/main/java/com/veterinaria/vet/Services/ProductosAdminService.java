@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.veterinaria.vet.Models.Producto;
-import com.veterinaria.vet.Repositories.ProductosAdminRepository;
+import com.veterinaria.vet.Repositories.ProductosRepository;
 
 @Service
 public class ProductosAdminService {
   @Autowired
-  ProductosAdminRepository productosAdminRepository;
+  ProductosRepository productosAdminRepository;
 
 
   public ArrayList<Producto> getTodosProductos(){

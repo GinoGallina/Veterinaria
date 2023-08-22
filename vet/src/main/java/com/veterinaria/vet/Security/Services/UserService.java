@@ -62,8 +62,7 @@ public class UserService {
     }
 
     public JwtDTO login(LoginUser loginUser){
-        Authentication authentication =
-                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateToken(authentication);
         return new JwtDTO(jwt);

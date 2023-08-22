@@ -14,7 +14,7 @@ import com.veterinaria.vet.Models.Producto;
 import jakarta.transaction.Transactional;
 
 @Repository
-public interface ProductosAdminRepository extends JpaRepository<Producto, Long>{
+public interface ProductosRepository extends JpaRepository<Producto, Long>{
   
   Optional<Producto> findByDescripcion(String desc);
   

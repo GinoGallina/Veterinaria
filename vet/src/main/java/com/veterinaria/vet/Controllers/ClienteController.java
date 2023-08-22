@@ -106,14 +106,14 @@ public class ClienteController {
 		if (existingCliente.isPresent()) {
 			if (!clienteService.getById(existingCliente.get().getID()).isPresent()) {
 				clienteService.saveLogico(existingCliente.get().getID());
-				json.setMessage("El Cliente se encontraba eliminado y se ha recuperado");
+				json.setMessage("El cliente se encontraba eliminado y se ha recuperado");
 				json.setData(existingCliente.get().toJson());
 
 				//REESTABLECER USUARIO
 				
 				return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 			} else {
-				json.setMessage("El Cliente ingresado ya existe");
+				json.setMessage("El cliente ingresado ya existe");
 				json.setTitle("ERROR");
 				return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
 			}
@@ -138,7 +138,7 @@ public class ClienteController {
 		Cliente.setTelefono(clienteDTO.getTelefono());
 		Cliente.setDireccion(clienteDTO.getDireccion());
 		Cliente savedCliente = clienteService.saveCliente(Cliente);
-		json.setMessage("Se ha guardado el Cliente");
+		json.setMessage("Se ha guardado el cliente");
 		json.setData(savedCliente.toJson());
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 }
@@ -150,19 +150,19 @@ public class ClienteController {
 	Optional<Cliente> existingCliente = clienteService.findByDni(clienteDTO.getDni());
 	Response json = new Response();
 	if(existingCliente.isPresent()){
-		json.setMessage("El Cliente ingresado ya existe");
+		json.setMessage("El cliente ingresado ya existe");
 		json.setTitle("ERROR");
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST); 
 	}
-	Cliente Cliente = new Cliente();
+	Cliente Cliente = clienteService.getById(clienteDTO.getID()).get();
 	Cliente.setID(clienteDTO.getID());
 	Cliente.setDni(clienteDTO.getDni());
 	Cliente.setNombre(clienteDTO.getNombre());
 	Cliente.setApellido(clienteDTO.getApellido());
 	Cliente.setTelefono(clienteDTO.getTelefono());
 	Cliente.setDireccion(clienteDTO.getDireccion());
-	Cliente updatedCliente=this.clienteService.updateById(Cliente,(long) Cliente.getID());
-	json.setMessage("Se ha actualizado el Cliente");
+	Cliente updatedCliente = this.clienteService.updateById(Cliente,(long) Cliente.getID());
+	json.setMessage("Se ha actualizado el cliente");
 	json.setData(updatedCliente.toJson());
 	return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 	}
@@ -173,12 +173,12 @@ public class ClienteController {
 	Optional<Cliente> existingCliente = clienteService.getById(clienteDTO.getID());
 	Response json = new Response();
 	if(existingCliente.isEmpty()){
-		json.setMessage("El Cliente no existe");
+		json.setMessage("El cliente no existe");
 		json.setTitle("ERROR");
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
 	}
 	clienteService.eliminarLogico(clienteDTO.getID());
-	json.setMessage("Se ha eliminado el Cliente");
+	json.setMessage("Se ha eliminado el cliente");
 	json.setData(existingCliente.get().toJson());
 
 	//BORRAR USUARIO

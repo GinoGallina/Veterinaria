@@ -20,8 +20,8 @@ public class ProductoDTO {
 
     @NotNull(message = "El campo precio no puede estar vacía", groups = { PutAndPost.class })
     private BigDecimal precio;
-    @NotBlank(message = "El campo img no puede estar vacía",groups = { PutAndPost.class })
-    private String imgRuta;
+    // @NotBlank(message = "El campo img no puede estar vacía",groups = { PutAndPost.class })
+    // private String imgRuta;
     
 
     @NotNull(message = "El campo razonSocial no puede estar vacía",groups = { PutAndPost.class })
@@ -71,13 +71,13 @@ public class ProductoDTO {
     }
     public interface PutAndPost extends Default {
     }
-    public String getImgRuta() {
-      return imgRuta;
-    }
+    // public String getImgRuta() {
+    //   return imgRuta;
+    // }
 
-    public void setImgRuta(String imgRuta) {
-      this.imgRuta = imgRuta;
-    }
+    // public void setImgRuta(String imgRuta) {
+    //   this.imgRuta = imgRuta;
+    // }
 
 
 
