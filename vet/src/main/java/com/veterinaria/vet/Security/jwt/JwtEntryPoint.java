@@ -1,7 +1,7 @@
 package com.veterinaria.vet.Security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.veterinaria.vet.DTO.Mensaje;
+import com.veterinaria.vet.DTO.ErrorMessage;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint{
     public void commence(HttpServletRequest req, HttpServletResponse res, AuthenticationException e) throws IOException, ServletException {
         logger.error("Fail en el método commence");
         //res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "no autorizado");
-        Mensaje mensaje = new Mensaje("Token inválido o vacío");
+        ErrorMessage mensaje = new ErrorMessage("Usuario y/o contraseña incorrectos", "ERROR");
         res.setContentType("application/json");
         res.setStatus(HttpStatus.UNAUTHORIZED.value());
         res.getWriter().write(new ObjectMapper().writeValueAsString(mensaje));

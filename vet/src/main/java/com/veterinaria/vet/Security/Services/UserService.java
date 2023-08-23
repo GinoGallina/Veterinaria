@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,11 @@ import com.veterinaria.vet.Security.DTO.LoginUser;
 import com.veterinaria.vet.Security.DTO.NewUser;
 import com.veterinaria.vet.Security.Models.Rol;
 import com.veterinaria.vet.Security.Models.User;
+import com.veterinaria.vet.Security.Models.UserPrincipal;
 import com.veterinaria.vet.Security.Repositories.UserRepository;
 import com.veterinaria.vet.Security.jwt.JwtProvider;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -61,10 +64,17 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public JwtDTO login(LoginUser loginUser){
+    @Autowired
+    private UserDetailsServiceImp userDetailsServiceImp;
+
+    public JwtDTO login(LoginUser loginUser, HttpSession session){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateToken(authentication);
+        userDetailsServiceImp.loadUserByUsername(loginUser.getEmail());
+        session.setAttribute("user_role", authentication.getAuthorities().toString());
+        session.setAttribute("user_email", authentication.getName());
+        session.setAttribute("user_id", userRepository.findByEmail(authentication.getName()).get().getID());
         return new JwtDTO(jwt);
     }
 

@@ -1,25 +1,21 @@
 package com.veterinaria.vet.Controllers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,6 +23,9 @@ import com.veterinaria.vet.DTO.ProductoDTO;
 import com.veterinaria.vet.Models.Producto;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.ProductosAdminService;
+import com.veterinaria.vet.annotations.CheckAdmin;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/Productos")
@@ -35,12 +34,12 @@ public class ProductosController {
     private ProductosAdminService productosAdminService;
 
     @GetMapping(path = "/Index")
-    public ModelAndView getProductos() {
+    @CheckAdmin
+    public ModelAndView getProductos(HttpSession session) {
         ArrayList<Producto> productos = this.productosAdminService.getAllProductos();
-        Authentication user = SecurityContextHolder.getContext().getAuthentication();
         ModelAndView modelAndView = new ModelAndView("Productos/Index");
         modelAndView.addObject("productos", productos);
-        modelAndView.addObject("user", user);
+        modelAndView.addObject("user", 11);
         return modelAndView;
     }
 
@@ -55,7 +54,7 @@ public class ProductosController {
                 json.setData(existingProducto.get().toJson());
                 return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
             } else {
-                json.setMessage("El producto ingresada ya existe");
+                json.setMessage("El producto ingresado ya existe");
                 json.setTitle("ERROR");
                 return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
             }
@@ -64,7 +63,6 @@ public class ProductosController {
         Producto.setDescripcion(productoDTO.getDescripcion());
         Producto.setPrecio(productoDTO.getPrecio());
         // Producto.setImg(productoDTO.getImg());
-        System.out.println("aa");
 
         Producto.setStock(productoDTO.getStock());
         Producto savedProducto = productosAdminService.saveProducto(Producto);

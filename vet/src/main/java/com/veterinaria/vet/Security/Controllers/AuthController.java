@@ -21,6 +21,7 @@ import com.veterinaria.vet.Security.DTO.NewUser;
 import com.veterinaria.vet.Security.Services.UserService;
 import com.veterinaria.vet.Security.jwt.JwtProvider;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @RestController
@@ -39,8 +40,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtDTO> login(@Valid @RequestBody LoginUser loginUsuario){
-        return ResponseEntity.ok(usuarioService.login(loginUsuario));
+    public ResponseEntity<JwtDTO> login(@Valid @RequestBody LoginUser loginUsuario, HttpSession session){
+        return ResponseEntity.ok(usuarioService.login(loginUsuario, session));
     }
 
     @PostMapping("/refresh")
