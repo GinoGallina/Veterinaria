@@ -1,19 +1,23 @@
 package com.veterinaria.vet.Security.Controllers;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.text.ParseException;
 
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.veterinaria.vet.Security.DTO.JwtDTO;
 import com.veterinaria.vet.Security.DTO.LoginUser;
@@ -39,9 +43,19 @@ public class AuthController {
         return usuarioService.save(nuevoUsuario);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<JwtDTO> login(@Valid @RequestBody LoginUser loginUsuario, HttpSession session){
-        return ResponseEntity.ok(usuarioService.login(loginUsuario, session));
+    @PostMapping(path = "/login")
+    public RedirectView login(HttpSession session, @ModelAttribute LoginUser login) {
+        boolean asd = usuarioService.login(login, session);
+        if (asd) {
+            return new RedirectView("/");
+        }
+        return new RedirectView("/Auth/Login");
+    }
+    
+    @PostMapping("/loguot")
+    public ModelAndView logout(HttpSession session){
+        usuarioService.logout(session);
+        return new ModelAndView("login");
     }
 
     @PostMapping("/refresh")

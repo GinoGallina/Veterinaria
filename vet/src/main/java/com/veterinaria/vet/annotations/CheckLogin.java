@@ -7,5 +7,5 @@ import org.springframework.data.annotation.AccessType;
 
 @Retention(RetentionPolicy.RUNTIME) // Mantén la anotación disponible en tiempo de ejecución
 @AccessType(AccessType.Type.PROPERTY) // Solo se puede acceder a la anotación a través metodos
-public @interface CheckAdmin {
+public @interface CheckLogin {
 }

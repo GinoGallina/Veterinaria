@@ -64,18 +64,19 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    @Autowired
-    private UserDetailsServiceImp userDetailsServiceImp;
-
-    public JwtDTO login(LoginUser loginUser, HttpSession session){
+    public boolean login(LoginUser loginUser, HttpSession session){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtProvider.generateToken(authentication);
-        userDetailsServiceImp.loadUserByUsername(loginUser.getEmail());
+        if (!authentication.isAuthenticated()) {
+            return false;
+        }        
         session.setAttribute("user_role", authentication.getAuthorities().toString());
         session.setAttribute("user_email", authentication.getName());
         session.setAttribute("user_id", userRepository.findByEmail(authentication.getName()).get().getID());
-        return new JwtDTO(jwt);
+        return true;
+    }
+
+    public void logout(HttpSession session){
+        session.invalidate();
     }
 
     public JwtDTO refresh(JwtDTO JwtDTO) throws ParseException {

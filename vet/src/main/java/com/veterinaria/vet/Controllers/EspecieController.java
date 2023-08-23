@@ -20,6 +20,7 @@ import com.veterinaria.vet.DTO.EspecieDTO;
 import com.veterinaria.vet.Models.Especie;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.EspecieService;
+import com.veterinaria.vet.annotations.CheckLogin;
 
 import jakarta.transaction.Transactional;
 
@@ -33,6 +34,7 @@ public class EspecieController {
 
 
         @GetMapping(path = "/Index")
+        @CheckLogin
         public ModelAndView getEspecies(){
             ArrayList<Especie> especies =  this.especieService.getAllEspecies();
             ModelAndView modelAndView = new ModelAndView("Especies/Index");
