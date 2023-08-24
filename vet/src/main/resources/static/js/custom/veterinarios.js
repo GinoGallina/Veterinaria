@@ -105,18 +105,19 @@ function edit(json) {
     $("#formContainer form input:not([type='hidden']").val("");
     $("input[name='id']").val(entity.id);
     $("input[name='id']").prop("disabled", false);
-
+    $("#passwordContainer").css("display", "none");
+    
     $("#modalTitle").text("Editar veterinario");
     $("#formContainer form").attr("method", "PUT");
     $("#formContainer form").attr("id", "form-edit");
     $("#btnSendModal").text("Confirmar");
-
+    
     $("input[name='matricula']").val(entity.matricula);
     $("input[name='nombre']").val(entity.nombre);
     $("input[name='apellido']").val(entity.apellido);
     $("input[name='telefono']").val(entity.telefono);
     $("input[name='direccion']").val(entity.direccion);
-    $("input[name='email']").val(entity.direccion);
+    $("input[name='email']").val(entity.user.email);
 } 
 
 $("#btnSendModal").on("click", function () {
@@ -133,6 +134,7 @@ $("#btnAdd").on("click", function () {
     $("#formContainer form input:not([type='hidden']").val("");
     $("input[name='id']").prop("disabled", true);
     $("#btnSendModal").text("Agregar");
+    $("#passwordContainer").css("display", "flex");
 });
 
 $('#DataTable').DataTable({

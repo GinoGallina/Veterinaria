@@ -1,31 +1,60 @@
 <!DOCTYPE html>
 <html>
-	<head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!-- Tell the browser to be responsive to screen width -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <!-- Favicon icon -->
-        <link rel="icon" type="image/png" sizes="16x16" href="../../static/images/favicon.png">
-        <title>Inicio</title>
 
-        <div th:replace="Shared/Styles:: styles"></div>
-	</head>
-	<body class="fix-header fix-sidebar card-no-border mini-sidebar">
-		<div th:replace="Shared/Preloader:: preloader"></div>
-        
-        <div id="main-wrapper">
-            <div th:replace="Shared/Header:: header"></div>
-            <div th:replace="Shared/Aside:: aside"></div>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="../../static/images/favicon.png">
+    <title>Inicio</title>
 
-            <main class="page-wrapper">
-                <!-- Acá va el contenido de cada página -->
+    <div th:replace="Shared/Styles:: styles"></div>
+</head>
+
+<body class="fix-header fix-sidebar card-no-border mini-sidebar">
+    <div th:replace="Shared/Preloader:: preloader"></div>
+
+    <div id="main-wrapper">
+        <div th:replace="Shared/Header:: header"></div>
+        <div th:replace="Shared/Aside:: aside"></div>
+
+        <main class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 col-8 align-self-center">
+                        <h3 class="text-themecolor m-b-0 m-t-0">XXXXX</h3>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-area="" asp-controller="Home"
+                                    asp-action="Index">Inicio</a></li>
+                            <li class="breadcrumb-item active">XXXXXX</li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
                 
-            </main>
-            <div th:replace="Shared/Footer :: footer"></div>
-            <div th:replace="Shared/Scripts:: scripts"></div>
-        </div>
-	</body>
+
+            </div>
+
+        </main>
+        <div th:replace="Shared/Footer :: footer"></div>
+        <div th:replace="Shared/Scripts:: scripts"></div>
+
+
+        <!-- ACÁ VAN LOS SCRIPTS PROPIOS DE LA PÁGINA -->
+        <script src="../../static/js/custom/XXXXXXX.js"></script>
+    </div>
+</body>
+
 </html>
