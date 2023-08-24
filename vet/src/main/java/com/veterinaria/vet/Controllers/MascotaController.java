@@ -116,14 +116,19 @@ public class MascotaController {
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);   
           }
-          Mascota mascota = new Mascota();
-          mascota.setID(mascotaDTO.getID());
-          mascota.setNacimiento(mascotaDTO.getNacimiento());
-          mascota.setNombre(mascotaDTO.getNombre());
-          mascota.setSexo(mascotaDTO.getSexo().charAt(0));
-          mascota.setCliente(existingCliente.get());
-          mascota.setRaza(exsisteingRaza.get());
-          Mascota updatedMascota = mascotaService.updateById(mascota, (long) mascota.getID());
+          Optional<Mascota> mascota = mascotaService.getById(mascotaDTO.getID());
+          if (mascota.isEmpty()) {
+            json.setMessage("La mascota no existe");
+            json.setTitle("ERROR");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
+          }
+          mascota.get().setID(mascotaDTO.getID());
+          mascota.get().setNacimiento(mascotaDTO.getNacimiento());
+          mascota.get().setNombre(mascotaDTO.getNombre());
+          mascota.get().setSexo(mascotaDTO.getSexo().charAt(0));
+          mascota.get().setCliente(existingCliente.get());
+          mascota.get().setRaza(exsisteingRaza.get());
+          Mascota updatedMascota = mascotaService.updateById(mascota.get(), (long) mascota.get().getID());
           json.setMessage("Se ha actualizado la mascota");
           json.setData(updatedMascota.toJson());
           return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);

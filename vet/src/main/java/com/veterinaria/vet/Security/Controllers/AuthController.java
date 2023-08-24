@@ -1,9 +1,9 @@
 package com.veterinaria.vet.Security.Controllers;
 
-import java.lang.ProcessBuilder.Redirect;
 import java.text.ParseException;
 
-import org.apache.commons.logging.Log;
+import javax.security.auth.login.LoginException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,6 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin
-@Validated
 public class AuthController {
     @Autowired
     UserService usuarioService;
@@ -44,10 +43,10 @@ public class AuthController {
     }
 
     @PostMapping(path = "/login")
-    public RedirectView login(HttpSession session, @ModelAttribute LoginUser login) {
+    public RedirectView login(HttpSession session, @Validated @ModelAttribute LoginUser login) throws LoginException {
         boolean asd = usuarioService.login(login, session);
         if (asd) {
-            return new RedirectView("/");
+            return new RedirectView("/inicio");
         }
         return new RedirectView("/Auth/Login");
     }

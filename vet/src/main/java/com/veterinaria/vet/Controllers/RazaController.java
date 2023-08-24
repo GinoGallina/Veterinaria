@@ -91,11 +91,16 @@ public class RazaController {
 			json.setTitle("ERROR");
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
 		}
-		Raza raza = new Raza();
-		raza.setID(razaDTO.getID());
-		raza.setDescripcion(razaDTO.getDescripcion());
-		raza.setEspecie(existingEspecie.get());
-		Raza updatedRaza=this.razaService.updateById(raza,(long) raza.getID());
+		Optional<Raza> raza = razaService.getById(razaDTO.getID());
+		if (raza.isEmpty()) {
+			json.setMessage("La raza no existe");
+			json.setTitle("ERROR");
+			return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
+		}
+
+		raza.get().setDescripcion(razaDTO.getDescripcion());
+		raza.get().setEspecie(existingEspecie.get());
+		Raza updatedRaza=this.razaService.updateById(raza.get(),(long) raza.get().getID());
 		json.setMessage("Se ha actualizado la raza");
 		json.setData(updatedRaza.toJson());
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);

@@ -74,7 +74,7 @@ public class ProveedorController {
           proveedor.setEmail(proveedorDTO.getEmail());
           proveedor.setRazonSocial(proveedorDTO.getRazonSocial());
           Proveedor savedProveedor = proveedorService.saveProveedor(proveedor);
-          json.setMessage("Se ha guardado el Proveedor");
+          json.setMessage("Se ha guardado el proveedor");
           json.setData(savedProveedor.toJson());
           return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
@@ -89,18 +89,23 @@ public class ProveedorController {
         Optional<Proveedor> existingProveedor = existingProveedorEmail.or(() -> existingProveedorCuil);
         Response json = new Response();
         if(existingProveedor.isPresent()){
-            json.setMessage("El Proveedor ingresado ya existe (MAIL O CUIL)");
+            json.setMessage("Ya existe un proveedor con ese mailo cuil");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST); 
         }
-          Proveedor proveedor = new Proveedor();
-          proveedor.setID(proveedorDTO.getID());
-          proveedor.setCuil(proveedorDTO.getCuil());
-          proveedor.setDireccion(proveedorDTO.getDireccion());
-          proveedor.setTelefono(proveedorDTO.getTelefono());
-          proveedor.setEmail(proveedorDTO.getEmail());
-          proveedor.setRazonSocial(proveedorDTO.getRazonSocial());
-        Proveedor updatedProveedor=this.proveedorService.updateById(proveedor,(long) proveedor.getID());
+        Optional<Proveedor> proveedor = proveedorService.getById(proveedorDTO.getID());
+        if(proveedor.isEmpty()){
+            json.setMessage("El proveedor no existe");
+            json.setTitle("ERROR");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
+        }
+        proveedor.get().setID(proveedorDTO.getID());
+        proveedor.get().setCuil(proveedorDTO.getCuil());
+        proveedor.get().setDireccion(proveedorDTO.getDireccion());
+        proveedor.get().setTelefono(proveedorDTO.getTelefono());
+        proveedor.get().setEmail(proveedorDTO.getEmail());
+        proveedor.get().setRazonSocial(proveedorDTO.getRazonSocial());
+        Proveedor updatedProveedor=this.proveedorService.updateById(proveedor.get(),(long) proveedor.get().getID());
         json.setMessage("Se ha actualizado la Proveedor");
         json.setData(updatedProveedor.toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
@@ -112,7 +117,7 @@ public class ProveedorController {
         Optional<Proveedor> existingProveedor = proveedorService.getById(proveedorDTO.getID());
         Response json = new Response();
         if(existingProveedor.isEmpty()){
-            json.setMessage("La Proveedor no existe");
+            json.setMessage("El proveedor no existe");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
         }

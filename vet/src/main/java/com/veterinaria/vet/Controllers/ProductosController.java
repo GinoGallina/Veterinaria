@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -83,13 +82,18 @@ public class ProductosController {
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
         }
-        Producto Producto = new Producto();
-        Producto.setID(productoDTO.getID());
-        Producto.setDescripcion(productoDTO.getDescripcion());
-        Producto.setPrecio(productoDTO.getPrecio());
+        Optional<Producto> producto = productosAdminService.getById(productoDTO.getID());
+        if (producto.isEmpty()) {
+            json.setMessage("El producto no existe");
+            json.setTitle("ERROR");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
+        }
+        producto.get().setID(productoDTO.getID());
+        producto.get().setDescripcion(productoDTO.getDescripcion());
+        producto.get().setPrecio(productoDTO.getPrecio());
         // Producto.setImg(productoDTO.getImg());
-        Producto.setStock(productoDTO.getStock());
-        Producto updatedProducto = this.productosAdminService.updateById(Producto, (long) Producto.getID());
+        producto.get().setStock(productoDTO.getStock());
+        Producto updatedProducto = this.productosAdminService.updateById(producto.get(), (long) producto.get().getID());
         json.setMessage("Se ha actualizado el producto");
         json.setData(updatedProducto.toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);

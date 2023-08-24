@@ -154,14 +154,19 @@ public class ClienteController {
 		json.setTitle("ERROR");
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST); 
 	}
-	Cliente Cliente = clienteService.getById(clienteDTO.getID()).get();
-	Cliente.setID(clienteDTO.getID());
-	Cliente.setDni(clienteDTO.getDni());
-	Cliente.setNombre(clienteDTO.getNombre());
-	Cliente.setApellido(clienteDTO.getApellido());
-	Cliente.setTelefono(clienteDTO.getTelefono());
-	Cliente.setDireccion(clienteDTO.getDireccion());
-	Cliente updatedCliente = this.clienteService.updateById(Cliente,(long) Cliente.getID());
+	Optional<Cliente> cliente = clienteService.getById(clienteDTO.getID());
+	if(cliente.isEmpty()){
+		json.setMessage("El cliente no existe");
+		json.setTitle("ERROR");
+		return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
+	}
+	cliente.get().setID(clienteDTO.getID());
+	cliente.get().setDni(clienteDTO.getDni());
+	cliente.get().setNombre(clienteDTO.getNombre());
+	cliente.get().setApellido(clienteDTO.getApellido());
+	cliente.get().setTelefono(clienteDTO.getTelefono());
+	cliente.get().setDireccion(clienteDTO.getDireccion());
+	Cliente updatedCliente = this.clienteService.updateById(cliente.get(),(long) cliente.get().getID());
 	json.setMessage("Se ha actualizado el cliente");
 	json.setData(updatedCliente.toJson());
 	return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);

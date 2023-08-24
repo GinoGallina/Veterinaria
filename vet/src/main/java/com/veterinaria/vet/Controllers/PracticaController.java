@@ -108,10 +108,15 @@ public class PracticaController {
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
         }
-        Practica practica = new Practica();
-        practica.setID(practicaDTO.getID());
-        practica.setDescripcion(practicaDTO.getDescripcion());
-        Practica updatedPractica = this.practicaService.updateById(practica, (long) practica.getID());
+        Optional<Practica> practica = practicaService.getById(practicaDTO.getID());
+        if (practica.isEmpty()){
+                json.setMessage("La práctica no existe");
+                json.setTitle("ERROR");
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
+        }
+        practica.get().setID(practicaDTO.getID());
+        practica.get().setDescripcion(practicaDTO.getDescripcion());
+        Practica updatedPractica = this.practicaService.updateById(practica.get(), (long) practica.get().getID());
         json.setMessage("Se ha actualizado la practica");
         json.setData(updatedPractica.toJson());
         Precio precio = new Precio();
@@ -130,7 +135,7 @@ public class PracticaController {
         Optional<Practica> existingPractica = practicaService.getById(practicaDTO.getID());
         Response json = new Response();
         if (existingPractica.isEmpty()){
-                json.setMessage("La especie no existe");
+                json.setMessage("La pr\u00E1ctica no existe");
                 json.setTitle("ERROR");
                 return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
         }

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.veterinaria.vet.DTO.EspecieDTO;
 import com.veterinaria.vet.Models.Especie;
@@ -77,10 +76,14 @@ public class EspecieController {
                 json.setTitle("ERROR");
                 return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST); 
             }
-            Especie especie = new Especie();
-            especie.setID(especieDTO.getID());
-            especie.setDescripcion(especieDTO.getDescripcion());
-            Especie updatedEspecie=this.especieService.updateById(especie,(long) especie.getID());
+            Optional<Especie> especie = especieService.getById(especieDTO.getID());
+            if(!especie.isPresent()){
+                json.setMessage("La especie no existe");
+                json.setTitle("ERROR");
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);         
+            }
+            especie.get().setDescripcion(especieDTO.getDescripcion());
+            Especie updatedEspecie=this.especieService.updateById(especie.get(),(long) especie.get().getID());
             json.setMessage("Se ha actualizado la especie");
             json.setData(updatedEspecie.toJson());
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
@@ -100,5 +103,7 @@ public class EspecieController {
             json.setMessage("Se ha eliminado la especie");
             json.setData(existingEspecie.get().toJson());
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-        }  
+        } 
+        
+
 }
