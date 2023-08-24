@@ -1,21 +1,74 @@
-	<header style="margin-bottom: 6rem">
-		<div class="navbar navbar-dark bg-dark navbar-inverse fixed-top py-3">
-			<div class="navbar-header d-flex flex-row">
-				<a class="navbar-brand mx-5" href="/inicio">
-					<img src="../../static/images/Logo.png" alt="Logo veterinaria" width="50" height="50">
-				</a>
-				<a class="navbar-brand my-auto" href="/Especies/Index">Especies</a>        	            
-				<a class="navbar-brand my-auto" href="/Razas/Index">Razas</a>
-				<a class="navbar-brand my-auto" href="/Veterinarios/Index">Veterinarios</a>
-				<a class="navbar-brand my-auto" href="/Practicas/Index">Practicas</a>             	            
-				<a class="navbar-brand my-auto" href="/Clientes/Index">Clientes</a>             	                     	            
-				<a class="navbar-brand my-auto" href="/Proveedores/Index">Proveedores</a>
-				<a class="navbar-brand my-auto" href="/Productos/Index">Productos</a>
-				<a class="navbar-brand my-auto" href="/Reservas/Index">Reservar productos</a>
-				<form action="/logout" method="POST" >
-					<input type="submit" class="btn btn-danger" value="Cerrar sesión">
-				</form>
-				
-			</div>
-		</div>  
-	</header>
+<header class="topbar">
+    <nav class="navbar top-navbar navbar-expand-md navbar-light">
+        <!-- ============================================================== -->
+        <!-- Logo -->
+        <!-- ============================================================== -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/inicio">
+                <!-- Logo icon -->
+                <b>
+                    <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                    <!-- Dark Logo icon -->
+                    <img src="../../static/images/Logo.png" alt="N" class="p-2" style="width: 60px; height: 60px;">
+                </b>
+                <!--End Logo icon -->
+                <!-- Logo text -->
+                <span>
+                    <!-- Logo text -->
+                    <img src="../../static/images/Logo.png" alt="N" class="p-2" style="width: 60px; height: 60px;">
+                    <!-- <img src="../../static/images/Logo.png" alt="Inicio" class="p-2" style="width: 200px; height: 70px;"/> -->
+                </span>
+            </a>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Logo -->
+        <!-- ============================================================== -->
+        <div class="navbar-collapse">
+            <!-- ============================================================== -->
+            <!-- toggle and nav items -->
+            <!-- ============================================================== -->
+            <ul class="navbar-nav mr-auto mt-md-0">
+                <!-- This is  -->
+                <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark"><i class="mdi mdi-menu ti-close"></i></a> </li>
+                <li class="nav-item"> <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark"><i class="ti-menu"></i></a> </li>
+            </ul>
+            <!-- ============================================================== -->
+            <!-- User profile and search -->
+            <!-- ============================================================== -->
+            <ul class="navbar-nav my-lg-0">
+                <!-- ============================================================== -->
+                <!-- Profile -->
+                <!-- ============================================================== -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="../../static/images/profile.png" alt="Usuario" class="profile-pic">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right scale-up">
+                        <ul class="dropdown-user">
+                            <li>
+                                <div class="dw-user-box">
+                                    <div class="u-img">
+                                        <img src="../../static/images/profile.png" alt="Usuario">
+                                    </div>
+                                    <div class="u-text">
+                                        <h4 th:text="${user_email}"></h4>
+                                    </div>
+                                </div>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-power-off"></i>
+                                    Cerrar sesión
+                                </a>
+                            </li>
+
+                            <form id="logout-form" action="/auth/logout" method="POST" class="d-none">
+                            </form>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
