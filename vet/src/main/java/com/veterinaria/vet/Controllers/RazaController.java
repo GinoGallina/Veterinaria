@@ -23,6 +23,7 @@ import com.veterinaria.vet.Models.Raza;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.EspecieService;
 import com.veterinaria.vet.Services.RazaService;
+import com.veterinaria.vet.annotations.CheckLogin;
 
 import jakarta.transaction.Transactional;
 
@@ -34,7 +35,7 @@ public class RazaController {
       @Autowired
       private EspecieService especieService;
 
-
+			@CheckLogin
       @GetMapping(path = "/Index")
       public ModelAndView getRazas(){
           ArrayList<Raza> razas =  this.razaService.getAllRazas();
@@ -44,7 +45,8 @@ public class RazaController {
           modelAndView.addObject("especies", especies);
           return modelAndView;
       }
-
+		
+		@CheckLogin	
 		@PostMapping(produces = "application/json", consumes = "application/json")
       	public ResponseEntity<Object> save(@Validated(RazaDTO.PostAndPut.class) @RequestBody RazaDTO razaDTO) throws JsonProcessingException {
 			Optional<Raza> existingRaza = razaService.findByDescripcion(razaDTO.getDescripcion());
@@ -76,6 +78,7 @@ public class RazaController {
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 		}
 
+		@CheckLogin
 		@PutMapping(produces = "application/json", consumes = "application/json")
 		public ResponseEntity<Object> updateRaza(@Validated({ RazaDTO.PutAndDelete.class, RazaDTO.PostAndPut.class })@RequestBody RazaDTO razaDTO) throws JsonProcessingException {
 		Optional<Raza> existingRaza = razaService.findByDescripcion(razaDTO.getDescripcion());
@@ -106,6 +109,7 @@ public class RazaController {
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 		}
 
+		@CheckLogin
 		@DeleteMapping(produces = "application/json", consumes = "application/json")
 		@Transactional
 		public ResponseEntity<Object> eliminarRaza(@Validated(RazaDTO.PutAndDelete.class) @RequestBody RazaDTO razaDTO) throws JsonProcessingException {

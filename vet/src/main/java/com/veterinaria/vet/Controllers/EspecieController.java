@@ -42,7 +42,7 @@ public class EspecieController {
         }
 
 
-
+        @CheckLogin
         @PostMapping(produces = "application/json", consumes = "application/json")
         public ResponseEntity<Object> save(@Validated(EspecieDTO.PutAndPost.class) @RequestBody EspecieDTO especieDTO) throws JsonProcessingException {
             Optional<Especie> existingEspecie = especieService.findByDescripcion(especieDTO.getDescripcion());
@@ -66,7 +66,7 @@ public class EspecieController {
             json.setData(savedEspecie.toJson());
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
         }
-
+        @CheckLogin
         @PutMapping(produces = "application/json", consumes = "application/json")
         public ResponseEntity<Object> updateEspecie(@Validated({EspecieDTO.PutAndDelete.class,EspecieDTO.PutAndPost.class}) @RequestBody EspecieDTO especieDTO) throws JsonProcessingException{
             Optional<Especie> existingEspecie = especieService.findByDescripcion(especieDTO.getDescripcion());
@@ -88,7 +88,7 @@ public class EspecieController {
             json.setData(updatedEspecie.toJson());
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
         }
-
+        @CheckLogin
         @DeleteMapping(produces = "application/json", consumes = "application/json")
         @Transactional
         public ResponseEntity<Object> eliminarEspecie(@Validated(EspecieDTO.PutAndDelete.class) @RequestBody EspecieDTO especieDTO) throws JsonProcessingException {

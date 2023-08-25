@@ -59,7 +59,6 @@ function sendForm(action) {
       especieID:$(form).find('[name="comboEspecies"]').val(), // Ajusta el nombre del campo según tu formulario
       // Otros campos del formulario aquí
     };
-    console.log(formData)
     // Enviar solicitud AJAX
     $.ajax({
         url: $(form).attr("action"), // Utiliza la ruta del formulario
@@ -84,10 +83,11 @@ function sendForm(action) {
             }
         },
         error: function (errorThrown) {
+            let errorMessage = errorThrown.responseJSON.messages.join("<br>");
             Swal.fire({
             icon: "error",
             title: errorThrown.responseJSON.title,
-            text: errorThrown.responseJSON.message,
+            html: errorMessage,
             confirmButtonColor: "#1e88e5",
             });
         },

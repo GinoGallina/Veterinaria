@@ -15,19 +15,26 @@ public class ProveedorDTO {
     private Long ID;
 
     @NotBlank(message = "El campo cuil no puede estar vacía",groups = { PutAndPost.class })
+    @NotNull(message = "El campo cuil no puede estar vacía",groups = { PutAndDelete.class })
+    //VER
+    // @Pattern(regexp = "^\\d{2}-\\d{8}-\\d{1}$", message = "El CUIL no es válido", groups = { PutAndPost.class })
     private String cuil;
 
     @NotBlank(message = "El campo direccion no puede estar vacía",groups = { PutAndPost.class })
+    @NotNull(message = "El campo direccion no puede estar vacía",groups = { PutAndDelete.class })
     private String direccion;
 
     @NotBlank(message = "El campo email no puede estar vacía",groups = { PutAndPost.class })
     @Email(message = "El campo email debe ser una dirección de correo electrónico válida")
+    @NotNull(message = "El campo email no puede estar vacía",groups = { PutAndDelete.class })
     private String email;
 
     @NotBlank(message = "El campo razonSocial no puede estar vacía",groups = { PutAndPost.class })
+    @NotNull(message = "El campo razonSocial no puede estar vacía",groups = { PutAndDelete.class })
     private String razonSocial;
 
     @NotBlank(message = "El campo telefono no puede estar vacía",groups = { PutAndPost.class })
+    @NotNull(message = "El campo telefono no puede estar vacía",groups = { PutAndDelete.class })
     private String telefono;
     
 

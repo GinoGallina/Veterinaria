@@ -5,13 +5,16 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.veterinaria.vet.Models.Response;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -33,7 +36,16 @@ public class GlobalExceptionHandler {
         return modelAndView;
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class) // Cambia MyCustomException por el tipo de excepción que deseas manejar                                            // de manera diferente
+    
+    @ExceptionHandler(LoginException.class) // Cambia MyCustomException por el tipo de excepción que deseas manejar                                            // de manera diferente
+    public ModelAndView handleLoginException(LoginException  e) {
+        ModelAndView modelAndView = new ModelAndView("Auth/Login");
+        List<String> errorMessages = new ArrayList<>();
+        errorMessages.add("Usuario y/o contraseñna incorrectas");
+        modelAndView.addObject("errors",errorMessages );
+        return modelAndView;
+    }
+    /*  @ExceptionHandler(MethodArgumentNotValidException.class) // Cambia MyCustomException por el tipo de excepción que deseas manejar                                            // de manera diferente
     public ModelAndView handleMethodArgumentNotValidException(MethodArgumentNotValidException  e) {
         BindingResult bindingResult = e.getBindingResult();
                 // Obtener los mensajes de error personalizados
@@ -45,14 +57,25 @@ public class GlobalExceptionHandler {
         ModelAndView modelAndView = new ModelAndView("Auth/Login");
         modelAndView.addObject("errors",errorMessages );
         return modelAndView;
+    }*/
+    
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Object handleValidationException(MethodArgumentNotValidException ex) {
+        List<ObjectError> errors = ex.getBindingResult().getAllErrors();
+        List<String> errorMessages = new ArrayList<>();
+        for (ObjectError error : errors) {
+            errorMessages.add(error.getDefaultMessage());
+        }
+        if(errorMessages.contains("")){
+
+        }else{
+            
+        }
+        Response json = new Response();
+        json.setMessages(errorMessages);
+        json.setTitle("ERROR");
+        return new ResponseEntity<Object>(json, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(LoginException.class) // Cambia MyCustomException por el tipo de excepción que deseas manejar                                            // de manera diferente
-    public ModelAndView handleLoginException(LoginException  e) {
-        ModelAndView modelAndView = new ModelAndView("Auth/Login");
-        List<String> errorMessages = new ArrayList<>();
-        errorMessages.add("Usuario y/o contraseñna incorrectas");
-        modelAndView.addObject("errors",errorMessages );
-        return modelAndView;
-    }
+
 }

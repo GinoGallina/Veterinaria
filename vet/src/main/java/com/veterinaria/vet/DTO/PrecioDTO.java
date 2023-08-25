@@ -2,9 +2,9 @@ package com.veterinaria.vet.DTO;
 
 import java.math.BigDecimal;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.groups.Default;
 
 public class PrecioDTO {
@@ -15,7 +15,7 @@ public class PrecioDTO {
     
     @NotNull(message = "El valor no debe ser nulo", groups = { PutAndPost.class })
     @NotBlank(message = "El valor no debe estar en blanco", groups = { PutAndPost.class })
-    @Positive(message = "El valor debe ser mayor que cero", groups = { PutAndPost.class })
+    @DecimalMin(value = "0.01", message = "El valor debe ser mayor a cero", groups = { PutAndPost.class })
     private BigDecimal valor;
 
 

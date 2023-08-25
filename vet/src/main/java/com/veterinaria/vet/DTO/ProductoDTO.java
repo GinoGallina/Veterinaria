@@ -6,7 +6,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
@@ -15,17 +16,18 @@ public class ProductoDTO {
     @NotNull(message = "El campo id no puede estar vacío",groups = { PutAndDelete.class })
     private Long ID;
     
-    @NotBlank(message = "El campo descripcion no puede estar vacía", groups = { PutAndPost.class })
+    @NotBlank(message = "El campo descripcion no puede estar vacío", groups = { PutAndPost.class })
+    @NotNull(message = "El campo descripcion no puede estar vacío", groups = { PutAndPost.class })
     private String descripcion;
 
-    @NotNull(message = "El campo precio no puede estar vacía", groups = { PutAndPost.class })
+    @NotNull(message = "El campo precio no puede estar vacío", groups = { PutAndPost.class })
+    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a cero", groups = { PutAndPost.class })
     private BigDecimal precio;
-    // @NotBlank(message = "El campo img no puede estar vacía",groups = { PutAndPost.class })
-    // private String imgRuta;
+
     
 
-    @NotNull(message = "El campo razonSocial no puede estar vacía",groups = { PutAndPost.class })
-    //TAMBIEN DEBE DER MAYOR A CERO
+    @NotNull(message = "El campo stock no puede estar vacío",groups = { PutAndPost.class })
+    @Min(value = 0, message = "El stock debe ser mayor o igual a cero", groups = { PutAndPost.class })
     private int stock;
 
 

@@ -18,6 +18,7 @@ public class RazaDTO {
     private Long especieID;
 
     @NotBlank(message = "El campo descripción no puede estar vacío",groups = { PostAndPut.class })
+    @NotNull(message = "El campo descripción no puede estar vacío", groups = { PostAndPut.class })
     private String descripcion;
 
     public String toJson() throws JsonProcessingException {

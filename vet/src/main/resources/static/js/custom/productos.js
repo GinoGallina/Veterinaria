@@ -15,7 +15,6 @@ function fillTable(item) {
         <tr data-id='${item.id}'>
             <td>${item.descripcion}</td>
             <td>${item.precio}</td>
-            <td>${item.img}</td>
             <td>${item.stock}</td>
             <td class='d-flex flex-row justify-content-center'>
                 <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-producto=${JSON.stringify(item)} onclick="edit(this.getAttribute('data-producto'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -60,7 +59,7 @@ function sendForm(action) {
         id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
         precio: $(form).find('[name="precio"]').val(), // Ajusta el nombre del campo según tu formulario
         descripcion: $(form).find('[name="descripcion"]').val(), // Ajusta el nombre del campo según tu formulario
-        img: $(form).find('[name="img"]').val(), 
+        //img: $(form).find('[name="img"]').val(), 
         stock: $(form).find('[name="stock"]').val(), // Ajusta el nombre del campo según tu formulario
         // Otros campos del formulario aquí
     };
@@ -89,10 +88,11 @@ function sendForm(action) {
             }
         },
         error: function (errorThrown) {
+            let errorMessage = errorThrown.responseJSON.messages.join("<br>");
             Swal.fire({
             icon: "error",
             title: errorThrown.responseJSON.title,
-            text: errorThrown.responseJSON.message,
+            html: errorMessage,
             confirmButtonColor: "#1e88e5",
             });
         },
@@ -112,7 +112,7 @@ function edit(json) {
 
     $("input[name='descripcion']").val(entity.descripcion);
     $("input[name='precio']").val(entity.precio);
-    $("input[name='img']").val(entity.img);
+    //$("input[name='img']").val(entity.img);
     $("input[name='stock']").val(entity.stock);
 } 
 

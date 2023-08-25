@@ -22,7 +22,7 @@ import com.veterinaria.vet.DTO.ProductoDTO;
 import com.veterinaria.vet.Models.Producto;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.ProductosAdminService;
-import com.veterinaria.vet.annotations.CheckAdmin;
+import com.veterinaria.vet.annotations.CheckLogin;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -33,7 +33,7 @@ public class ProductosController {
     private ProductosAdminService productosAdminService;
 
     @GetMapping(path = "/Index")
-    @CheckAdmin
+    @CheckLogin
     public ModelAndView getProductos(HttpSession session) {
         ArrayList<Producto> productos = this.productosAdminService.getAllProductos();
         ModelAndView modelAndView = new ModelAndView("Productos/Index");
@@ -41,7 +41,8 @@ public class ProductosController {
         modelAndView.addObject("user", 11);
         return modelAndView;
     }
-
+    
+    @CheckLogin
     @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> save(@Validated(ProductoDTO.PutAndPost.class) @RequestBody ProductoDTO productoDTO) throws JsonProcessingException {
         Optional<Producto> existingProducto = productosAdminService.findByDescripcion(productoDTO.getDescripcion());
@@ -69,7 +70,8 @@ public class ProductosController {
         json.setData(savedProducto.toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
-
+    
+    @CheckLogin
     @PutMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> updateProducto(
             @Validated({ ProductoDTO.PutAndDelete.class,
@@ -98,7 +100,8 @@ public class ProductosController {
         json.setData(updatedProducto.toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
-
+    
+    @CheckLogin
     @DeleteMapping(produces = "application/json", consumes = "application/json")
     @Transactional
     public ResponseEntity<Object> eliminarProducto(

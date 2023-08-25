@@ -20,6 +20,7 @@ public class EspecieDTO {
 
 
     @NotBlank(message = "El campo descripción no puede estar vacío",groups = { PutAndPost.class })
+    @NotNull(message = "El campo descripción no puede estar vacío",groups = { PutAndPost.class })
     private String descripcion;
 
     public String toJson() throws JsonProcessingException {

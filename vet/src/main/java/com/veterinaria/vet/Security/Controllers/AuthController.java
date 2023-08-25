@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.veterinaria.vet.Security.DTO.JwtDTO;
@@ -51,10 +50,10 @@ public class AuthController {
         return new RedirectView("/Auth/Login");
     }
     
-    @PostMapping("/loguot")
-    public ModelAndView logout(HttpSession session){
+    @PostMapping("/logout")
+    public RedirectView logout(HttpSession session){
         usuarioService.logout(session);
-        return new ModelAndView("login");
+        return new RedirectView("/login");
     }
 
     @PostMapping("/refresh")

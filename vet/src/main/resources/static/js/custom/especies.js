@@ -10,15 +10,6 @@ $.ajaxSetup({
 });
 
 
-
-
-
-
-
-
-
-
-
 function fillTable(item) {
     let content = `
         <tr data-id='${item.id}'>
@@ -88,10 +79,12 @@ function sendForm(action) {
             }
         },
         error: function (errorThrown) {
+            let errorMessage = errorThrown.responseJSON.messages.join("<br>");
+            console.log(errorMessage)
             Swal.fire({
             icon: "error",
             title: errorThrown.responseJSON.title,
-            text: errorThrown.responseJSON.message,
+            html: errorMessage,
             confirmButtonColor: "#1e88e5",
             });
         },

@@ -2,138 +2,178 @@
 <html>
 
 <head>
-	<meta charset="ISO-8859-1">
-	<title>Administrar productos</title>
-	<link rel="icon" type="image/jpg" href="../../static/images/favicon.png" />
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-	<link href="../../static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-	<link href="../../static/css/mis-estilos.css" rel="stylesheet" type="text/css" />
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- Tell the browser to be responsive to screen width -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!-- Favicon icon -->
+	<link rel="icon" type="image/png" sizes="16x16" href="../../static/images/favicon.png">
+	<title>Inicio</title>
+
+	<div th:replace="Shared/Styles:: styles"></div>
 </head>
 
-<body>
-	<div th:replace="Shared/Header:: header"></div>
+<body class="fix-header fix-sidebar card-no-border mini-sidebar">
+	<div th:replace="Shared/Preloader:: preloader"></div>
 
+	<div id="main-wrapper">
+		<div th:replace="Shared/Header:: header"></div>
+		<div th:replace="Shared/Aside:: aside"></div>
 
-	<!-- Modal -->
-	<div class="modal fade" id="modalCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-		aria-hidden="true">
-		<div id="formContainer" class="modal-dialog">
-			<form action="/Productos" method="post" id="form-create">
-				<input type="hidden" name="id" value="" />
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="modalTitle"></h5>
-						<button id="btnCloseModalCreate" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<div class="row">
-							<div class="col-12">
-								<div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="txtDescripcion" class="mb-0">Descripcion: </label>
-										<input id="txtDescripcion" name="descripcion" type="text" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-								<div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="txtPrecio" class="mb-0">Precio: </label>
-										<input id="txtPrecio" name="precio" type="number" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-								<div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="txtImagen" class="mb-0">Imagen: </label>
-										<input id="txtImg" name="img" type="file" accept="image/*" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-								<div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="txtStock" class="mb-0">Stock: </label>
-										<input id="txtStock" name="stock" type="number" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default waves-effect" data-bs-dismiss="modal">Cerrar</button>
-						<button id="btnSendModal" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+		<main class="page-wrapper">
+			<!-- Acá va el contenido de cada página -->
+
+			<div class="container-fluid">
+				<!-- ============================================================== -->
+				<!-- Bread crumb and right sidebar toggle -->
+				<!-- ============================================================== -->
+				<div class="row page-titles">
+					<div class="col-md-5 col-8 align-self-center">
+						<h3 class="text-themecolor m-b-0 m-t-0">Productos</h3>
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Inicio</a></li>
+							<li class="breadcrumb-item active">Productos</li>
+						</ol>
 					</div>
 				</div>
-			</form>
-		</div>
+				<!-- ============================================================== -->
+				<!-- End Bread crumb and right sidebar toggle -->
+				<!-- ============================================================== -->
+				<!-- ============================================================== -->
+				<!-- Start Page Content -->
+				<!-- ============================================================== -->
+				<!-- Modal -->
+				<div class="modal fade" id="modalCreate" data-backdrop="static" data-keyboard="false" tabindex="-1"
+					aria-hidden="true">
+					<div id="formContainer" class="modal-dialog">
+						<form action="/Productos" method="post" id="form-create">
+							<input type="hidden" name="id" value="" />
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="modalTitle"></h5>
+									<button id="btnCloseModalCreate" type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="txtDescripcion" class="mb-0">Descripcion: </label>
+													<input id="txtDescripcion" name="descripcion" type="text" class="form-control" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="txtPrecio" class="mb-0">Precio: </label>
+													<input id="txtPrecio" name="precio" type="number" class="form-control" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="txtImagen" class="mb-0">Imagen: </label>
+													<input id="txtImg" name="img" type="file" accept="image/*" class="form-control" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="txtStock" class="mb-0">Stock: </label>
+													<input id="txtStock" name="stock" type="number" class="form-control" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
+									<button id="btnSendModal" type="button"
+										class="btn btn-success waves-effect waves-light">Agregar</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-12">
+						<div class="card shadow">
+							<div class="card-body">
+								<div class="d-flex flex-row justify-content-between">
+									<h2 class="card-title">Listado de productos</h2>
+									<button id="btnAdd" type="button"
+										class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal"
+										data-target="#modalCreate">Agregar productos</button>
+								</div>
+								<div class="table-responsive m-t-10">
+									<table id="DataTable" class="table table-bordered table-striped">
+										<thead>
+											<tr>
+												<th>Descripcion</th>
+												<th>Precio</th>
+												<th>Imagen</th>
+												<th>Stock</th>
+												<th>Acción</th>
+											</tr>
+										</thead>
+										<tbody id="table_body">
+											<tr th:each="producto : ${productos}" th:attr="data-id=${producto.ID}">
+												<td th:text="${producto.descripcion}"></td>
+												<td th:text="'$'+${producto.precio}"></td>
+												<td><img th:src="@{../../static/images/.png}" alt="Imagen" /></td>
+												<td th:text="${producto.stock}"></td>
+												<td class='d-flex justify-content-center'>
+													<button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-producto=${producto.toJson()}" onclick="edit(this.getAttribute('data-producto'))" data-toggle="modal" data-target="#modalCreate">
+														<i class="bi bi-pencil"></i>
+													</button>
+													<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' th:attr="data-id=${producto.ID}" onclick="deleteObj(this.getAttribute('data-id'))">
+														<i class='bi bi-trash3'></i>
+													</button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<form id="form-state" method="POST" asp-area="" asp-controller="Doctors" asp-action="ChangeState">
+									<input type="hidden" name="id" value="">
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<form id="form-delete" method="DELETE" action="/Productos">
+					<input type="hidden" name="id" value="">
+				</form>
+
+			</div>
+
+		</main>
+		<div th:replace="Shared/Footer :: footer"></div>
+		<div th:replace="Shared/Scripts:: scripts"></div>
+
+
+		<!-- Data table -->
+		<link href="../../static/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+		
+		<!-- This is data table -->
+		<script src="../../static/lib/datatables/datatables.min.js"></script>
+		<script src="../../static/js/custom/productos.js"></script>
 	</div>
-
-	<main>
-		<h1 class="text-center mt-5">Listado de productos</h1>
-		<hr>
-		<div id="tabla-producto" class="container body-content mt-5">
-			<table id='DataTable' class='table table-oscura table-striped table-bordered table-hover'>
-				<thead>
-					<tr class='fw-bold'>
-						<td>Descripción</td>
-						<td>Precio</td>
-						<td>Imagen</td>
-						<td>Stock</td>
-						<td class='no-sort text-center' th:if="${user}" th:text="${user}"></td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="producto : ${productos}" th:attr="data-id=${producto.ID}">
-						<td th:text="${producto.descripcion}"></td>
-						<td th:text="'$'+${producto.precio}"></td>
-						<td><img th:src="@{../../static/images/.png}" alt="Imagen" /></td>
-						<td th:text="${producto.stock}"></td>
-						<td class='d-flex justify-content-center'>
-							<button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-producto=${producto.toJson()}" onclick="edit(this.getAttribute('data-producto'))" data-bs-toggle="modal" data-bs-target="#modalCreate">
-								<i class="bi bi-pencil"></i>
-							</button>
-							<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' th:attr="data-id=${producto.ID}" onclick="deleteObj(this.getAttribute('data-id'))">
-								<i class='bi bi-trash3'></i>
-							</button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<hr />
-		<div class="container">
-			<button id="btnAdd" class="btn btn-success mb-5 mt-2 px-4" data-bs-toggle="modal" data-bs-target="#modalCreate">
-				Agregar
-			</button>
-		</div>
-
-		<form id="form-delete" method="DELETE" action="/Productos">
-			<input type="hidden" name="id" value="">
-		</form>
-
-	</main>
-
-
-	<div th:replace="Shared/Footer :: footer"></div>
-
-
-	<script src="../../static/js/bootstrap.min.js"></script>
-	<script src="../../static/js/modernizr-2.8.3.js"></script>
-	<script src="../../static/js/jquery-3.6.0.min.js"></script>
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-	<script src="../../static/js/productos.js"></script>
-
 </body>
 
 </html>

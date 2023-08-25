@@ -90,10 +90,11 @@ function sendForm(action) {
             }
         },
         error: function (errorThrown) {
+            let errorMessage = errorThrown.responseJSON.messages.join("<br>");
             Swal.fire({
             icon: "error",
             title: errorThrown.responseJSON.title,
-            text: errorThrown.responseJSON.message,
+            html:errorMessage,
             confirmButtonColor: "#1e88e5",
             });
         },

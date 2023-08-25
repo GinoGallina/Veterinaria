@@ -50,8 +50,8 @@ public class WebSecurityConfig {
         http.cors(Customizer.withDefaults());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**","/Auth/Login","/","/home","/index",
-        "/resources/**", "/static/**", "/css/**", "/js/**", "/lib/**", "/images/**","/loginN","/inicio","/especie","/raza","/veterinario"
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**","/Auth/Login","/Especies/**","/","/home","/index",
+        "/resources/**", "/static/**", "/css/**", "/js/**", "/lib/**", "/images/**","/loginN","/especie","/raza","/veterinario"
          ,"/practica","/cliente","/proveedor","/productosAdmin","/reserva","/**").permitAll()
                 .anyRequest().authenticated());
         http.exceptionHandling(exc -> exc.authenticationEntryPoint(jwtEntryPoint));

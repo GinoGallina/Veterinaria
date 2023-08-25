@@ -15,25 +15,32 @@ public class VeterinarioDTO {
     private Long ID;
 
     @NotBlank(message = "El campo matricula no puede estar vacío", groups = { PutAndPost.class })
+    @NotNull(message = "El campo matricula no puede estar vacío",groups = { PutAndDelete.class }) 
     private String matricula;
 
     @NotBlank(message = "El campo nombre no puede estar vacío", groups = { PutAndPost.class })
+    @NotNull(message = "El campo nombre no puede estar vacío",groups = { PutAndDelete.class }) 
     private String nombre;
 
     @NotBlank(message = "El campo apellido no puede estar vacío", groups = { PutAndPost.class })
+    @NotNull(message = "El campo apellido no puede estar vacío",groups = { PutAndDelete.class }) 
     private String apellido;
 
     @NotBlank(message = "El campo direccion no puede estar vacío", groups = { PutAndPost.class })
+    @NotNull(message = "El campo direccion no puede estar vacío",groups = { PutAndDelete.class }) 
     private String direccion;
 
     @NotBlank(message = "El campo telefono no puede estar vacío", groups = { PutAndPost.class })
+    @NotNull(message = "El campo telefono no puede estar vacío",groups = { PutAndDelete.class }) 
     private String telefono;
 
     @NotBlank(message = "El campo telefono no puede estar vacío", groups = { PutAndPost.class })
     @Email(message = "El campo email debe ser una dirección de correo electrónico válida")
+    @NotNull(message = "El campo email no puede estar vacío",groups = { PutAndDelete.class }) 
     private String email;
     
     @NotBlank(message = "El campo password no puede estar vacío", groups = { PutAndPost.class })
+    @NotNull(message = "El campo password no puede estar vacío",groups = { PutAndDelete.class }) 
     private String password;
     
     public Long getID() {

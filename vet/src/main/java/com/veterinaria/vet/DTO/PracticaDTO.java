@@ -2,8 +2,9 @@ package com.veterinaria.vet.DTO;
 
 import java.math.BigDecimal;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.groups.Default;
 
 public class PracticaDTO {
@@ -11,10 +12,12 @@ public class PracticaDTO {
     private Long ID;
     
     @NotNull(message = "El precio no debe ser nulo", groups = { PutAndPost.class })
-    @Positive(message = "El precio debe ser mayor que cero", groups = { PutAndPost.class })
+    @NotBlank(message = "El campo precio no puede estar vacío", groups = { PutAndPost.class })
+    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a cero", groups = { PutAndPost.class })
     private BigDecimal precio;
 
-    @NotNull(message = "El campo razonSocial no puede estar vacía", groups = { PutAndPost.class })
+    @NotNull(message = "El campo descripcion no puede estar vacía", groups = { PutAndPost.class })
+    @NotBlank(message = "El campo descripcion no puede estar vacío", groups = { PutAndPost.class })
     private String descripcion;
 
     public Long getID() {
