@@ -1,32 +1,33 @@
 package com.veterinaria.vet.Controllers;
 
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.veterinaria.vet.DTO.ReservaDTO;
 import com.veterinaria.vet.Models.Cliente;
 import com.veterinaria.vet.Models.Producto;
+import com.veterinaria.vet.Models.ReservaProducto;
+import com.veterinaria.vet.Models.ReservaProductoId;
 import com.veterinaria.vet.Models.Reserva;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.ClienteService;
 import com.veterinaria.vet.Services.ProductosAdminService;
 import com.veterinaria.vet.Services.ReservaService;
+import com.veterinaria.vet.Services.ReservaProductoService;
+import com.veterinaria.vet.annotations.CheckLogin;
 
-import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpSession;
+
 
 @Controller
 @RequestMapping("/Reservas")
@@ -37,6 +38,8 @@ public class ReservaController {
         private ProductosAdminService productosAdminService;
         @Autowired
         private ClienteService clienteService;
+        @Autowired
+        private ReservaProductoService reservaProductoService;
 
 
         @GetMapping(path = "/Index")
@@ -51,39 +54,48 @@ public class ReservaController {
             return modelAndView;
         }
 
+        @GetMapping(path = "/New")
+        public ModelAndView New(){
+            ModelAndView modelAndView = new ModelAndView("Reservas/New");
+            ArrayList<Producto> productos =  this.productosAdminService.getAllProductos();                        
+            modelAndView.addObject("productos", productos);
+            return modelAndView;
+        }
 
+        @CheckLogin
+        @PostMapping(path = "/New", produces = "application/json", consumes = "application/json")
+        public ResponseEntity<Object> save(@RequestBody List<ReservaProducto> prodQuantity, HttpSession session) throws JsonProcessingException {
+            try {
+                Long user_id = (Long) session.getAttribute("user_id");
+                Response json = new Response();
+                Reserva reserva = new Reserva();
+                
+                List<ReservaProducto> productos = new ArrayList<ReservaProducto>();
+                reserva.setCliente(clienteService.getByUserId(user_id).get());
+                Reserva savedReserva = reservaService.saveReserva(reserva);
 
-       @PostMapping(produces = "application/json", consumes = "application/json")
-        public ResponseEntity<Object> save(@Validated(ReservaDTO.PutAndPost.class) @RequestBody ReservaDTO reservaDTO) throws JsonProcessingException {
-          Response json = new Response();
-            /*Optional<Reserva> existingReserva = reservaService.findByDescripcion(ReservaDTO.getDescripcion());
-            if (existingReserva.isPresent()) {
-                if (!reservaService.getById(existingReserva.get().getID()).isPresent()) {
-                    reservaService.saveLogico(existingReserva.get().getID());
-                    json.setMessage("La Reserva se encontraba eliminada y se ha recuperado");
-                    json.setData(existingReserva.get().toJson());
-                    return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-                } else {
-                    json.setMessage("La Reserva ingresada ya existe");
-                    json.setTitle("ERROR");
-                    return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+                for (ReservaProducto product : prodQuantity) {
+                    product.setId(new ReservaProductoId(savedReserva.getID(), product.getProducto().getID()));
+                    product.setReserva(savedReserva);
+                    product.setPrecio(productosAdminService.getById(product.getProducto().getID()).get().getPrecio());
+                    productos.add(product);
+                    Producto producto = productosAdminService.getById(product.getProducto().getID()).get();
+                    producto.setStock(producto.getStock() - product.getCantidad());
                 }
-            } */
 
-            //VER QUE SE VALIDA ANTES
+                reservaProductoService.saveProductos(productos);
 
-            Reserva Reserva = new Reserva();
-            Optional<Cliente> existingCliente= clienteService.getById(reservaDTO.getClienteID());
-            if (!existingCliente.isPresent()) {
-                json.setMessage("El cliente no existe");
+
+                json.setMessage("Se ha guardado la reserva");
+                json.setData(savedReserva.toJson());
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+            } catch (Exception e) {
+                Response json = new Response();
+                json.setMessage("No se ha podido guardar la reserva");
                 json.setTitle("ERROR");
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
+                json.setData(e.getMessage());
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
             }
-            Reserva.setCliente(existingCliente.get());
-            Reserva savedReserva = reservaService.saveReserva(Reserva);
-            json.setMessage("Se ha guardado la Reserva");
-            //json.setData(savedReserva.toJson());
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
         }
 
         /*@PutMapping(produces = "application/json", consumes = "application/json")

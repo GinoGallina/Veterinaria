@@ -58,7 +58,7 @@ public class Reserva {
         if(reservasProductos!=null){
             for (ReservaProducto reservaProducto : reservasProductos) {
                 Map<String, Object> reservaProductoMap = new HashMap<>();
-                reservaProductoMap.put("id", reservaProducto.getId());
+                reservaProductoMap.put("id", reservaProducto.getProducto().getID() + "-" + reservaProducto.getReserva().getID());
                 reservaProductoMap.put("producto", reservaProducto.getProducto());
                 reservaProductoMap.put("precio", reservaProducto.getPrecio());
                 reservaProductoMap.put("cantidad", reservaProducto.getCantidad());

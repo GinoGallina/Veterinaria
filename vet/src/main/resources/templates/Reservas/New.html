@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="../../static/images/favicon.png">
+    <title>Inicio</title>
+
+    <div th:replace="Shared/Styles:: styles"></div>
+</head>
+
+<body class="fix-header fix-sidebar card-no-border mini-sidebar">
+    <div th:replace="Shared/Preloader:: preloader"></div>
+
+    <div id="main-wrapper">
+        <div th:replace="Shared/Header:: header"></div>
+        <div th:replace="Shared/Aside:: aside"></div>
+
+        <main class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 col-8 align-self-center">
+                        <h3 class="text-themecolor m-b-0 m-t-0">Reservas</h3>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="/Reservas/Index">Reservas</a></li>
+                            <li class="breadcrumb-item active">Nueva</li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+
+                <div class="col-12">
+                    <h1 class="text-center">Nueva reserva</h1>
+                    <hr />
+                </div>
+                <div class="row">
+                    <div class="col-12 col-xl-6">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h2 class="card-title mr-2">Seleccione los productos</h2>
+                                <div class="table-responsive m-t-10">
+                                    <table id="DataTable" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-6">Nombre</th>
+                                                <th class="col-2">Stock</th>
+                                                <th class="col-2">Precio</th>
+                                                <th class="col-2 text-center">Seleccionar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="producto : ${productos}" th:attr="data-id=${producto.ID}">
+                                                <td th:text="${producto.descripcion}"></td>
+                                                <td th:text="${producto.stock}"></td>
+                                                <td th:text="'$' + ${producto.precio}"></td>
+                                                <td>
+                                                    <div class='d-flex flex-row justify-content-center'>
+                                                        <button name="btnSale" type='button' class='btn btn-outline-info mr-2' th:attr="data-entity=${producto.toJson()}">
+                                                            <i class="bi bi-plus-lg"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-12 col-xl-6">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h2 class="card-title mr-2">Productos seleccionados</h2>
+                                <div class="table-responsive m-t-10">
+                                    <table id="productsSelected" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-5">Nombre</th>
+                                                <th class="col-2">Stock</th>
+                                                <th class="col-2">Precio</th>
+                                                <th class="col-2">Cantidad</th>
+                                                <th class="col-1">Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex flex-row justify-content-end">
+                                    <button id="btnSend" type="button" class="btn btn-success waves-effect px-3 py-2"
+                                        style="display: none;">Reservar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <form id="form-create" method="POST" action="/Reservas/New">
+                    </form>
+                </div>
+            </div>
+
+        </main>
+        <div th:replace="Shared/Footer :: footer"></div>
+        <div th:replace="Shared/Scripts:: scripts"></div>
+
+
+        <!-- Data table -->
+        <link href="../../static/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+        
+        <!-- This is data table -->
+        <script src="../../static/lib/datatables/datatables.min.js"></script>
+        <script src="../../static/js/custom/Reservas/new.js"></script>
+    </div>
+</body>
+
+</html>

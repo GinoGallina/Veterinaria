@@ -29,6 +29,10 @@ public class ClienteService {
   public Optional<Cliente> getById(Long id){
     return clienteReposioty.findByIDAndDeletedAtIsNull(id);
   }
+  
+  public Optional<Cliente> getByUserId(Long id){
+    return clienteReposioty.findByUserIDAndDeletedAtIsNull(id);
+  }
 
   public Cliente updateById(Cliente cli, Long id){
     Cliente cliente= clienteReposioty.findById(id).get();

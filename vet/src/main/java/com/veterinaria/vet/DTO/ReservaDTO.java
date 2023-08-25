@@ -15,9 +15,6 @@ public class ReservaDTO {
     @NotNull(message = "El campo ID no puede estar vacío",groups = { PutAndDelete.class })
     private Long ID;
 
-    @NotNull(message = "El campo ID cliente no puede estar vacío",groups = { PutAndPost.class })
-    private Long clienteID;
-
     @NotEmpty(message = "El campo descripción no puede estar vacío", groups = { PutAndPost.class })
     @NotNull(message = "El campo descripción no puede estar vacío", groups = { PutAndPost.class })
     private List<ReservaProducto> reservasProductos;
@@ -39,14 +36,6 @@ public class ReservaDTO {
 
     public void setID(Long iD) {
       ID = iD;
-    }
-
-    public Long getClienteID() {
-      return clienteID;
-    }
-
-    public void setClienteID(Long clienteID) {
-      this.clienteID = clienteID;
     }
 
     public List<ReservaProducto> getReservasProductos() {

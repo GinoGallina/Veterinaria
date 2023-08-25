@@ -30,4 +30,6 @@ public interface ClienteReposioty extends JpaRepository<Cliente, Long>{
   ArrayList<Cliente> findByDeletedAtIsNull();
   
   Optional<Cliente> findByIDAndDeletedAtIsNull(Long id);
+
+  Optional<Cliente> findByUserIDAndDeletedAtIsNull(Long id);
 }

@@ -20,13 +20,12 @@ public class ReservaProducto {
     @EmbeddedId
     private ReservaProductoId id;
     
-    
     @ManyToOne
-    @JoinColumn(name = "ReservaID", nullable = false)
+    @JoinColumn(name = "ReservaID", nullable = false, insertable = false)
     private Reserva reserva;
 
     @ManyToOne
-    @JoinColumn(name = "ProductoID", nullable = false)
+    @JoinColumn(name = "ProductoID", nullable = false, insertable = false)
     private Producto producto;
   
     @Column(name = "Precio",nullable = false)

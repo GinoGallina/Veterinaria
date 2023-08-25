@@ -48,6 +48,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public Optional<User> getById(long id){
+        return userRepository.findById(id);
+    }
+
     // public Optional<User> getByUsernameOrEmail(String nombreOrEmail){
     //     return userRepository.findByUsernameOrEmail(nombreOrEmail, nombreOrEmail);
     // }
