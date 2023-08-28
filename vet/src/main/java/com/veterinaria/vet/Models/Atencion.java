@@ -1,5 +1,6 @@
 package com.veterinaria.vet.Models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,10 +45,10 @@ public class Atencion {
     private List<PracticaAtencion> practicasAtenciones;
 
     @Column(name = "FechaAtencion", nullable = false)
-    private LocalDateTime fechaAtencion;
+    private LocalDate fechaAtencion;
 
     @Column(name = "FechaPago")
-    private LocalDateTime fechaPago;
+    private LocalDate fechaPago;
 
     @Column(name = "CreatedAt", nullable = false, insertable = false)
     private LocalDateTime createdAt;
@@ -128,19 +129,19 @@ public class Atencion {
         this.mascota = mascota;
     }
 
-    public LocalDateTime getFechaAtencion() {
+    public LocalDate getFechaAtencion() {
         return fechaAtencion;
     }
 
-    public void setFechaAtencion(LocalDateTime fechaAtencion) {
+    public void setFechaAtencion(LocalDate fechaAtencion) {
         this.fechaAtencion = fechaAtencion;
     }
 
-    public LocalDateTime getFechaPago() {
+    public LocalDate getFechaPago() {
         return fechaPago;
     }
 
-    public void setFechaPago(LocalDateTime fechaPago) {
+    public void setFechaPago(LocalDate fechaPago) {
         this.fechaPago = fechaPago;
     }
 

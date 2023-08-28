@@ -16,11 +16,11 @@ public class PracticaAtencion {
     private PracticaAtencionId id;
 
     @ManyToOne
-    @JoinColumn(name = "AtencionID", nullable = false)
+    @JoinColumn(name = "AtencionID", nullable = false, insertable = false)
     private Atencion atencion;
 
     @ManyToOne
-    @JoinColumn(name = "PracticaID", nullable = false)
+    @JoinColumn(name = "PracticaID", nullable = false, insertable = false)
     private Practica practica;
   
     @Column(name = "PrecioPactado",nullable = false)

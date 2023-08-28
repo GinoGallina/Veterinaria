@@ -1,6 +1,6 @@
 package com.veterinaria.vet.DTO;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,9 +14,6 @@ public class AtencionDTO {
     @NotNull(message = "El campo id no puede estar vacío",groups = { PutAndDelete.class })
     private Long ID;
 
-    @NotNull(message = "El campo especie no puede estar vacío",groups = { PostAndPut.class })
-    private Long veterinarioID;
-
     @NotNull(message = "El campo especie no puede estar vacío", groups = { PostAndPut.class })
     private Long mascotaID;
 
@@ -27,12 +24,12 @@ public class AtencionDTO {
     //Nose si van
     //@PastOrPresent(message = "La fecha de atencion debe ser en el pasado o la fecha actual",groups = { PutAndPost.class })
     @NotNull(message = "La fecha de atencion no puede estar vacía",groups = { PutAndPost.class })
-    private LocalDateTime fechaAtencion;
+    private LocalDate fechaAtencion;
 
     //Nose si van
     //@PastOrPresent(message = "La fecha de pago debe ser en el pasado o la fecha actual", groups = {PutAndPost.class })
     //@NotNull(message = "La fecha de pago no puede estar vacía", groups = { PutAndPost.class })
-    private LocalDateTime fechaPago; 
+    private LocalDate fechaPago; 
 
     public String toJson() throws JsonProcessingException {
       ObjectMapper objectMapper = new ObjectMapper();
@@ -53,14 +50,6 @@ public class AtencionDTO {
       ID = iD;
     }
 
-    public Long getVeterinarioID() {
-      return veterinarioID;
-    }
-
-    public void setVeterinarioID(Long veterinarioID) {
-      this.veterinarioID = veterinarioID;
-    }
-
     public Long getMascotaID() {
       return mascotaID;
     }
@@ -69,21 +58,19 @@ public class AtencionDTO {
       this.mascotaID = mascotaID;
     }
 
-
-
-    public LocalDateTime getFechaAtencion() {
+    public LocalDate getFechaAtencion() {
       return fechaAtencion;
     }
 
-    public void setFechaAtencion(LocalDateTime fechaAtencion) {
+    public void setFechaAtencion(LocalDate fechaAtencion) {
       this.fechaAtencion = fechaAtencion;
     }
 
-    public LocalDateTime getFechaPago() {
+    public LocalDate getFechaPago() {
       return fechaPago;
     }
 
-    public void setFechaPago(LocalDateTime fechaPago) {
+    public void setFechaPago(LocalDate fechaPago) {
       this.fechaPago = fechaPago;
     }
 
@@ -94,7 +81,4 @@ public class AtencionDTO {
     public void setPracticasID(List<Long> practicasID) {
       this.practicasID = practicasID;
     }
-
-    
-
 }

@@ -77,15 +77,14 @@ public class ClienteController {
 			//return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 			//VER Q DEVUELVO
 		}
-		ArrayList<Mascota> mascotas=mascotaService.getAllMascotasCliente(id);
-		ArrayList<Atencion> atenciones=atencionService.getAllAtencionesCliente(id);
-		ArrayList<Raza> razas=razaService.getAllRazas();
-		ArrayList<Veterinario> veterinarios=veterinarioService.getAllVeterinarios();
-		ArrayList<Practica> practicas=practicaService.getAllPracticas();
+		Mascota mascota = new Mascota();
+		ArrayList<Mascota> mascotas = mascota.orderByCreatedAt(mascotaService.getAllMascotasCliente(id));
+		ArrayList<Atencion> atenciones = atencionService.getAllAtencionesCliente(id);
+		ArrayList<Raza> razas = razaService.getAllRazas();
+		ArrayList<Practica> practicas = practicaService.getAllPracticas();
 		model.addAttribute("mascotas", mascotas);
 		model.addAttribute("atenciones", atenciones);
 		model.addAttribute("razas", razas);
-		model.addAttribute("veterinarios", veterinarios);
 		model.addAttribute("practicas", practicas);
 		model.addAttribute("cliente", cliente.get());
 		return "Clientes/Details";

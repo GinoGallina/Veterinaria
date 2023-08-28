@@ -2,6 +2,7 @@ package com.veterinaria.vet.Models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -139,6 +140,17 @@ public class Mascota {
         updatedAt = LocalDateTime.now();
     }
     
-
+    public ArrayList<Mascota> orderByCreatedAt(ArrayList<Mascota> mascotas) {
+        for (int i = 0; i < mascotas.size(); i++) {
+            for (int j = 0; j < mascotas.size() - 1; j++) {
+                if (mascotas.get(j).getCreatedAt().isBefore(mascotas.get(j + 1).getCreatedAt())) {
+                    Mascota aux = mascotas.get(j);
+                    mascotas.set(j, mascotas.get(j + 1));
+                    mascotas.set(j + 1, aux);
+                }
+            }
+        }
+        return mascotas;
+    }
     
 }

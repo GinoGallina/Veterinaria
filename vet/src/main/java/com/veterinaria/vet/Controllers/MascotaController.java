@@ -28,130 +28,89 @@ import jakarta.transaction.Transactional;
 @RestController
 @RequestMapping("/Mascotas")
 public class MascotaController {
-      @Autowired
-      private MascotaService mascotaService;
-      @Autowired
-      private RazaService razaService;
-      @Autowired
-      private ClienteService clienteService;
+    @Autowired
+    private MascotaService mascotaService;
+    @Autowired
+    private RazaService razaService;
+    @Autowired
+    private ClienteService clienteService;
 
-    // @GetMapping
-    // public ArrayList<Mascota> getMascotas(){
-    //   return this.mascotaService.getAllMascotas();
-    // }
-    
-    // @GetMapping(path = "/cliente")
-    // public ArrayList<Mascota> getMascotasCliente(@RequestParam("id") Long id){
-    //   return this.mascotaService.getAllMascotasCliente(id);
-    // }
-
-    // @GetMapping(path = "/{id}")
-    // public ResponseEntity<?> getMascotaById(@RequestParam("id") Long id){
-    //   Optional<Mascota> existingMascota = mascotaService.getById(id);
-    //   if(!existingMascota.isPresent()){
-    //     // return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario con ID " + id + " no fue encontrado.");
-    //     return ResponseEntity.notFound().build();
-    //   }
-    //   return ResponseEntity.ok(existingMascota);
-    // }
-
-        @PostMapping(produces = "application/json", consumes = "application/json")
-        public ResponseEntity<Object> save(@Validated(MascotaDTO.PutAndPost.class) @RequestBody MascotaDTO mascotaDTO) throws JsonProcessingException {
-          Response json = new Response();
-            /*Optional<Mascota> existingMascota = mascotaService.findByNacimientoAndNombre(mascotaDTO.getNombre(),mascotaDTO.getNacimiento());
-            if (existingMascota.isPresent()) {
-              if (!existingMascota.getById(existingMascota.get().getID()).isPresent()) {
-                mascotaService.saveLogico(existingMascota.get().getID());
-                json.setMessage("La mascota se encontraba eliminada y se ha recuperado");
-                json.setData(existingMascota.get().toJson());
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-              } else {
-                json.setMessage("La macota ingresada ya existe");
-                json.setTitle("ERROR");
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-              }
-            }*/
-            Optional<Raza> exsisteingRaza = razaService.getById(mascotaDTO.getRazaID());
-            Optional<Cliente> existingCliente = clienteService.getById(mascotaDTO.getClienteID());
-            if (!exsisteingRaza.isPresent()) {
-              json.setMessage("No existe dicha raza");
-              json.setTitle("ERROR");
-              return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-            }else if(!existingCliente.isPresent()){
-              json.setMessage("No existe dicho cliente");
-              json.setTitle("ERROR");
-              return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);   
-            }
-            Mascota mascota = new Mascota();
-            mascota.setNacimiento(mascotaDTO.getNacimiento());
-            mascota.setNombre(mascotaDTO.getNombre());
-            mascota.setSexo(mascotaDTO.getSexo().charAt(0));
-            mascota.setCliente(existingCliente.get());
-            mascota.setRaza(exsisteingRaza.get());
-            Mascota savedMascota = mascotaService.saveMascota(mascota);
-            json.setMessage("Se ha guardado la mascota");
-            json.setData(savedMascota.toJson());
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-        }
-
-        @PutMapping(produces = "application/json", consumes = "application/json")
-        public ResponseEntity<Object> updateMascota(@Validated({ MascotaDTO.PutAndDelete.class,MascotaDTO.PutAndPost.class }) @RequestBody MascotaDTO mascotaDTO) throws JsonProcessingException {
-          Response json = new Response();
-            /*Optional<Mascota> existingMascota = mascotaService.findByNacimientoAndNombre(mascotaDTO.getNombre(),mascotaDTO.getNacimiento());
-            HACER QUE SEA UNA SOLA
-            if (existingMascota.isPresent()) {
-                json.setMessage("La macota ingresada ya existe");
-                json.setTitle("ERROR");
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-              }
-            }*/
-          Optional<Raza> exsisteingRaza = razaService.getById(mascotaDTO.getRazaID());
-          Optional<Cliente> existingCliente = clienteService.getById(mascotaDTO.getClienteID());
-          if (!exsisteingRaza.isPresent()) {
+    @PostMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> save(@Validated(MascotaDTO.PutAndPost.class) @RequestBody MascotaDTO mascotaDTO)
+            throws JsonProcessingException {
+        Response json = new Response();
+        Optional<Raza> exsisteingRaza = razaService.getById(mascotaDTO.getRazaID());
+        Optional<Cliente> existingCliente = clienteService.getById(mascotaDTO.getClienteID());
+        if (!exsisteingRaza.isPresent()) {
             json.setMessage("No existe dicha raza");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-          }else if(!existingCliente.isPresent()){
+        } else if (!existingCliente.isPresent()) {
             json.setMessage("No existe dicho cliente");
             json.setTitle("ERROR");
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);   
-          }
-          Optional<Mascota> mascota = mascotaService.getById(mascotaDTO.getID());
-          if (mascota.isEmpty()) {
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+        }
+        Mascota mascota = new Mascota();
+        mascota.setNacimiento(mascotaDTO.getNacimiento());
+        mascota.setNombre(mascotaDTO.getNombre());
+        mascota.setSexo(mascotaDTO.getSexo().charAt(0));
+        mascota.setCliente(existingCliente.get());
+        mascota.setRaza(exsisteingRaza.get());
+        Mascota savedMascota = mascotaService.saveMascota(mascota);
+        json.setMessage("Se ha guardado la mascota");
+        json.setData(savedMascota.toJson());
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+    }
+
+    @PutMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> updateMascota(@Validated({ MascotaDTO.PutAndDelete.class,
+            MascotaDTO.PutAndPost.class }) @RequestBody MascotaDTO mascotaDTO) throws JsonProcessingException {
+        Response json = new Response();
+        Optional<Raza> exsisteingRaza = razaService.getById(mascotaDTO.getRazaID());
+        Optional<Cliente> existingCliente = clienteService.getById(mascotaDTO.getClienteID());
+        if (!exsisteingRaza.isPresent()) {
+            json.setMessage("No existe dicha raza");
+            json.setTitle("ERROR");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+        } else if (!existingCliente.isPresent()) {
+            json.setMessage("No existe dicho cliente");
+            json.setTitle("ERROR");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+        }
+        Optional<Mascota> mascota = mascotaService.getById(mascotaDTO.getID());
+        if (mascota.isEmpty()) {
             json.setMessage("La mascota no existe");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
-          }
-          mascota.get().setID(mascotaDTO.getID());
-          mascota.get().setNacimiento(mascotaDTO.getNacimiento());
-          mascota.get().setNombre(mascotaDTO.getNombre());
-          mascota.get().setSexo(mascotaDTO.getSexo().charAt(0));
-          mascota.get().setCliente(existingCliente.get());
-          mascota.get().setRaza(exsisteingRaza.get());
-          Mascota updatedMascota = mascotaService.updateById(mascota.get(), (long) mascota.get().getID());
-          json.setMessage("Se ha actualizado la mascota");
-          json.setData(updatedMascota.toJson());
-          return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
         }
+        mascota.get().setID(mascotaDTO.getID());
+        mascota.get().setNacimiento(mascotaDTO.getNacimiento());
+        mascota.get().setNombre(mascotaDTO.getNombre());
+        mascota.get().setSexo(mascotaDTO.getSexo().charAt(0));
+        mascota.get().setCliente(existingCliente.get());
+        mascota.get().setRaza(exsisteingRaza.get());
+        Mascota updatedMascota = mascotaService.updateById(mascota.get(), (long) mascota.get().getID());
+        json.setMessage("Se ha actualizado la mascota");
+        json.setData(updatedMascota.toJson());
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+    }
 
-        @DeleteMapping(produces = "application/json", consumes = "application/json")
-        @Transactional
-        public ResponseEntity<Object> eliminarMascota(@Validated(MascotaDTO.PutAndDelete.class) @RequestBody MascotaDTO mascotaDTO)
+    @DeleteMapping(produces = "application/json", consumes = "application/json")
+    @Transactional
+    public ResponseEntity<Object> eliminarMascota(
+            @Validated(MascotaDTO.PutAndDelete.class) @RequestBody MascotaDTO mascotaDTO)
             throws JsonProcessingException {
-          Optional<Mascota> existingMascota = mascotaService.getById(mascotaDTO.getID());
-          Response json = new Response();
-          if (existingMascota.isEmpty()) {
+        Optional<Mascota> existingMascota = mascotaService.getById(mascotaDTO.getID());
+        Response json = new Response();
+        if (existingMascota.isEmpty()) {
             json.setMessage("La mascota no existe");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
-          }
-          mascotaService.eliminarLogico(existingMascota.get().getID());
-          json.setMessage("Se ha eliminado la mascota");
-          json.setData(existingMascota.get().toJson());
-          return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
         }
+        mascotaService.eliminarLogico(existingMascota.get().getID());
+        json.setMessage("Se ha eliminado la mascota");
+        json.setData(existingMascota.get().toJson());
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+    }
 
-
-
-    
 }

@@ -1,277 +1,329 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="ISO-8859-1">
-		<title>Datos Cliente</title>
-		<link rel="icon" type="image/jpg" href="../../static/images/favicon.png" />
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-		<link href="../../static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="../../static/css/mis-estilos.css" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
-	</head>
-	<body>
-	<div th:replace="Shared/Header:: header"></div>
-	<main class="container">
-		<h1 class="text-center mt-4">Datos del cliente</h1>
-
-		<div id="datos-cliente" class="container-fluid mt-5">
-		    <label class="mb-2">Nombre: </label>
-		    <input id="txtNombre" type="text" th:value="${cliente.nombre}" class="form-control mb-2" disabled />
-
-		    <label class="mb-2">Apellido: </label>
-		    <input id="txtApellido" type="text" th:value="${cliente.apellido}"  class="form-control mb-2" disabled />
-
-		    <label class="mb-2">Teléfono: </label>
-		    <input id="txtTelefono" type="text" th:value="${cliente.telefono}" class="form-control mb-2" disabled />
-
-		    <label class="mb-2">Dirección: </label>
-		    <input id="txtDireccion" type="text" th:value="${cliente.direccion}" class="form-control mb-2" disabled />
-
-		    <label class="mb-2">Email: </label>
-		    <input id="txtEmail" type="text" th:value="${cliente.user.email}"  class="form-control mb-2" disabled />
-		  
-		    <label class="mb-2">DNI: </label>
-		    <input id="txtDNI" type="text" th:value="${cliente.dni}" class="form-control mb-2" disabled />
-	        
-	        <button id="btnAddMascota" type="button" class="btn btn-success px-4 mt-4" data-bs-toggle="modal" data-bs-target="#modalCreateMascota">
-	            Agregar mascota
-	        </button>
-	       	
-	       	<span></span>
-	       	<span></span>
-	       	        
-	        <button id="btnAddAtencion" type="button" class="btn btn-success px-2 mt-4 w-75" data-bs-toggle="modal" data-bs-target="#modalCreateAtencion"> 
-	            Agregar atencion
-	        </button>
-															
-		</div>
 
 
-		
-	<!-- Modal Mascotas-->
-	<div class="modal fade" id="modalCreateMascota" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-		<div id="formContainerM" class="modal-dialog">
-			<form action="/Mascotas" method="POST" id="form-createM">
-				<input type="hidden" name="id" value="" />
-				<input type="hidden" name="idCliente" th:value="${cliente.ID}" />
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="modalTitleM"></h5>
-						<button id="btnCloseModalCreate" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<div class="row">
-							<div class="col-12">
-                <div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="txtNombre" class="mb-0">Nombre: </label>
-										<input id="txtNombre" name="nombre" type="text" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-                <div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="txtNacimiento" class="mb-0">Fecha Naciemiento: </label>
-										<input id="txtNacimiento" name="nacimiento" type="text" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-								<div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="txtSexo" class="mb-0">Sexo: </label>
-											<select id="comboSexo" name="comboSexo" class="form-select  form-control ">
-												<option value=""  disabled selected>--Seleccione un sexo--</option>
-												<option value="m">M</option>
-												<option value="f">F</option>
-											</select>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-                <div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="comboRazas" class="mb-0">Raza: </label>
-										<select id="comboRazas" name="comboRazas" class="form-control form-select" >
-											<option value='' disabled selected>--Seleccione una raza--</option>
-											<option th:each="raza : ${razas}" th:text="${raza.descripcion}" th:value="${raza.ID}"></option>
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default waves-effect" data-bs-dismiss="modal">Cerrar</button>
-						<button id="btnSendModalM" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- Tell the browser to be responsive to screen width -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!-- Favicon icon -->
+	<link rel="icon" type="image/png" sizes="16x16" href="../../static/images/favicon.png">
+	<title>Inicio</title>
+
+	<link rel="stylesheet" href="../../static/lib/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css">
+	<link rel="stylesheet" href="../../static/lib/datatables/media/css/dataTables.bootstrap4.css">
+	<div th:replace="Shared/Styles:: styles"></div>
+</head>
+
+<body class="fix-header fix-sidebar card-no-border mini-sidebar">
+	<div th:replace="Shared/Preloader:: preloader"></div>
+
+	<div id="main-wrapper">
+		<div th:replace="Shared/Header:: header"></div>
+		<div th:replace="Shared/Aside:: aside"></div>
+
+		<main class="page-wrapper">
+			<div class="container-fluid">
+				<!-- ============================================================== -->
+				<!-- Bread crumb and right sidebar toggle -->
+				<!-- ============================================================== -->
+				<div class="row page-titles">
+					<div class="col-md-5 col-8 align-self-center">
+						<h3 class="text-themecolor m-b-0 m-t-0">Clientes</h3>
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Inicio</a></li>
+							<li class="breadcrumb-item"><a href="/Clientes/Index">Clientes</a></li>
+							<li class="breadcrumb-item active">Detalles</li>
+						</ol>
 					</div>
 				</div>
-			</form>
-		</div>
-	</div>
-
-
-		
-	<!-- Modal Atenciones-->
-	<div class="modal fade" id="modalCreateAtencion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-		<div id="formContainerA" class="modal-dialog">
-			<form action="/Atenciones" method="post" id="form-createA">
-				<input type="hidden" name="id" value="" />
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="modalTitleA"></h5>
-						<button id="btnCloseModalCreate" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<div class="row">
-							<div class="col-12">
-                <div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="comboVeterinarios" class="mb-0">Veterinarios: </label>
-										<select id="comboVeterinarios" name="comboVeterinarios" class="form-control form-select" >
-											<option value='' disabled selected>--Seleccione un veterinario--</option>
-											<option th:each="veterinario : ${veterinarios}" th:text="${veterinario.nombre}" th:value="${veterinario.ID}"></option>
-										</select>
+				<!-- ============================================================== -->
+				<!-- End Bread crumb and right sidebar toggle -->
+				<!-- ============================================================== -->
+				<!-- ============================================================== -->
+				<!-- Start Page Content -->
+				<!-- ============================================================== -->
+				<!-- Modal Mascotas-->
+				<div class="modal fade" id="modalCreateMascota" data-backdrop="static" data-keyboard="false" tabindex="-1"
+					aria-hidden="true">
+					<div id="formContainerM" class="modal-dialog">
+						<form action="/Mascotas" method="POST" id="form-createM">
+							<input type="hidden" name="id" value="" />
+							<input type="hidden" name="idCliente" th:value="${cliente.ID}" />
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="modalTitleM"></h5>
+									<button id="btnCloseModalCreate" type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="txtNombre" class="mb-0">Nombre: </label>
+													<input id="txtNombre" name="nombre" type="text" class="form-control" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="txtNacimiento" class="mb-0">Fecha de naciemiento: </label>
+													<input id="txtNacimiento" name="nacimiento" type="text" class="form-control" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="comboSexo" class="mb-0">Sexo: </label>
+													<select id="comboSexo" name="comboSexo" class="form-select  form-control ">
+														<option value="" disabled selected>Seleccione un sexo</option>
+														<option value="m">M</option>
+														<option value="f">F</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="comboRazas" class="mb-0">Raza: </label>
+													<select id="comboRazas" name="comboRazas" class="form-control form-select">
+														<option value='' disabled selected>Seleccione una raza</option>
+														<option th:each="raza : ${razas}" th:text="${raza.descripcion}"
+															th:value="${raza.ID}"></option>
+													</select>
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-                <div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="comboMascotas" class="mb-0">Mascotas: </label>
-										<select id="comboMascotas" name="comboMascotas" class="form-control form-select" >
-											<option value='' disabled selected>--Seleccione una mascota--</option>
-											<option th:each="mascota : ${mascotas}" th:text="${mascota.nombre}" th:value="${mascota.ID}"></option>
-										</select>
-									</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
+									<button id="btnSendModalM" type="button"
+										class="btn btn-success waves-effect waves-light">Agregar</button>
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-                <div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="comboPracticas" class="mb-0">Practicas: </label>
-										<select id="comboPracticas" multiple name="comboPracticas" class="form-control form-select" >
-											<option value='' disabled selected>--Seleccione una o varias prácticas--</option>
-											<option th:each="practica : ${practicas}" th:text="${practica.descripcion}" th:value="${practica.ID}"></option>
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-                <div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="txtAtencion" class="mb-0">Fecha Atención: </label>
-										<input id="txtAtencion" name="atencion" type="text" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-12">
-                <div class="form-column">
-									<div class="col-12 mb-3">
-										<label for="txtPago" class="mb-0">Fecha de Pago: </label>
-										<input id="txtPago" name="pago" type="text" class="form-control" />
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default waves-effect" data-bs-dismiss="modal">Cerrar</button>
-						<button id="btnSendModalA" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+						</form>
 					</div>
 				</div>
-			</form>
-		</div>
-	</div>
+				
+				<!-- Modal Atenciones-->
+				<div class="modal fade" id="modalCreateAtencion" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-hidden="true">
+					<div id="formContainerA" class="modal-dialog">
+						<form action="/Atenciones" method="post" id="form-createA">
+							<input type="hidden" name="id" value="" />
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="modalTitleA"></h5>
+									<button id="btnCloseModalCreate" type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="comboMascotas" class="mb-0">Mascota:</label>
+													<select id="comboMascotas" name="comboMascotas" class="form-control form-select">
+														<option value='' disabled selected>Seleccione una mascota</option>
+														<option th:each="mascota : ${mascotas}" th:text="${mascota.nombre}"
+															th:value="${mascota.ID}"></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="comboPracticas" class="mb-0">Practicas:</label>
+													<select id="comboPracticas" multiple name="comboPracticas"
+														class="form-control form-select">
+														<option value='' disabled selected>Seleccione una o varias prácticas
+														</option>
+														<option th:each="practica : ${practicas}" th:text="${practica.descripcion}"
+															th:value="${practica.ID}"></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="txtAtencion" class="mb-0">Fecha de atención:</label>
+													<input id="txtAtencion" name="atencion" type="text" class="form-control" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-column">
+												<div class="col-12 mb-3">
+													<label for="txtPago" class="mb-0">Fecha de pago:</label>
+													<input id="txtPago" name="pago" type="text" class="form-control" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
+									<button id="btnSendModalA" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				
+				<h1 class="text-center mt-4" th:text="'Ficha de ' + ${cliente.apellido} + ', ' + ${cliente.nombre}"></h1>
+				<hr class="mb-5" />
 
+				<!-- TARJETAS -->
+				<div class="row">
+					<div class="col-12 col-xl-8">
+						<!-- Tarjetas Mascotas -->						
+						<h2 class="text-center mb-4">Mascotas</h2>
+						<div id="tarjetasMascotas" class="row justify-content-center">
+							<div th:each="mascota : ${mascotas}" class='card mx-2 mb-4'>
+								<div class='card-body d-flex flex-column'>
+									<h4 class='card-title'>Nombre: <span th:text="${mascota.nombre}"></span></h4>
+									<h4 class='card-title'>Especie: <span th:text="${mascota.raza.especie.descripcion}"></span></h4>
+									<p class='card-text'>Raza: <span th:text="${mascota.raza.descripcion}"></span></p>
+									<p class='card-text'>Fecha de nacimiento: <span th:text="${mascota.nacimiento}" class="format-date"></span></p>
+									<p class='card-text'>Sexo: <span th:text="${mascota.sexo}"></span></p>
+									<div class='d-flex justify-content-between mt-auto'>
+										<button class='btn btn-outline-dark' th:attr="data-mascota=${mascota.toJson()}" onclick="editM(this.getAttribute('data-mascota'),'mascota')" data-toggle='modal' data-target='#modalCreateMascota'>
+											<i class="bi bi-pencil"></i>
+										</button>
+										<button class='btn btn-danger' th:attr="mascota-id=${mascota.ID}"
+											onclick="deleteObj(this.getAttribute('mascota-id'),'mascota')">
+											<i class='bi bi-trash3'></i>
+										</button>
+									</div>
+								</div>
+							</div>
+							<br />
+						</div>
+					</div>
 
-			
-		
+					<!-- DATOS DEL CLIENTE -->
+					<div class="col-12 col-xl-4">
+						<div class="card shadow" style="background-color: #ebebeb73">
+							<div class="card-header bg-white border-0">
+								<div class="row align-items-center">
+									<div class="col-8">
+										<h3 class="mb-0">Cliente</h3>
+									</div>
+									<div class="col-4 d-flex flex-row justify-content-end">
+										<button id="btnAddMascota" type="button" class="btn btn-sm btn-outline-info btn-rounded px-5" data-toggle="modal" data-target="#modalCreateMascota">
+											Agregar mascota
+										</button>
+										<button id="btnAddAtencion" type="button" class="btn btn-sm btn-outline-info btn-rounded px-5 ml-4" data-toggle="modal" data-target="#modalCreateAtencion">
+											Nueva atención
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<h6 class="heading-small text-muted mb-4">Datos personales</h6>
+								<div class="pl-lg-4">
+									<div class="row">
+										<div class="col-lg-6">
+											<div class="form-group focused">
+												<label class="form-control-label" >DNI</label>
+												<input disabled class="form-control form-control-alternative" th:value="${cliente.dni}">
+											</div>
+										</div>
+										<div class="col-lg-6">
+											<div class="form-group focused">
+												<label class="form-control-label" >Teléfono</label>
+												<input disabled class="form-control form-control-alternative" th:value="${cliente.telefono}">
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-12">
+											<div class="form-group">
+												<label class="form-control-label">Dirección</label>
+												<input disabled type="text"class="form-control form-control-alternative" th:value="${cliente.direccion}">
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-12">
+											<div class="form-group">
+												<label class="form-control-label">Email</label>
+												<input disabled type="text"class="form-control form-control-alternative" th:value="${cliente.user.email}">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
-      
-        
-			<!-- Tarjetas Mascotas -->
-			<hr class="mt-5" />
-
-			<h2 class="text-center mb-4">Mascotas</h2>
-
-			<div id="tarjetasMascotas" class="container d-flex flex-row row mx-auto justify-content-center">
-				<div th:each="mascota : ${mascotas}" class='card me-4 col-3 mb-4' style='width: 18rem;'>
-					<div class='card-body d-flex flex-column'>
-						<h5 class='card-title'>Raza:<span th:text="${mascota.raza.descripcion}"></span></h5>
-						<h5 class='card-title'>Especie:<span th:text="${mascota.raza.especie.descripcion}"></span></h5>
-						<p class='card-text'>Nombre:<span th:text="${mascota.nombre}"></span></p>
-						<p class='card-text'>Fecha de nacimiento:<span th:text="${mascota.nacimiento}"></span></p>
-						<p class='card-text'>Sexo:<span th:text="${mascota.sexo=='m'?'Masculino':'Femenino'}"></span></p>
-						<p class='card-text'>Sexo:<span th:text="${mascota.sexo}"></span></p>
-						<div class='d-flex justify-content-between mt-auto'>
-							<button class='btn btn-outline-dark' th:attr="data-mascota=${mascota.toJson()}" onclick="editM(this.getAttribute('data-mascota'),'mascota')" data-bs-toggle='modal' data-bs-target='#modalCreateMascota'><i class="bi bi-pencil"></i></button>
-							<button class='btn btn-danger' th:attr="mascota-id=${mascota.ID}" onclick="deleteObjM(this.getAttribute('mascota-id'),'mascota')"><i class='bi bi-trash3'></i></button>
+					<div class="col-12">
+						<hr class="mt-5">
+						<!-- Tarjetas Atenciones -->
+						<h2 class="text-center mb-4">Atenciones</h2>
+					
+						<div id="tarjetasAtenciones" class="row justify-content-center">
+							<div th:each="atencion : ${atenciones}" class='card mx-2 mb-4'>
+								<div class='card-body d-flex flex-column'>
+									<h4 class='card-title'>Mascota: <span th:text="${atencion.mascota.nombre}"></span></h4>
+									<h4 class='card-title'>Veterinario: <span th:text="${atencion.veterinario.nombre}"></span></h4>
+									<p class='card-text mb-0'>Practicas:</p>
+									<ul>
+										<li th:each="practicaAtencion : ${atencion.practicasAtenciones}" th:text="${practicaAtencion.practica.descripcion} + ' - $' + ${practicaAtencion.precioPactado}"></li>
+									</ul>
+									<p class='card-text'>Fecha de atención: <span th:text="${atencion.fechaAtencion}" class="format-date-with-time"></span></p>
+									<p class='card-text'>Fecha de pago: <span th:text="${atencion.fechaPago}" class="format-date-with-time"></span></p>
+									<div class='d-flex justify-content-between mt-auto'>
+										<button class='btn btn-outline-dark' th:attr="data-atencion=${atencion.toJson()}" onclick="editA(this.getAttribute('data-atencion'),'atencion')" data-toggle='modal' data-target='#modalCreateAtencion'>
+											<i class="bi bi-pencil"></i>
+										</button>
+										<button class='btn btn-danger' th:attr="atencion-id=${atencion.ID}" onclick="deleteObj(this.getAttribute('atencion-id'),'atencion')">
+											<i class='bi bi-trash3'></i>
+										</button>
+									</div>
+								</div>
+							</div>
+					
 						</div>
 					</div>
 				</div>
-				<br/>
+				
+				<form id="form-delete" method="DELETE" action="">
+					<input type="hidden" name="id" value="">
+				</form>
 			</div>
-
-			<!-- Tarjetas Atenciones -->
-			<hr class="mt-5" />
-
-			<h2 class="text-center mb-4">Atenciones</h2>
-
-			<div id="tarjetasAtenciones" class="container d-flex flex-row row mx-auto justify-content-center">
-				<div th:each="atencion : ${atenciones}" class='card me-4 col-3 mb-4' style='width: 18rem;'>
-					<div class='card-body d-flex flex-column'>
-						<h5 class='card-title'>Nombre Mascota:<span th:text="${atencion.mascota.nombre}"></span></h5>
-						<h5 class='card-title'>Veterinario:<span th:text="${atencion.veterinario.nombre}"></span></h5>
-						<p class='card-text'>Practicas:<span th:each="practicaAtencion : ${atencion.practicasAtenciones}" th:text="${practicaAtencion.practica.descripcion}+'-'"></span></p>
-						<p class='card-text'>Precio Pactado:<span th:each="practicaAtencion : ${atencion.practicasAtenciones}" th:text="${practicaAtencion.precioPactado}+'-'"></span></p>
-						<p class='card-text'>Fecha de Atención:<span th:text="${atencion.fechaAtencion}"></span></p>
-						<p class='card-text'>Fecha de Pago:<span th:text="${atencion.fechaPago}"></span></p>
-						<div class='d-flex justify-content-between mt-auto'>
-							<button class='btn btn-outline-dark' th:attr="data-atencion=${atencion.toJson()}" onclick="editA(this.getAttribute('data-atencion'),'atencion')" data-bs-toggle='modal' data-bs-target='#modalCreateAtencion'><i class="bi bi-pencil"></i></button>
-							<button class='btn btn-danger' th:attr="atencion-id=${atencion.ID}" onclick="deleteObjA(this.getAttribute('atencion-id'),'atencion')"><i class='bi bi-trash3'></i></button>
-						</div>
-					</div>
-				</div>
-
-			</div>
-
-			<form id="form-delete" method="DELETE" action="">
-				<input type="hidden" name="id" value="">
-			</form>
+		</main>
+		<div th:replace="Shared/Footer :: footer"></div>
+		<div th:replace="Shared/Scripts:: scripts"></div>
 
 
-	</main>
-
-	<div th:replace="Shared/Footer :: footer"></div>
-	
-	
-	<script src="../../static/js/bootstrap.min.js"></script>
-	<script src="../../static/js/modernizr-2.8.3.js"></script>
-	<script src="../../static/js/jquery-3.6.0.min.js"></script>
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
-	<script src="../../static/js/moment-with-locales.js"></script>
-	<script src="../../static/js/daterangepicker.js"></script>
-	<script src="../../static/js/daterangepicker-es.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	
-	<script src="../../static/js/datosClientes.js"></script>
+		<!-- ACÁ VAN LOS SCRIPTS PROPIOS DE LA PÁGINA -->
+		<script src="../../static/lib/moment/moment-with-locales.js"></script>
+		<script src="../../static/lib/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+		<script src="../../static/lib/datatables/datatables.min.js"></script>
+		<script src="../../static/js/custom/Clientes/details.js"></script>
+	</div>
 </body>
+
 </html>

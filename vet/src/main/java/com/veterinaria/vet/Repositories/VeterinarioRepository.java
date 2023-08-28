@@ -29,4 +29,6 @@ public interface VeterinarioRepository extends JpaRepository<Veterinario, Long>{
   ArrayList<Veterinario> findByDeletedAtIsNull();
   
   Optional<Veterinario> findByIDAndDeletedAtIsNull(Long id);
+
+  Optional<Veterinario> findByUserIDAndDeletedAtIsNull(Long id);
 }

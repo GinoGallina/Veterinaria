@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.veterinaria.vet.Models.Cliente;
 import com.veterinaria.vet.Models.Veterinario;
 import com.veterinaria.vet.Repositories.VeterinarioRepository;
 
@@ -23,9 +24,12 @@ public class VeterinarioService {
     return (ArrayList<Veterinario>) veterinarioRepository.findByDeletedAtIsNull();
   }
 
-
   public Optional<Veterinario> getById(Long id){
     return veterinarioRepository.findByIDAndDeletedAtIsNull(id);
+  }
+
+  public Optional<Veterinario> getByUserId(Long id){
+    return veterinarioRepository.findByUserIDAndDeletedAtIsNull(id);
   }
 
   public Veterinario updateById(Veterinario vet, Long id){
