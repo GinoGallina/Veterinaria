@@ -102,27 +102,27 @@
 								<div class="table-responsive m-t-10">
 									<table id="DataTable" class="table table-bordered table-striped">
 										<thead>
-                                            <tr >
-                                                <th>Descripción</th>
-                                                <th>Precio</th>
-                                                <th>Historial Precios</th>
-                                                <th>Fecha</th>
-                                                <th>Última modif.</th>
-                                                <th>Acción</th>
-                                            </tr>
+											<tr >
+													<th>Descripción</th>
+													<th>Precio</th>
+													<th>Historial Precios</th>
+													<th>Fecha</th>
+													<th>Última modif.</th>
+													<th>Acción</th>
+											</tr>
 										</thead>
 										<tbody id="table_body">
-                                            <tr th:each="practica : ${practicas}" th:attr="data-id=${practica.ID}">
-                                                <td th:text="${practica.descripcion}"></td>
-                                                <td th:text="'$'+${practica.ultimoPrecio.valor}"></td>
-                                                <td class="text-center ">
-                                                    <select  class="bg-dark text-light" name="comboHistorialPrecios" id="">
-                                                        <option value='' disabled selected>--Ver Historial--</option>
-                                                        <option class="text-light"  th:each="precio : ${practica.precios}" th:text="${precio.valor}" value="" ></option>
-                                                    </select>
-                                                </td>
-                                                <td th:text="${#strings.replace(practica.ultimoPrecio.createdAt, 'T', ' ')}"></td>
-                                                <td th:text="${#strings.replace(practica.updatedAt, 'T', ' ')}"></td>
+											<tr th:each="practica : ${practicas}" th:attr="data-id=${practica.ID}">
+													<td th:text="${practica.descripcion}"></td>
+													<td th:text="'$'+${practica.ultimoPrecio.valor}"></td>
+													<td class="text-center ">
+															<select  class="bg-light text-dark" name="comboHistorialPrecios" id="">
+																	<option value='' disabled selected>--Ver Historial--</option>
+																	<option class="text-dark" disabled  th:each="precio : ${practica.precios}" th:text="'$'+${precio.valor}" value="" ></option>
+															</select>
+													</td>
+													<td th:text="${#strings.replace(practica.ultimoPrecio.createdAt, 'T', ' ')}"></td>
+													<td th:text="${#strings.replace(practica.updatedAt, 'T', ' ')}"></td>
 												<td class='d-flex justify-content-center'>
 													<button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-practica=${practica.toJson()}" onclick="edit(this.getAttribute('data-practica'))" data-toggle="modal" data-target="#modalCreate">
 														<i class="bi bi-pencil"></i>
@@ -156,6 +156,8 @@
 		
 		<!-- This is data table -->
 		<script src="../../static/lib/datatables/datatables.min.js"></script>
+
+		<script src="../../static/lib/moment/moment-with-locales.js"></script>
 		<script src="../../static/js/custom/practicas.js"></script>
 	</div>
 </body>

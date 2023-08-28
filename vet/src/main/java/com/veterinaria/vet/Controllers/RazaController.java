@@ -50,7 +50,7 @@ public class RazaController {
 		@PostMapping(produces = "application/json", consumes = "application/json")
       	public ResponseEntity<Object> save(@Validated(RazaDTO.PostAndPut.class) @RequestBody RazaDTO razaDTO) throws JsonProcessingException {
 			Optional<Raza> existingRaza = razaService.findByDescripcion(razaDTO.getDescripcion());
-          	Optional<Especie> existingEspecie = especieService.getById(razaDTO.getEspecieID()); 
+      Optional<Especie> existingEspecie = especieService.getById(razaDTO.getEspecieID()); 
 			Response json = new Response();
 			if (!existingEspecie.isPresent()) {
 				json.setMessage("No existe dicha especie");
@@ -58,8 +58,8 @@ public class RazaController {
 				return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);			
 			}
 			if (existingRaza.isPresent()) {
-				if (!especieService.getById(existingRaza.get().getID()).isPresent()) {
-					especieService.saveLogico(existingRaza.get().getID());
+				if (!razaService.getById(existingRaza.get().getID()).isPresent()) {
+					razaService.saveLogico(existingRaza.get().getID());
 					json.setMessage("La raza se encontraba eliminada y se ha recuperado");
 					json.setData(existingRaza.get().toJson());
 					return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
@@ -120,7 +120,7 @@ public class RazaController {
 			json.setTitle("ERROR");
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
 		}
-		especieService.eliminarLogico(razaDTO.getID());
+		razaService.eliminarLogico(razaDTO.getID());
 		json.setMessage("Se ha eliminado la raza");
 		json.setData(existingRaza.get().toJson());
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);

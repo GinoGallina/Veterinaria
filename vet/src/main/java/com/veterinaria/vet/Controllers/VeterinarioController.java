@@ -56,13 +56,13 @@ public class VeterinarioController{
 	}
 
 	@PostMapping(produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> save(@Validated(VeterinarioDTO.PutAndPost.class) @RequestBody VeterinarioDTO veterinarioDTO) throws JsonProcessingException {
+	public ResponseEntity<Object> save(@Validated({VeterinarioDTO.PutAndPost.class,VeterinarioDTO.Post.class}) @RequestBody VeterinarioDTO veterinarioDTO) throws JsonProcessingException {
 		Optional<Veterinario> existingVeterinario = veterinarioService.findByMatricula(veterinarioDTO.getMatricula());
 		Response json = new Response();
 		if (existingVeterinario.isPresent()) {
 			if (!veterinarioService.getById(existingVeterinario.get().getID()).isPresent()) {
 				veterinarioService.saveLogico(existingVeterinario.get().getID());
-				json.setMessage("El Veterinario se encontraba eliminado y se ha recuperado");
+				json.setMessage("El Veterinario se encontraba eliminado y se ha recuperado con sus datos antiguos");
 				json.setData(existingVeterinario.get().toJson());
 
 				//REESTABLECER USUARIO

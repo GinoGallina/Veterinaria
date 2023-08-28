@@ -50,7 +50,7 @@ public class ProductosController {
         if (existingProducto.isPresent()) {
             if (!productosAdminService.getById(existingProducto.get().getID()).isPresent()) {
                 productosAdminService.saveLogico(existingProducto.get().getID());
-                json.setMessage("El producto se encontraba eliminado y se ha recuperado");
+                json.setMessage("El producto se encontraba eliminado y se ha recuperado con sus datos anteriores");
                 json.setData(existingProducto.get().toJson());
                 return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
             } else {

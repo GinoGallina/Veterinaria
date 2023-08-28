@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.groups.Default;
 
 
@@ -19,6 +20,8 @@ public class RazaDTO {
 
     @NotBlank(message = "El campo descripción no puede estar vacío",groups = { PostAndPut.class })
     @NotNull(message = "El campo descripción no puede estar vacío", groups = { PostAndPut.class })
+    @Pattern(regexp = "^[a-zA-Z\\s\\p{Punct}]*$", message = "La descripción solo debe contener letras, espacios o caracteres especiales", groups = {
+            PostAndPut.class })
     private String descripcion;
 
     public String toJson() throws JsonProcessingException {

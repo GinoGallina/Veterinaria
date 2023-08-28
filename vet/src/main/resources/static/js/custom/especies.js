@@ -79,8 +79,12 @@ function sendForm(action) {
             }
         },
         error: function (errorThrown) {
-            let errorMessage = errorThrown.responseJSON.messages.join("<br>");
-            console.log(errorMessage)
+            let errorMessage;
+            if(errorThrown.responseJSON.messages){
+                errorMessage = errorThrown.responseJSON.messages.join("<br>");
+            } else{
+                errorMessage= errorThrown.responseJSON.message;
+            }
             Swal.fire({
             icon: "error",
             title: errorThrown.responseJSON.title,

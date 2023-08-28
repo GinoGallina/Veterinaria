@@ -14,7 +14,7 @@ function fillTable(item) {
     let content = `
         <tr data-id='${item.id}'>
             <td>${item.descripcion}</td>
-            <td>${item.precio}</td>
+            <td>$${item.precio}</td>
             <td>${item.stock}</td>
             <td class='d-flex flex-row justify-content-center'>
                 <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-producto=${JSON.stringify(item)} onclick="edit(this.getAttribute('data-producto'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
@@ -63,8 +63,8 @@ function sendForm(action) {
         stock: $(form).find('[name="stock"]').val(), // Ajusta el nombre del campo según tu formulario
         // Otros campos del formulario aquí
     };
-    console.log(formData)
     // Enviar solicitud AJAX
+    console.log(formData)
     $.ajax({
         url: $(form).attr("action"), // Utiliza la ruta del formulario
         method: $(form).attr("method"), // Utiliza el método del formulario
@@ -88,7 +88,11 @@ function sendForm(action) {
             }
         },
         error: function (errorThrown) {
-            let errorMessage = errorThrown.responseJSON.messages.join("<br>");
+            if(errorThrown.responseJSON.messages){
+                errorMessage = errorThrown.responseJSON.messages.join("<br>");
+            } else{
+                errorMessage= errorThrown.responseJSON.message;
+            }
             Swal.fire({
             icon: "error",
             title: errorThrown.responseJSON.title,

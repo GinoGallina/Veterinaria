@@ -9,14 +9,24 @@ $.ajaxSetup({
     }
 });
 
+moment.locale('es');
 
 function fillTable(item) {
+    console.log(item)
+    const formattedCreatedAt = moment(item.createdAt).format('YYYY-MM-DD hh::mm::ss');
+    const formattedUpdatedAt = moment(item.createdAt).format('YYYY-MM-DD hh::mm::ss');
     let content = `
         <tr data-id='${item.id}'>
             <td>${item.descripcion}</td>
-            <td>${item.ultimoPrecio.valor}</td>
-            <td>${item.ultimoPrecio.createdAt}</td>
-            <td>${item.updatedAt}</td>
+            <td>$${item.ultimoPrecio.valor}</td>
+            <td class="text-center ">
+            <select  class="bg-light text-dark" name="comboHistorialPrecios" id="">
+            <option value='' disabled selected>--Ver Historial--</option>
+            <option class="text-dark" disabled  value="" >$${item.ultimoPrecio.valor}</option>
+            </select>
+            </td>
+            <td>${formattedCreatedAt}</td>
+            <td>${formattedUpdatedAt}</td>
             <td class='d-flex flex-row justify-content-center'>
                 <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-practica=${JSON.stringify(item)} onclick="edit(this.getAttribute('data-practica'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
                 <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id=${item.id} onclick="deleteObj(this.getAttribute('data-id'))"><i class='bi bi-trash3'></i></button>
@@ -27,6 +37,7 @@ function fillTable(item) {
 
 function removeFromTable(id) {
     $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
+    console.log("aaa")
 }
 
 function deleteObj(id) {
@@ -84,7 +95,11 @@ function sendForm(action) {
             }
         },
         error: function (errorThrown) {
-            let errorMessage = errorThrown.responseJSON.messages.join("<br>");
+            if(errorThrown.responseJSON.messages){
+                errorMessage = errorThrown.responseJSON.messages.join("<br>");
+            } else{
+                errorMessage= errorThrown.responseJSON.message;
+            }
             Swal.fire({
             icon: "error",
             title: errorThrown.responseJSON.title,

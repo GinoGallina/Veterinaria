@@ -71,6 +71,7 @@ public class PracticaController {
         if (existingPractica.isPresent()) {
             if (!practicaService.getById(existingPractica.get().getID()).isPresent()) {
                 practicaService.saveLogico(existingPractica.get().getID());
+                existingPractica.get().setUltimoPrecio(existingPractica.get().getLastPrice());
                 json.setMessage("La pracrica se encontraba eliminada y se ha recuperado");
                 json.setData(existingPractica.get().toJson());
                 precio.setPractica(existingPractica.get());
@@ -90,7 +91,8 @@ public class PracticaController {
         precio.setPractica(savedPractica);
         precio.setValor(practicaDTO.getPrecio());
         precioService.savePrecio(precio);
-        
+        savedPractica.setUltimoPrecio(precio);
+
         json.setMessage("Se ha guardado la práctica");
         json.setData(savedPractica.toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);

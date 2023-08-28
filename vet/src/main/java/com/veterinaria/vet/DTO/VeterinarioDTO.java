@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.groups.Default;
 
 public class VeterinarioDTO {
@@ -15,32 +16,40 @@ public class VeterinarioDTO {
     private Long ID;
 
     @NotBlank(message = "El campo matricula no puede estar vacío", groups = { PutAndPost.class })
-    @NotNull(message = "El campo matricula no puede estar vacío",groups = { PutAndDelete.class }) 
+    @NotNull(message = "El campo matricula no puede estar vacío",groups = { PutAndPost.class }) 
     private String matricula;
 
     @NotBlank(message = "El campo nombre no puede estar vacío", groups = { PutAndPost.class })
-    @NotNull(message = "El campo nombre no puede estar vacío",groups = { PutAndDelete.class }) 
+    @NotNull(message = "El campo nombre no puede estar vacío",groups = { PutAndPost.class })
+    @Pattern(regexp = "^[a-zA-Z\\s]*$", message = "El nombre solo debe contener letras y espacios", groups = {
+        PutAndPost.class }) 
     private String nombre;
 
     @NotBlank(message = "El campo apellido no puede estar vacío", groups = { PutAndPost.class })
-    @NotNull(message = "El campo apellido no puede estar vacío",groups = { PutAndDelete.class }) 
+    @NotNull(message = "El campo apellido no puede estar vacío",groups = { PutAndPost.class })
+    @Pattern(regexp = "^[a-zA-Z\\s]*$", message = "El apellido solo debe contener letras y espacios", groups = {
+        PutAndPost.class })
     private String apellido;
 
     @NotBlank(message = "El campo direccion no puede estar vacío", groups = { PutAndPost.class })
-    @NotNull(message = "El campo direccion no puede estar vacío",groups = { PutAndDelete.class }) 
+    @NotNull(message = "El campo direccion no puede estar vacío",groups = { PutAndPost.class })
+    @Pattern(regexp = "^[a-zA-Z0-9\\s]*$", message = "La dirección debe contener letras, números o espacios", groups = {
+        PutAndPost.class }) 
     private String direccion;
 
     @NotBlank(message = "El campo telefono no puede estar vacío", groups = { PutAndPost.class })
-    @NotNull(message = "El campo telefono no puede estar vacío",groups = { PutAndDelete.class }) 
+    @NotNull(message = "El campo telefono no puede estar vacío",groups = { PutAndPost.class })
+    @Pattern(regexp = "^[0-9]{9}$", message = "El telefono debe se de 9 digitos", groups = {
+        PutAndPost.class }) 
     private String telefono;
 
     @NotBlank(message = "El campo telefono no puede estar vacío", groups = { PutAndPost.class })
     @Email(message = "El campo email debe ser una dirección de correo electrónico válida")
-    @NotNull(message = "El campo email no puede estar vacío",groups = { PutAndDelete.class }) 
+    @NotNull(message = "El campo email no puede estar vacío",groups = { PutAndPost.class }) 
     private String email;
     
-    @NotBlank(message = "El campo password no puede estar vacío", groups = { PutAndPost.class })
-    @NotNull(message = "El campo password no puede estar vacío",groups = { PutAndDelete.class }) 
+    @NotBlank(message = "El campo contrase\u00F1a no puede estar vacío", groups = { Post.class })
+    @NotNull(message = "El campo contraseña no puede estar vacío",groups = { Post.class }) 
     private String password;
     
     public Long getID() {
@@ -112,6 +121,8 @@ public class VeterinarioDTO {
     }
 
     public interface PutAndPost extends Default {
+    }
+    public interface Post extends Default {
     }
 
     public String getEmail() {

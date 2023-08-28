@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.veterinaria.vet.Models.Response;
 
@@ -29,6 +30,14 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ModelAndView handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        ModelAndView modelAndView = new ModelAndView("Shared/Error");
+        modelAndView.addObject("code", 404);
+        System.out.println(e.getMessage());
+        modelAndView.addObject("message", "P\u00E1gina no encontrada");
+        return modelAndView;
+    }
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ModelAndView handleNoHandlerFoundException(NoHandlerFoundException e) {
         ModelAndView modelAndView = new ModelAndView("Shared/Error");
         modelAndView.addObject("code", 404);
         System.out.println(e.getMessage());
@@ -65,11 +74,6 @@ public class GlobalExceptionHandler {
         List<String> errorMessages = new ArrayList<>();
         for (ObjectError error : errors) {
             errorMessages.add(error.getDefaultMessage());
-        }
-        if(errorMessages.contains("")){
-
-        }else{
-            
         }
         Response json = new Response();
         json.setMessages(errorMessages);

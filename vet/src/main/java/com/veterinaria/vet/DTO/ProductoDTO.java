@@ -5,11 +5,13 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.veterinaria.vet.DTO.RazaDTO.PostAndPut;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.groups.Default;
 
 public class ProductoDTO {
@@ -18,6 +20,8 @@ public class ProductoDTO {
     
     @NotBlank(message = "El campo descripcion no puede estar vacío", groups = { PutAndPost.class })
     @NotNull(message = "El campo descripcion no puede estar vacío", groups = { PutAndPost.class })
+        @Pattern(regexp = "^[a-zA-Z\\s\\p{Punct}]*$", message = "La descripción solo debe contener letras, espacios o caracteres especiales", groups = {
+            PostAndPut.class })
     private String descripcion;
 
     @NotNull(message = "El campo precio no puede estar vacío", groups = { PutAndPost.class })
@@ -28,7 +32,7 @@ public class ProductoDTO {
 
     @NotNull(message = "El campo stock no puede estar vacío",groups = { PutAndPost.class })
     @Min(value = 0, message = "El stock debe ser mayor o igual a cero", groups = { PutAndPost.class })
-    private int stock;
+    private Integer stock;
 
 
     public String toJson() throws JsonProcessingException {
@@ -62,11 +66,11 @@ public class ProductoDTO {
     }
 
 
-    public int getStock() {
+    public Integer getStock() {
       return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
       this.stock = stock;
     }
     public interface PutAndDelete extends Default {
