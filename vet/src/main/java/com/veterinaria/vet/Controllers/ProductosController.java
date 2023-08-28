@@ -38,7 +38,7 @@ public class ProductosController {
         ArrayList<Producto> productos = this.productosAdminService.getAllProductos();
         ModelAndView modelAndView = new ModelAndView("Productos/Index");
         modelAndView.addObject("productos", productos);
-        modelAndView.addObject("user", 11);
+        modelAndView.addObject("user_role", session.getAttribute("user_role"));
         return modelAndView;
     }
     

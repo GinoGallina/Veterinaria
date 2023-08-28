@@ -19,12 +19,19 @@ import com.veterinaria.vet.Models.Response;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    
+    @ExceptionHandler(Exception.class)
+    public ModelAndView handleException(Exception e) {
+        ModelAndView modelAndView = new ModelAndView("Shared/Error");
+        modelAndView.addObject("code", 500);
+        modelAndView.addObject("message", "Error interno del servidor");
+        return modelAndView;
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public ModelAndView handleRuntimeException(RuntimeException e) {
         ModelAndView modelAndView = new ModelAndView("Shared/Error");
         modelAndView.addObject("code", 403);
-        System.out.println(e.getMessage());
         modelAndView.addObject("message", e.getMessage());
         return modelAndView;
     }
@@ -32,7 +39,6 @@ public class GlobalExceptionHandler {
     public ModelAndView handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         ModelAndView modelAndView = new ModelAndView("Shared/Error");
         modelAndView.addObject("code", 404);
-        System.out.println(e.getMessage());
         modelAndView.addObject("message", "P\u00E1gina no encontrada");
         return modelAndView;
     }
@@ -40,7 +46,6 @@ public class GlobalExceptionHandler {
     public ModelAndView handleNoHandlerFoundException(NoHandlerFoundException e) {
         ModelAndView modelAndView = new ModelAndView("Shared/Error");
         modelAndView.addObject("code", 404);
-        System.out.println(e.getMessage());
         modelAndView.addObject("message", "P\u00E1gina no encontrada");
         return modelAndView;
     }

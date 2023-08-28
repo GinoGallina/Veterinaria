@@ -22,82 +22,75 @@ import com.veterinaria.vet.Models.Proveedor;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.ProveedorService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/Proveedores")
 public class ProveedorController {
-  
+
     @Autowired
     private ProveedorService proveedorService;
 
-
-      @GetMapping(path = "/Index")
-      public ModelAndView getProveedores(){
-          ArrayList<Proveedor> proveedores =  this.proveedorService.getAllProveedores();
-          ArrayList<String> header = new ArrayList<>();
-          header.add("CUIL");
-          header.add("Dirección");
-          header.add("Email");
-          header.add("Teléfono");
-          header.add("Razón Social");
-          ModelAndView modelAndView = new ModelAndView("Proveedores/Index");
-          modelAndView.addObject("proveedores", proveedores);
-          modelAndView.addObject("header", header);
-          return modelAndView;
-      }
-
-
-
-      @PostMapping(produces = "application/json", consumes = "application/json")
-      public ResponseEntity<Object> save(@Validated(ProveedorDTO.PutAndPost.class) @RequestBody ProveedorDTO proveedorDTO) throws JsonProcessingException {
-          Optional<Proveedor> existingProveedorEmail = proveedorService.findByEmail(proveedorDTO.getEmail());
-          Optional<Proveedor> existingProveedorCuil = proveedorService.findByCuil(proveedorDTO.getCuil());
-          Optional<Proveedor> existingProveedor = existingProveedorEmail.or(() -> existingProveedorCuil);
-          Response json = new Response();
-          if (existingProveedor.isPresent()) {
-              if (!proveedorService.getById(existingProveedor.get().getID()).isPresent()) {
-                  proveedorService.saveLogico(existingProveedor.get().getID());
-                  json.setMessage("El Proveedor se encontraba eliminado y se ha recuperado");
-                  json.setData(existingProveedor.get().toJson());
-                  return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-              } else {
-                  json.setMessage("El Proveedor ingresado ya existe");
-                  json.setTitle("ERROR");
-                  return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-              }
-          }
-          Proveedor proveedor = new Proveedor();
-          proveedor.setCuil(proveedorDTO.getCuil());
-          proveedor.setDireccion(proveedorDTO.getDireccion());
-          proveedor.setTelefono(proveedorDTO.getTelefono());
-          proveedor.setEmail(proveedorDTO.getEmail());
-          proveedor.setRazonSocial(proveedorDTO.getRazonSocial());
-          Proveedor savedProveedor = proveedorService.saveProveedor(proveedor);
-          json.setMessage("Se ha guardado el proveedor");
-          json.setData(savedProveedor.toJson());
-          return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+    @GetMapping(path = "/Index")
+    public ModelAndView getProveedores(HttpSession session) {
+        ArrayList<Proveedor> proveedores = this.proveedorService.getAllProveedores();
+        ModelAndView modelAndView = new ModelAndView("Proveedores/Index");
+        modelAndView.addObject("proveedores", proveedores);
+        modelAndView.addObject("user_role", session.getAttribute("user_role"));
+        return modelAndView;
     }
 
-
-
-
-      @PutMapping(produces = "application/json", consumes = "application/json")
-      public ResponseEntity<Object> updateProveedor(@Validated({ProveedorDTO.PutAndDelete.class,ProveedorDTO.PutAndPost.class}) @RequestBody ProveedorDTO proveedorDTO) throws JsonProcessingException{
+    @PostMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> save(@Validated(ProveedorDTO.PutAndPost.class) @RequestBody ProveedorDTO proveedorDTO)
+            throws JsonProcessingException {
         Optional<Proveedor> existingProveedorEmail = proveedorService.findByEmail(proveedorDTO.getEmail());
         Optional<Proveedor> existingProveedorCuil = proveedorService.findByCuil(proveedorDTO.getCuil());
         Optional<Proveedor> existingProveedor = existingProveedorEmail.or(() -> existingProveedorCuil);
         Response json = new Response();
-        if(existingProveedor.isPresent()){
+        if (existingProveedor.isPresent()) {
+            if (!proveedorService.getById(existingProveedor.get().getID()).isPresent()) {
+                proveedorService.saveLogico(existingProveedor.get().getID());
+                json.setMessage("El Proveedor se encontraba eliminado y se ha recuperado");
+                json.setData(existingProveedor.get().toJson());
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+            } else {
+                json.setMessage("El Proveedor ingresado ya existe");
+                json.setTitle("ERROR");
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+            }
+        }
+        Proveedor proveedor = new Proveedor();
+        proveedor.setCuil(proveedorDTO.getCuil());
+        proveedor.setDireccion(proveedorDTO.getDireccion());
+        proveedor.setTelefono(proveedorDTO.getTelefono());
+        proveedor.setEmail(proveedorDTO.getEmail());
+        proveedor.setRazonSocial(proveedorDTO.getRazonSocial());
+        Proveedor savedProveedor = proveedorService.saveProveedor(proveedor);
+        json.setMessage("Se ha guardado el proveedor");
+        json.setData(savedProveedor.toJson());
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+    }
+
+    @PutMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> updateProveedor(
+            @Validated({ ProveedorDTO.PutAndDelete.class,
+                    ProveedorDTO.PutAndPost.class }) @RequestBody ProveedorDTO proveedorDTO)
+            throws JsonProcessingException {
+        Optional<Proveedor> existingProveedorEmail = proveedorService.findByEmail(proveedorDTO.getEmail());
+        Optional<Proveedor> existingProveedorCuil = proveedorService.findByCuil(proveedorDTO.getCuil());
+        Optional<Proveedor> existingProveedor = existingProveedorEmail.or(() -> existingProveedorCuil);
+        Response json = new Response();
+        if (existingProveedor.isPresent()) {
             json.setMessage("Ya existe un proveedor con ese mailo cuil");
             json.setTitle("ERROR");
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST); 
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
         }
         Optional<Proveedor> proveedor = proveedorService.getById(proveedorDTO.getID());
-        if(proveedor.isEmpty()){
+        if (proveedor.isEmpty()) {
             json.setMessage("El proveedor no existe");
             json.setTitle("ERROR");
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
         }
         proveedor.get().setID(proveedorDTO.getID());
         proveedor.get().setCuil(proveedorDTO.getCuil());
@@ -105,21 +98,23 @@ public class ProveedorController {
         proveedor.get().setTelefono(proveedorDTO.getTelefono());
         proveedor.get().setEmail(proveedorDTO.getEmail());
         proveedor.get().setRazonSocial(proveedorDTO.getRazonSocial());
-        Proveedor updatedProveedor=this.proveedorService.updateById(proveedor.get(),(long) proveedor.get().getID());
+        Proveedor updatedProveedor = this.proveedorService.updateById(proveedor.get(), (long) proveedor.get().getID());
         json.setMessage("Se ha actualizado la Proveedor");
         json.setData(updatedProveedor.toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-      }
+    }
 
-      @DeleteMapping(produces = "application/json", consumes = "application/json")
-      @Transactional
-      public ResponseEntity<Object> eliminarProveedor(@Validated(ProveedorDTO.PutAndDelete.class) @RequestBody ProveedorDTO proveedorDTO) throws JsonProcessingException {
+    @DeleteMapping(produces = "application/json", consumes = "application/json")
+    @Transactional
+    public ResponseEntity<Object> eliminarProveedor(
+            @Validated(ProveedorDTO.PutAndDelete.class) @RequestBody ProveedorDTO proveedorDTO)
+            throws JsonProcessingException {
         Optional<Proveedor> existingProveedor = proveedorService.getById(proveedorDTO.getID());
         Response json = new Response();
-        if(existingProveedor.isEmpty()){
+        if (existingProveedor.isEmpty()) {
             json.setMessage("El proveedor no existe");
             json.setTitle("ERROR");
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
         }
         Proveedor proveedor = new Proveedor();
         proveedor.setID(proveedorDTO.getID());
@@ -132,9 +127,6 @@ public class ProveedorController {
         json.setMessage("Se ha eliminado el Proveedor");
         json.setData(existingProveedor.get().toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-      }  
-
-
-
+    }
 
 }

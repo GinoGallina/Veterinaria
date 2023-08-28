@@ -48,7 +48,13 @@
 					<div class="col-12">
 						<div class="card shadow">
 							<div class="card-body">
-								<h2 class="card-title">Listado de reservas</h2>
+								<div th:if="${user_role == '[USER]'}" class="d-flex flex-row justify-content-between">
+									<h2 class="card-title">Listado de reservas</h2>
+									<a href="/Reservas/New" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right">Nueva reserva</a>
+								</div>
+								<div th:if="${user_role != '[USER]'}">
+									<h2 class="card-title">Listado de reservas</h2>
+								</div>
 								<div class="table-responsive m-t-10">
 									<table id="DataTable" class="table table-bordered table-striped">
 										<thead>
@@ -59,7 +65,7 @@
 												<th>Cantidad</th>
 												<th>Subtotal</th>
 												<th>Total</th>
-												<th>Acción</th>
+												<th th:if="${user_role != '[USER]'}">Acción</th>
 											</tr>
 										</thead>
 										<tbody id="table_body">
@@ -80,7 +86,7 @@
 												<td>
 													<span th:attr="data-total=${reserva.toJson()}" name="calculateTotal"></span>
 												</td>
-												<td class='d-flex justify-content-center align-items-center'>
+												<td th:if="${user_role != '[USER]'}" class='d-flex justify-content-center align-items-center'>
 													<button type='button' class='btn btn-danger btn-rounded btn-sm' th:attr="data-id=${reserva.ID}" onclick="deleteObj(this.getAttribute('data-id'))">
 														<i class='bi bi-trash3'></i>
 													</button>
@@ -94,7 +100,7 @@
 					</div>
 				</div>
 
-				<form id="form-delete" method="DELETE" action="/Reservas">
+				<form th:if="${user_role != '[USER]'}" id="form-delete" method="DELETE" action="/Reservas">
 					<input type="hidden" name="id" value="">
 				</form>
 

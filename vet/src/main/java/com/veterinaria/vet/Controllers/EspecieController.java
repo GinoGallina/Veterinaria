@@ -21,6 +21,7 @@ import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.EspecieService;
 import com.veterinaria.vet.annotations.CheckLogin;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 
@@ -34,10 +35,11 @@ public class EspecieController {
 
         @GetMapping(path = "/Index")
         @CheckLogin
-        public ModelAndView getEspecies(){
+        public ModelAndView getEspecies(HttpSession session){
             ArrayList<Especie> especies =  this.especieService.getAllEspecies();
             ModelAndView modelAndView = new ModelAndView("Especies/Index");
             modelAndView.addObject("especies", especies);
+            modelAndView.addObject("user_role", session.getAttribute("user_role"));
             return modelAndView;
         }
 

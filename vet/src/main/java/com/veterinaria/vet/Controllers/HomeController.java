@@ -32,6 +32,7 @@ public class HomeController {
     public ModelAndView inicio(HttpSession session) {
         ModelAndView modelAndView = new ModelAndView("Home/Index");
         modelAndView.addObject("user_email", session.getAttribute("user_email"));
+        modelAndView.addObject("user_role", session.getAttribute("user_role"));
         return modelAndView; // Nombre de la vista Thymeleaf (index.html)
     }
     @GetMapping("/prueba")

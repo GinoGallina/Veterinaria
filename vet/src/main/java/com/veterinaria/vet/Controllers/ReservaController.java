@@ -2,11 +2,15 @@ package com.veterinaria.vet.Controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,9 +28,15 @@ import com.veterinaria.vet.Services.ClienteService;
 import com.veterinaria.vet.Services.ProductosAdminService;
 import com.veterinaria.vet.Services.ReservaService;
 import com.veterinaria.vet.Services.ReservaProductoService;
+import com.veterinaria.vet.annotations.CheckAdmin;
 import com.veterinaria.vet.annotations.CheckLogin;
+import com.veterinaria.vet.annotations.CheckUser;
+import com.veterinaria.vet.annotations.CheckVet;
+
+import com.veterinaria.vet.DTO.ReservaDTO;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 
 @Controller
@@ -41,19 +51,29 @@ public class ReservaController {
         @Autowired
         private ReservaProductoService reservaProductoService;
 
-
+        @CheckLogin
         @GetMapping(path = "/Index")
-        public ModelAndView getReservas(){
-            ArrayList<Reserva> reservas =  this.reservaService.getAllReservas();
+        public ModelAndView getReservas(HttpSession session) {
+            String user_role = session.getAttribute("user_role").toString();
+            ArrayList<Reserva> reservas = new ArrayList<Reserva>();
+            if (user_role.equals("[ADMIN]")) {
+                reservas = this.reservaService.getAllReservas();
+            } else {
+                Long user_id = (Long)session.getAttribute("user_id");
+                Cliente cliente = this.clienteService.getByUserId(user_id).get();
+                reservas = this.reservaService.getReservasCliente(cliente.getID());
+            }
             ArrayList<Cliente> clientes =  this.clienteService.getAllClientes();
             ArrayList<Producto> productos =  this.productosAdminService.getAllProductos();
             ModelAndView modelAndView = new ModelAndView("Reservas/Index");
             modelAndView.addObject("clientes", clientes);
             modelAndView.addObject("reservas", reservas);
             modelAndView.addObject("productos", productos);
+            modelAndView.addObject("user_role", user_role);
             return modelAndView;
         }
 
+        @CheckUser
         @GetMapping(path = "/New")
         public ModelAndView New(){
             ModelAndView modelAndView = new ModelAndView("Reservas/New");
@@ -98,37 +118,28 @@ public class ReservaController {
             }
         }
 
-        /*@PutMapping(produces = "application/json", consumes = "application/json")
-        public ResponseEntity<Object> updateReserva(@Validated({ReservaDTO.PutAndDelete.class,ReservaDTO.PutAndPost.class}) @RequestBody ReservaDTO ReservaDTO) throws JsonProcessingException{
-            Optional<Reserva> existingReserva = reservaService.findByDescripcion(ReservaDTO.getDescripcion());
-            Response json = new Response();
-            if(existingReserva.isPresent()){
-                json.setMessage("La Reserva ingresada ya existe");
-                json.setTitle("ERROR");
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST); 
-            }
-            Reserva Reserva = new Reserva();
-            Reserva.setID(ReservaDTO.getID());
-            Reserva.setDescripcion(ReservaDTO.getDescripcion());
-            Reserva updatedReserva=this.reservaService.updateById(Reserva,(long) Reserva.getID());
-            json.setMessage("Se ha actualizado la Reserva");
-            json.setData(updatedReserva.toJson());
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-        }
-
+        @CheckAdmin
         @DeleteMapping(produces = "application/json", consumes = "application/json")
         @Transactional
         public ResponseEntity<Object> eliminarReserva(@Validated(ReservaDTO.PutAndDelete.class) @RequestBody ReservaDTO ReservaDTO) throws JsonProcessingException {
-            Optional<Reserva> existingReserva = reservaService.getById(ReservaDTO.getID());
-            Response json = new Response();
-            if(existingReserva.isEmpty()){
-                json.setMessage("La Reserva no existe");
+            try {
+                Optional<Reserva> existingReserva = reservaService.getById(ReservaDTO.getID());
+                Response json = new Response();
+                if (existingReserva.isEmpty()){
+                    json.setMessage("La reserva no existe");
+                    json.setTitle("ERROR");
+                    return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
+                }
+                reservaService.eliminarLogico(ReservaDTO.getID());
+                json.setMessage("Se ha eliminado la reserva");
+                json.setData(existingReserva.get().toJson());
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+            } catch (Exception e) {
+                Response json = new Response();
+                json.setMessage("No se ha podido guardar la reserva");
                 json.setTitle("ERROR");
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
+                json.setData(e.getMessage());
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
             }
-            reservaService.eliminarLogico(ReservaDTO.getID());
-            json.setMessage("Se ha eliminado la Reserva");
-            json.setData(existingReserva.get().toJson());
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-        } */ 
+        }
 }

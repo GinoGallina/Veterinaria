@@ -30,6 +30,8 @@ import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.PracticaService;
 import com.veterinaria.vet.Services.PrecioService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/Practicas")
 public class PracticaController {
@@ -44,7 +46,7 @@ public class PracticaController {
     }
 
     @GetMapping(path = "/Index")
-    public ModelAndView getPracticas() {
+    public ModelAndView getPracticas(HttpSession session) {
         ArrayList<Practica> practicas = this.practicaService.getAllPracticas();
 
         for (Practica practica : practicas) {
@@ -59,6 +61,7 @@ public class PracticaController {
 
         ModelAndView modelAndView = new ModelAndView("Practicas/Index");
         modelAndView.addObject("practicas", practicas);
+        modelAndView.addObject("user_role", session.getAttribute("user_role"));
         return modelAndView;
     }
 
@@ -119,13 +122,16 @@ public class PracticaController {
         practica.get().setID(practicaDTO.getID());
         practica.get().setDescripcion(practicaDTO.getDescripcion());
         Practica updatedPractica = this.practicaService.updateById(practica.get(), (long) practica.get().getID());
-        json.setMessage("Se ha actualizado la practica");
-        json.setData(updatedPractica.toJson());
+        
         Precio precio = new Precio();
         precio.setPractica(updatedPractica);
         precio.setValor(practicaDTO.getPrecio());
         precioService.savePrecio(precio);
-
+        
+        updatedPractica.setUltimoPrecio(precio);
+        
+        json.setMessage("Se ha actualizado la practica");
+        json.setData(updatedPractica.toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 

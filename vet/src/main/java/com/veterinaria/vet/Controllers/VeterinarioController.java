@@ -25,7 +25,7 @@ import com.veterinaria.vet.Security.Services.UserService;
 import com.veterinaria.vet.Services.VeterinarioService;
 import com.veterinaria.vet.Models.Response;
 
-
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -40,18 +40,12 @@ public class VeterinarioController{
 
 
 	@GetMapping(path = "/Index")
-	public ModelAndView getVeterinarios(){
+	public ModelAndView getVeterinarios(HttpSession session){
 		ArrayList<Veterinario> veterinarios =  this.veterinarioService.getAllVeterinarios();
 		ArrayList<String> header = new ArrayList<>();
-		header.add("Matricula");
-		header.add("Nombre");
-		header.add("Apellido");
-		header.add("Direccion");
-		header.add("Telefono");
-		header.add("User");
 		ModelAndView modelAndView = new ModelAndView("Veterinarios/Index");
 		modelAndView.addObject("veterinarios", veterinarios);
-		modelAndView.addObject("header", header);
+		modelAndView.addObject("user_role", session.getAttribute("user_role"));
 		return modelAndView;
 	}
 

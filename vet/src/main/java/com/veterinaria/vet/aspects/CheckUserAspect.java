@@ -10,15 +10,15 @@ import jakarta.servlet.http.HttpSession;
 
 @Aspect
 @Component
-public class CheckAdminAspect {
+public class CheckUserAspect {
 
     @Autowired
     private HttpSession httpSession;
 
-    @Before("@annotation(com.veterinaria.vet.annotations.CheckAdmin)")
-    public void checkAdminRole(JoinPoint joinPoint) throws Exception {
+    @Before("@annotation(com.veterinaria.vet.annotations.CheckUser)")
+    public void checkUserRole(JoinPoint joinPoint) throws Exception {
         Object userRole = httpSession.getAttribute("user_role");
-        if (userRole == null || !userRole.equals("[ADMIN]")) {
+        if (userRole == null || !userRole.equals("[USER]")) {
             throw new RuntimeException("No tienes permisos para acceder a esta página");
         }
     }

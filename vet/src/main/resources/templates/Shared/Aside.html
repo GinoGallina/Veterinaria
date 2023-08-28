@@ -9,28 +9,28 @@
 				<li>
 					<a class="waves-effect waves-dark" href="/inicio" aria-expanded="false"><i class="bi bi-house"></i><span class="hide-menu">Inicio</span></a>
 				</li>
-				<li>
+				<li th:if="${user_role == '[ADMIN]'}">
 					<a class="waves-effect waves-dark" href="/Veterinarios/Index" aria-expanded="false"><i class="fas fa-solid fa-user-doctor"></i><span class="hide-menu">Veterinarios</span></a>
 				</li>
-				<li>
+				<li th:if="${user_role == '[ADMIN]'}">
 					<a class="waves-effect waves-dark" href="/Proveedores/Index" aria-expanded="false"><i class="bi bi-truck"></i><span class="hide-menu">Proveedores</span></a>
 				</li>
-				<li>
+				<li th:unless="${user_role == '[USER]'}">
 					<a class="waves-effect waves-dark" href="/Clientes/Index" aria-expanded="false"><i class="bi bi-person-square"></i><span class="hide-menu">Clientes</span></a>
 				</li>
-				<li>
+				<li th:if="${user_role == '[VET]'}">
 					<a class="waves-effect waves-dark" href="/Practicas/Index" aria-expanded="false"><i class="bi bi-file-ppt"></i><span class="hide-menu">Practicas</span></a>
 				</li>
-				<li>
+				<li th:if="${user_role == '[ADMIN]'}">
 					<a class="waves-effect waves-dark" href="/Productos/Index" aria-expanded="false"><i class="bi bi-bag"></i><span class="hide-menu">Productos</span></a>
 				</li>
-				<li>
+				<li th:unless="${user_role == '[VET]'}">
 					<a class="waves-effect waves-dark" href="/Reservas/Index" aria-expanded="false"><i class="bi bi-receipt"></i><span class="hide-menu">Reservas</span></a>
 				</li>
 
-				<li class="nav-devider"></li>
-				<li class="nav-small-cap">CONFIGURACIÓN</li>
-				<li> <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i class="bi bi-gear"></i><span class="hide-menu">Configuración</span></a>
+				<li th:if="${user_role == '[ADMIN]'}" class="nav-devider"></li>
+				<li th:if="${user_role == '[ADMIN]'}" class="nav-small-cap">CONFIGURACIÓN</li>
+				<li th:if="${user_role == '[ADMIN]'}"> <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i class="bi bi-gear"></i><span class="hide-menu">Configuración</span></a>
 					<ul aria-expanded="false" class="collapse">
 						<li><a href="/Especies/Index">Especies</a></li>
 						<li><a href="/Razas/Index">Razas</a></li>

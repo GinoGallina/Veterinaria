@@ -43,8 +43,8 @@ public class AuthController {
 
     @PostMapping(path = "/login")
     public RedirectView login(HttpSession session, @Validated @ModelAttribute LoginUser login) throws LoginException {
-        boolean asd = usuarioService.login(login, session);
-        if (asd) {
+        boolean is_loggued= usuarioService.login(login, session);
+        if (is_loggued) {
             return new RedirectView("/inicio");
         }
         return new RedirectView("/Auth/Login");

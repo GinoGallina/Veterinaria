@@ -37,6 +37,7 @@ import com.veterinaria.vet.Services.PracticaService;
 import com.veterinaria.vet.Services.RazaService;
 import com.veterinaria.vet.Services.VeterinarioService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -60,18 +61,11 @@ public class ClienteController {
 
 
 	@GetMapping(path = "/Index")
-	public ModelAndView getClientes(){
+	public ModelAndView getClientes(HttpSession session){
 		ArrayList<Cliente> clientes =  clienteService.getAllClientes();
-		ArrayList<String> header = new ArrayList<>();
-		header.add("Dni");
-		header.add("Nombre");
-		header.add("Apellido");
-		header.add("Direccion");
-		header.add("Telefono");
-		header.add("User");
 		ModelAndView modelAndView = new ModelAndView("Clientes/Index");
 		modelAndView.addObject("clientes", clientes);
-		modelAndView.addObject("header", header);
+		modelAndView.addObject("user_role", session.getAttribute("user_role"));
 		return modelAndView;
 	}
 

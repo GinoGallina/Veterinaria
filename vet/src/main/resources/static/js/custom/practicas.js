@@ -12,7 +12,6 @@ $.ajaxSetup({
 moment.locale('es');
 
 function fillTable(item) {
-    console.log(item)
     const formattedCreatedAt = moment(item.createdAt).format('YYYY-MM-DD hh::mm::ss');
     const formattedUpdatedAt = moment(item.createdAt).format('YYYY-MM-DD hh::mm::ss');
     let content = `
@@ -20,10 +19,10 @@ function fillTable(item) {
             <td>${item.descripcion}</td>
             <td>$${item.ultimoPrecio.valor}</td>
             <td class="text-center ">
-            <select  class="bg-light text-dark" name="comboHistorialPrecios" id="">
-            <option value='' disabled selected>--Ver Historial--</option>
-            <option class="text-dark" disabled  value="" >$${item.ultimoPrecio.valor}</option>
-            </select>
+                <select  class="bg-light text-dark" name="comboHistorialPrecios" id="">
+                    <option value='' disabled selected>--Ver Historial--</option>
+                    <option class="text-dark" disabled  value="" >$${item.ultimoPrecio.valor}</option>
+                </select>
             </td>
             <td>${formattedCreatedAt}</td>
             <td>${formattedUpdatedAt}</td>
@@ -37,7 +36,6 @@ function fillTable(item) {
 
 function removeFromTable(id) {
     $('#DataTable').DataTable().row(`[data-id="${id}"]`).remove().draw();
-    console.log("aaa")
 }
 
 function deleteObj(id) {
@@ -71,7 +69,6 @@ function sendForm(action) {
       // Otros campos del formulario aquí
     };
     // Enviar solicitud AJAX
-    console.log(formData)
     $.ajax({
         url: $(form).attr("action"), // Utiliza la ruta del formulario
         method: $(form).attr("method"), // Utiliza el método del formulario
@@ -88,10 +85,10 @@ function sendForm(action) {
             if (action === "create") {
                 fillTable(data);
             } else if (action === "edit") {
+                removeFromTable(data.ID);
                 fillTable(data);
-                removeFromTable(data.id);
             } else {
-                removeFromTable(data.id);
+                removeFromTable(data.ID);
             }
         },
         error: function (errorThrown) {
@@ -101,10 +98,10 @@ function sendForm(action) {
                 errorMessage= errorThrown.responseJSON.message;
             }
             Swal.fire({
-            icon: "error",
-            title: errorThrown.responseJSON.title,
-            html: errorMessage,
-            confirmButtonColor: "#1e88e5",
+                icon: "error",
+                title: errorThrown.responseJSON.title,
+                html: errorMessage,
+                confirmButtonColor: "#1e88e5",
             });
         },
     });
@@ -112,7 +109,6 @@ function sendForm(action) {
 
 function edit(json) {
     let entity = JSON.parse(json);
-    console.log(entity)
     $("#formContainer form input:not([type='hidden']").val("");
     $("input[name='id']").val(entity.ID);
     $("input[name='id']").prop("disabled", false);
