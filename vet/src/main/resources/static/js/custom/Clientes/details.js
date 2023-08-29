@@ -1,14 +1,3 @@
-$.ajaxSetup({
-    beforeSend: function (xhr) {
-        // Obtener el token de localStorage
-        const token = localStorage.getItem('token');
-        if (token) {
-            // Agregar el token en el encabezado Authorization con el formato Bearer
-            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-        }
-    }
-});
-
 $(document).ready(function () {
     $('.format-date-with-time').each(function () {
         let originalDate = $(this).text();
@@ -168,6 +157,7 @@ function sendForm(action) {
                 icon: "success",
                 title: response.message,
                 confirmButtonColor: "#1e88e5",
+                allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
                     location.reload();

@@ -26,7 +26,6 @@ import com.veterinaria.vet.Models.Mascota;
 import com.veterinaria.vet.Models.Practica;
 import com.veterinaria.vet.Models.Raza;
 import com.veterinaria.vet.Models.Response;
-import com.veterinaria.vet.Models.Veterinario;
 import com.veterinaria.vet.Security.DTO.NewUser;
 import com.veterinaria.vet.Security.Models.User;
 import com.veterinaria.vet.Security.Services.UserService;
@@ -35,7 +34,6 @@ import com.veterinaria.vet.Services.ClienteService;
 import com.veterinaria.vet.Services.MascotaService;
 import com.veterinaria.vet.Services.PracticaService;
 import com.veterinaria.vet.Services.RazaService;
-import com.veterinaria.vet.Services.VeterinarioService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -54,8 +52,6 @@ public class ClienteController {
     private AtencionService atencionService;
     @Autowired
     private RazaService razaService;
-    @Autowired
-    private VeterinarioService veterinarioService;
     @Autowired
     private PracticaService practicaService;
 

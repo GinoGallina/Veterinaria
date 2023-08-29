@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="../../static/images/favicon.png">
+    <title>Inicio</title>
+
+    <div th:replace="Shared/Styles:: styles"></div>
+</head>
+
+<body class="fix-header fix-sidebar card-no-border mini-sidebar">
+    <div th:replace="Shared/Preloader:: preloader"></div>
+
+    <div id="main-wrapper">
+        <div th:replace="Shared/Header:: header"></div>
+        <div th:replace="Shared/Aside:: aside"></div>
+
+        <main class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 col-8 align-self-center">
+                        <h3 class="text-themecolor m-b-0 m-t-0">Proveedores</h3>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="/Proveedores/Index">Proveedores</a></li>
+                            <li class="breadcrumb-item active">Deudas</li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+                <!-- Modal deuda -->
+                <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                    <div id="formContainer" class="modal-dialog">
+                        <form role="form" class="" method="POST" action="/Proveedores" id="form-create" autocomplete="off">
+                            <input type="hidden" name="id" value="" />
+                            <input type="hidden" name="proveedorID" th:value="${proveedor.iD}" />
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Agregar deuda</h4>
+                                    <button type="button" class="close" id="btnCloseModal" data-dismiss="modal" aria-hidden="true">×</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-column">
+                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                <div class="col-12 mb-3">
+                                                    <label for="descripcion" class="mb-0">Descripción</label>
+                                                    <input name="descripcion" id="descripcion" class="form-control" required />
+                                                </div>
+                                                <div class="col-12 mb-3">
+                                                    <label for="precio" class="mb-0">Precio</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input name="precio" id="precio" class="form-control" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
+                                    <button id="btnSendDebt" type="button" class="btn btn-success waves-effect waves-light">Agregar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- End Modal -->
+
+                <!-- Modal pago -->
+                <div id="modalPay" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog">
+                        <form role="form" class="" method="POST" action="/Proveedores/PagarDeuda" id="form-pay" autocomplete="off">
+                            <input type="hidden" name="deudaID" value="" />
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 id="modalTitle" class="modal-title">Pagar deuda</h3>
+                                    <button type="button" class="close ml-auto" id="btnCloseModalPay" data-dismiss="modal" aria-hidden="true">×</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-column">
+                                                <div class="col-12 mb-3">
+                                                    <label for="pago" class="mb-0">Pago</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">$</span>
+                                                        </div>
+                                                        <input name="pago" id="pago" class="form-control" />
+                                                    </div>
+                                                    <h4 id="modalSubtitle" class="modal-subtitle mt-1" style="color: #99abb4"></h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
+                                    <button id="btnSendPay" type="button" class="btn btn-success waves-effect waves-light">Pagar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- End Modal -->
+
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="text-center" th:text="${proveedor.razonSocial}"></h2>
+                        <hr />
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="d-flex flex-row justify-content-between">
+                                    <h2 class="card-title">Listado de deudas</h2>
+                                    <button id="btnAdd" type="button" class="btn btn-info btn-rounded waves-effect waves-light m-t-10 float-right" data-toggle="modal" data-target="#modalCreate">Agregar deuda</button>
+                                </div>
+                                <div class="table-responsive m-t-10">
+                                    <table id="DataTable" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-4">Descripción</th>
+                                                <th class="col-2">Monto</th>
+                                                <th class="col-2">Pagado</th>
+                                                <th class="col-2">Fecha</th>
+                                                <th class="col-2">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body">
+                                            <tr th:each="deuda : ${deudas}" th:attr="data-id=${deuda.ID}">
+                                                <td th:text="${deuda.descripcion}"></td>
+                                                <td th:text="'$' + ${deuda.precio}"></td>
+                                                <td th:text="'$' + ${deuda.getTotalPagos()}"></td>
+                                                <td th:text="${deuda.createdAt}" class="format-date-with-time"></td>
+                                                <td>
+                                                    <div class="d-flex justify-content-center">
+                                                        <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-deuda=${deuda.toJson()}" onclick="pay(this.getAttribute('data-deuda'))" data-toggle="modal" data-target="#modalPay">
+                                                            <i class="bi bi-cash"></i>
+                                                        </button>
+                                                        <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' th:attr="data-id=${deuda.ID}" onclick="deleteObj(this.getAttribute('data-id'))">
+                                                            <i class='bi bi-trash3'></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <form id="form-delete" method="DELETE" action="/Proveedores">
+                                    <input type="hidden" name="id" value="">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        <div th:replace="Shared/Footer :: footer"></div>
+        <div th:replace="Shared/Scripts:: scripts"></div>
+
+
+        <!-- Data table -->
+        <link href="../../static/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
+        
+        <!-- This is data table -->
+        <script src="../../static/lib/datatables/datatables.min.js"></script>
+        <script src="../../static/js/custom/Proveedores/deudas.js"></script>
+    </div>
+</body>
+
+</html>

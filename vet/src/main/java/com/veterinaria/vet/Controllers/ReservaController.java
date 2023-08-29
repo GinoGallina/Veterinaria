@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +30,6 @@ import com.veterinaria.vet.Services.ReservaProductoService;
 import com.veterinaria.vet.annotations.CheckAdmin;
 import com.veterinaria.vet.annotations.CheckLogin;
 import com.veterinaria.vet.annotations.CheckUser;
-import com.veterinaria.vet.annotations.CheckVet;
 
 import com.veterinaria.vet.DTO.ReservaDTO;
 

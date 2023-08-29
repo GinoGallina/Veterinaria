@@ -42,7 +42,6 @@ public class VeterinarioController{
 	@GetMapping(path = "/Index")
 	public ModelAndView getVeterinarios(HttpSession session){
 		ArrayList<Veterinario> veterinarios =  this.veterinarioService.getAllVeterinarios();
-		ArrayList<String> header = new ArrayList<>();
 		ModelAndView modelAndView = new ModelAndView("Veterinarios/Index");
 		modelAndView.addObject("veterinarios", veterinarios);
 		modelAndView.addObject("user_role", session.getAttribute("user_role"));

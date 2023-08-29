@@ -1,25 +1,19 @@
-$.ajaxSetup({
-    beforeSend: function (xhr) {
-        // Obtener el token de localStorage
-        const token = localStorage.getItem('token');
-        if (token) {
-            // Agregar el token en el encabezado Authorization con el formato Bearer
-            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-        }
-    }
-});
+selectProveedor = (id) => {
+    window.location.href = "/Proveedores/Details/" + id;
+}
 
 function fillTable(item) {
     let content = `
         <tr data-id='${item.id}'>
+            <td>${item.razonSocial}</td>
             <td>${item.cuil}</td>
             <td>${item.email}</td>
             <td>${item.telefono}</td>
             <td>${item.direccion}</td>
-            <td>${item.razonSocial}</td>
             <td class='d-flex flex-row justify-content-center'>
                 <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-proveedor=${JSON.stringify(item)} onclick="edit(this.getAttribute('data-proveedor'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id=${item.id} onclick="deleteObj(this.getAttribute('data-id'))"><i class='bi bi-trash3'></i></button>
+                <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id=${item.ID} onclick="deleteObj(this.getAttribute('data-id'))"><i class='bi bi-trash3'></i></button>
+                <button class='btn btn-outline-dark btn-sm ml-2 btn-rounded' onclick="selectProveedor(${item.ID})">Seleccionar</button>
             </td>
         </tr>`;
     $('#DataTable').DataTable().row.add($(content)).draw();

@@ -81,8 +81,6 @@ public class Atencion {
                 practicaMap.put("ultimoPrecio", practica.getLastPrice().getValor());
                 practicaAtencionMap.put("practica", practicaMap);
                 
-                
-                
                 practicasAtencionesJson.add(practicaAtencionMap);
             }
         }

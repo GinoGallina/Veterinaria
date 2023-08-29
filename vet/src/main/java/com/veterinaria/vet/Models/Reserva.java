@@ -49,7 +49,7 @@ public class Reserva {
     private LocalDateTime deletedAt;
 
 
-   public String toJson() throws JsonProcessingException {
+    public String toJson() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
@@ -81,7 +81,7 @@ public class Reserva {
 
 
         return objectMapper.writeValueAsString(reservaMap);
-    } 
+    }
 
     public Long getID() {
         return ID;

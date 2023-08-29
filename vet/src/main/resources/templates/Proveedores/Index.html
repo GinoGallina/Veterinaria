@@ -133,21 +133,21 @@
 									<table id="DataTable" class="table table-bordered table-striped">
 										<thead>
 											<tr>
+												<th>Razón Social</th>
 												<th>CUIL</th>
 												<th>Dirección</th>
 												<th>Email</th>
 												<th>Teléfono</th>
-												<th>Razón Social</th>
 												<th>Acción</th>
 											</tr>
 										</thead>
 										<tbody id="table_body">
 											<tr th:each="proveedor : ${proveedores}" th:attr="data-id=${proveedor.ID}">
+												<td th:text="${proveedor.razonSocial}"></td>
 												<td th:text="${proveedor.cuil}"></td>
 												<td th:text="${proveedor.direccion}"></td>
 												<td th:text="${proveedor.email}"></td>
 												<td th:text="${proveedor.telefono}"></td>
-												<td th:text="${proveedor.razonSocial}"></td>
 												<td class='d-flex justify-content-center'>
 													<button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-proveedor=${proveedor.toJson()}" onclick="edit(this.getAttribute('data-proveedor'))" data-toggle="modal" data-target="#modalCreate">
 														<i class="bi bi-pencil"></i>
@@ -155,6 +155,7 @@
 													<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' th:attr="data-id=${proveedor.ID}" onclick="deleteObj(this.getAttribute('data-id'))">
 														<i class='bi bi-trash3'></i>
 													</button>
+													<button class='btn btn-outline-dark btn-sm ml-2 btn-rounded' th:attr="data-id=${proveedor.ID}" onclick="selectProveedor(this.getAttribute('data-id'))">Seleccionar</button>
 												</td>
 											</tr>
 										</tbody>

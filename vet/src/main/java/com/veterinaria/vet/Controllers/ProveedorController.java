@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +19,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.veterinaria.vet.DTO.ProveedorDTO;
+import com.veterinaria.vet.Models.Deuda;
 import com.veterinaria.vet.Models.Proveedor;
 import com.veterinaria.vet.Models.Response;
+import com.veterinaria.vet.Services.DeudaService;
 import com.veterinaria.vet.Services.ProveedorService;
 
 import jakarta.servlet.http.HttpSession;
@@ -31,12 +34,26 @@ public class ProveedorController {
 
     @Autowired
     private ProveedorService proveedorService;
+    @Autowired
+    private DeudaService deudaService;
 
     @GetMapping(path = "/Index")
     public ModelAndView getProveedores(HttpSession session) {
         ArrayList<Proveedor> proveedores = this.proveedorService.getAllProveedores();
         ModelAndView modelAndView = new ModelAndView("Proveedores/Index");
         modelAndView.addObject("proveedores", proveedores);
+        modelAndView.addObject("user_role", session.getAttribute("user_role"));
+        return modelAndView;
+    }
+
+    @GetMapping(path = "/Details/{proveedorID}")
+    public ModelAndView details(@PathVariable Long proveedorID, HttpSession session) {
+        Deuda deuda = new Deuda();
+        ArrayList<Deuda> deudas = deuda.orderByCreatedAt(deudaService.getDeudasByProveedorId(proveedorID));
+        Proveedor proveedor = proveedorService.getById(proveedorID).get();
+        ModelAndView modelAndView = new ModelAndView("Proveedores/Details");
+        modelAndView.addObject("deudas", deudas);
+        modelAndView.addObject("proveedor", proveedor);
         modelAndView.addObject("user_role", session.getAttribute("user_role"));
         return modelAndView;
     }

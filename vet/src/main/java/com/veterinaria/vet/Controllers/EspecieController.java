@@ -19,6 +19,7 @@ import com.veterinaria.vet.DTO.EspecieDTO;
 import com.veterinaria.vet.Models.Especie;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.EspecieService;
+import com.veterinaria.vet.annotations.CheckAdmin;
 import com.veterinaria.vet.annotations.CheckLogin;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,7 +35,7 @@ public class EspecieController {
 
 
         @GetMapping(path = "/Index")
-        @CheckLogin
+        @CheckAdmin
         public ModelAndView getEspecies(HttpSession session){
             ArrayList<Especie> especies =  this.especieService.getAllEspecies();
             ModelAndView modelAndView = new ModelAndView("Especies/Index");
