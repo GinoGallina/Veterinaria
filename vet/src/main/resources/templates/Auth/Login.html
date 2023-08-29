@@ -60,40 +60,6 @@
         <div th:replace="Shared/Scripts:: scripts"></div>
         
     </div>
-<!-- 
-    <script>
-        $("#btnSend").on('click', function() {
-            let form = $("#loginform");
-            $.ajax({
-                url: form.attr('action'),
-                type: form.attr('method'),
-                data: form.serialize(),
-                success: function(data) {
-                    console.log(data);
-                    if (data.status == 200) {
-                        window.location.href = "/home";
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '¡Error!',
-                            text: data.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    }
-                },
-                error: function(data) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '¡Error!',
-                        text: 'Ocurrió un error al iniciar sesión',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }
-            });
-        });
-    </script> -->
 </body>
 
 </html>
