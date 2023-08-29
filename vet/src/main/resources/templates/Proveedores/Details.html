@@ -46,9 +46,9 @@
                 <!-- Modal deuda -->
                 <div id="modalCreate" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
                     <div id="formContainer" class="modal-dialog">
-                        <form role="form" class="" method="POST" action="/Proveedores" id="form-create" autocomplete="off">
+                        <form role="form" class="" method="POST" action="/Proveedores/Details/New" id="form-create" autocomplete="off">
                             <input type="hidden" name="id" value="" />
-                            <input type="hidden" name="proveedorID" th:value="${proveedor.iD}" />
+                            <input type="hidden" name="proveedorID" th:value="${proveedor.ID}" />
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title">Agregar deuda</h4>
@@ -89,8 +89,8 @@
                 <!-- Modal pago -->
                 <div id="modalPay" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
                     <div class="modal-dialog">
-                        <form role="form" class="" method="POST" action="/Proveedores/PagarDeuda" id="form-pay" autocomplete="off">
-                            <input type="hidden" name="deudaID" value="" />
+                        <form role="form" class="" method="POST" action="/Proveedores/Details/PagarDeuda" id="form-pay" autocomplete="off">
+                            <input type="hidden" name="deudaID" value=""  />
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h3 id="modalTitle" class="modal-title">Pagar deuda</h3>
@@ -165,7 +165,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <form id="form-delete" method="DELETE" action="/Proveedores">
+                                <form id="form-delete" method="DELETE" action="/Proveedores/Details">
                                     <input type="hidden" name="id" value="">
                                 </form>
                             </div>
@@ -183,6 +183,7 @@
         <link href="../../static/lib/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet">
         
         <!-- This is data table -->
+        <script src="../../static/lib/moment/moment-with-locales.js"></script>
         <script src="../../static/lib/datatables/datatables.min.js"></script>
         <script src="../../static/js/custom/Proveedores/deudas.js"></script>
     </div>

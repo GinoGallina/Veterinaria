@@ -51,10 +51,6 @@ function deleteObj(id) {
 
 function sendForm(action) {
     let form = document.getElementById(`form-${action}`);
-
-
-    
-    
     let formData = {
         id: $(form).find('[name="id"]').val(), // Ajusta el nombre del campo según tu formulario
         precio: $(form).find('[name="precio"]').val(), // Ajusta el nombre del campo según tu formulario

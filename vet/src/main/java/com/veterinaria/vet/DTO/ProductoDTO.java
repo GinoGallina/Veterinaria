@@ -25,7 +25,7 @@ public class ProductoDTO {
     private String descripcion;
 
     @NotNull(message = "El campo precio no puede estar vacío", groups = { PutAndPost.class })
-    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a cero", groups = { PutAndPost.class })
+    @DecimalMin(value = "0",inclusive=false, message = "El precio debe ser mayor a cero", groups = { PutAndPost.class })
     private BigDecimal precio;
 
     @NotNull(message = "El campo stock no puede estar vacío", groups = { PutAndPost.class })

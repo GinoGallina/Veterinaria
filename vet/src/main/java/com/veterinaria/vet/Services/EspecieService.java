@@ -46,14 +46,6 @@ public class EspecieService {
    }
    
 
-  /*public Boolean deleteEspecie(Long id){
-    try{
-      especieRepository.deleteById(id);
-      return true; 
-
-    }catch(Exception e){
-      return false;
-    }*/
     public void eliminarLogico(Long id){
       especieRepository.eliminarLogico(id);
     }

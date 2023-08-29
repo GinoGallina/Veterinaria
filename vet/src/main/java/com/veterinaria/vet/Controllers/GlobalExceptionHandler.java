@@ -7,6 +7,7 @@ import javax.security.auth.login.LoginException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.veterinaria.vet.Models.Response;
 
 @ControllerAdvice
@@ -22,6 +24,7 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception e) {
+        System.out.println(e);
         ModelAndView modelAndView = new ModelAndView("Shared/Error");
         modelAndView.addObject("code", 500);
         modelAndView.addObject("message", "Error interno del servidor");
@@ -30,6 +33,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ModelAndView handleRuntimeException(RuntimeException e) {
+        System.out.println(e);
         ModelAndView modelAndView = new ModelAndView("Shared/Error");
         modelAndView.addObject("code", 403);
         modelAndView.addObject("message", e.getMessage());
@@ -37,6 +41,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ModelAndView handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        System.out.println(e);
         ModelAndView modelAndView = new ModelAndView("Shared/Error");
         modelAndView.addObject("code", 404);
         modelAndView.addObject("message", "P\u00E1gina no encontrada");
@@ -44,6 +49,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(NoHandlerFoundException.class)
     public ModelAndView handleNoHandlerFoundException(NoHandlerFoundException e) {
+        System.out.println(e);
         ModelAndView modelAndView = new ModelAndView("Shared/Error");
         modelAndView.addObject("code", 404);
         modelAndView.addObject("message", "P\u00E1gina no encontrada");
@@ -53,6 +59,7 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(LoginException.class) // Cambia MyCustomException por el tipo de excepción que deseas manejar                                            // de manera diferente
     public ModelAndView handleLoginException(LoginException  e) {
+        System.out.println(e);
         ModelAndView modelAndView = new ModelAndView("Auth/Login");
         List<String> errorMessages = new ArrayList<>();
         errorMessages.add("Usuario y/o contraseñna incorrectas");
@@ -75,6 +82,7 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object handleValidationException(MethodArgumentNotValidException ex) {
+        System.out.println(ex);
         List<ObjectError> errors = ex.getBindingResult().getAllErrors();
         List<String> errorMessages = new ArrayList<>();
         for (ObjectError error : errors) {
@@ -82,6 +90,23 @@ public class GlobalExceptionHandler {
         }
         Response json = new Response();
         json.setMessages(errorMessages);
+        json.setTitle("ERROR");
+        return new ResponseEntity<Object>(json, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Object handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        System.out.println(ex);
+        Response json = new Response();
+        json.setMessage("Error al ingresar los datos 1");
+        json.setTitle("ERROR");
+        return new ResponseEntity<Object>(json, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(JsonProcessingException.class)
+    public Object handleJsonProcessingException(JsonProcessingException ex) {
+        System.out.println(ex);
+        Response json = new Response();
+        json.setMessage("Error al ingresar los datos JSON");
         json.setTitle("ERROR");
         return new ResponseEntity<Object>(json, HttpStatus.BAD_REQUEST);
     }

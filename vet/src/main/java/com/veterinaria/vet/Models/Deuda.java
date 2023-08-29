@@ -20,6 +20,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -42,10 +44,10 @@ public class Deuda {
     @Column(name = "Precio", nullable = false)
     private BigDecimal precio;
 
-    @Column(name = "CreatedAt", nullable = false)
+    @Column(name = "CreatedAt", nullable = false, insertable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt", nullable = false)
+    @Column(name = "UpdatedAt", nullable = false, insertable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "DeletedAt")
@@ -162,5 +164,27 @@ public class Deuda {
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
     }
+    
+    public List<PagosDeuda> getPagosDeuda() {
+        return pagosDeuda;
+    }
+
+    public void setPagosDeuda(List<PagosDeuda> pagosDeuda) {
+        this.pagosDeuda = pagosDeuda;
+    }
+    public void addPagosDeuda(PagosDeuda pagosDeuda) {
+        this.pagosDeuda.add(pagosDeuda);
+    }
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+
 
 }

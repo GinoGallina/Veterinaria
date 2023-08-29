@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -142,5 +143,10 @@ public class Cliente {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
     
 }
