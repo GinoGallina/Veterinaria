@@ -28,8 +28,7 @@ import com.veterinaria.vet.Services.ProductosAdminService;
 import com.veterinaria.vet.Services.ReservaService;
 import com.veterinaria.vet.Services.ReservaProductoService;
 import com.veterinaria.vet.annotations.CheckAdmin;
-import com.veterinaria.vet.annotations.CheckLogin;
-import com.veterinaria.vet.annotations.CheckUser;
+import com.veterinaria.vet.annotations.CheckAdminUser;
 
 import com.veterinaria.vet.DTO.ReservaDTO;
 
@@ -49,7 +48,7 @@ public class ReservaController {
         @Autowired
         private ReservaProductoService reservaProductoService;
 
-        @CheckLogin
+        @CheckAdminUser
         @GetMapping(path = "/Index")
         public ModelAndView getReservas(HttpSession session) {
             String user_role = session.getAttribute("user_role").toString();
@@ -71,7 +70,7 @@ public class ReservaController {
             return modelAndView;
         }
 
-        @CheckUser
+        @CheckAdminUser
         @GetMapping(path = "/New")
         public ModelAndView New(){
             ModelAndView modelAndView = new ModelAndView("Reservas/New");
@@ -80,7 +79,7 @@ public class ReservaController {
             return modelAndView;
         }
 
-        @CheckLogin
+        @CheckAdminUser
         @PostMapping(path = "/New", produces = "application/json", consumes = "application/json")
         public ResponseEntity<Object> save(@RequestBody List<ReservaProducto> prodQuantity, HttpSession session) throws JsonProcessingException {
             try {

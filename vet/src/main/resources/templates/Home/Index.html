@@ -40,6 +40,18 @@
                     <!-- ============================================================== -->
                     <!-- Start Page Content -->
                     <!-- ============================================================== -->
+                    <!-- Crear un contenido de bienvenida -->
+                    <h1 class="text-center">Bienvenido a Pet Killer</h1>
+                    <h3 class="text-center">El sistema de gestión de tu veterinaria</h3>
+
+                    <div class="d-flex flex-row justify-content-center">
+                        <a th:if="${user_role == '[USER]'}" href="/Reservas/Index" class="btn btn-info btn-rounded waves-effect waves-light mt-5 px-4 py-3">
+                            Crear nueva reserva
+                        </a>
+                        <a th:if="${user_role == '[VET]'}" href="/Clientes/Index" class="btn btn-info btn-rounded waves-effect waves-light mt-5 px-4 py-3">
+                            Ver clientes
+                        </a>
+                    </div>
                 </div>
             </main>
             <div th:replace="Shared/Footer :: footer"></div>

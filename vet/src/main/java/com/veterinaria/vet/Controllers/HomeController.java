@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.veterinaria.vet.annotations.CheckLogin;
+
 import jakarta.servlet.http.HttpSession;
 
 
@@ -28,6 +30,8 @@ public class HomeController {
         }
         return "Auth/Login"; // Nombre de la vista Thymeleaf (index.html)
     }
+
+    @CheckLogin
     @GetMapping("/inicio")
     public ModelAndView inicio(HttpSession session) {
         ModelAndView modelAndView = new ModelAndView("Home/Index");
@@ -35,13 +39,4 @@ public class HomeController {
         modelAndView.addObject("user_role", session.getAttribute("user_role"));
         return modelAndView; // Nombre de la vista Thymeleaf (index.html)
     }
-    @GetMapping("/prueba")
-    public String prueba() {
-        return "Shared/prueba"; // Nombre de la vista Thymeleaf (index.html)
-    }
-
-    // @RequestMapping("/**")
-    //     public void unmappedRequest() throws HttpRequestMethodNotSupportedException {
-    //         throw new HttpRequestMethodNotSupportedException(null);
-    // }
 }

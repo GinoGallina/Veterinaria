@@ -170,10 +170,10 @@
 												<td th:text="${cliente.telefono}"></td>
 												<td th:text="${cliente.user.email}"></td>
 												<td class='d-flex justify-content-center'>
-													<button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-cliente=${cliente.toJson()}" onclick="edit(this.getAttribute('data-cliente'))" data-toggle="modal" data-target="#modalCreate">
+													<button th:if="${user_role == '[ADMIN]'}" type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' th:attr="data-cliente=${cliente.toJson()}" onclick="edit(this.getAttribute('data-cliente'))" data-toggle="modal" data-target="#modalCreate">
 														<i class="bi bi-pencil"></i>
 													</button>
-													<button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' th:attr="data-id=${cliente.ID}" onclick="deleteObj(this.getAttribute('data-id'))">
+													<button th:if="${user_role == '[ADMIN]'}" type='button' class='btn btn-danger btn-rounded btn-sm ml-2' th:attr="data-id=${cliente.ID}" onclick="deleteObj(this.getAttribute('data-id'))">
 														<i class='bi bi-trash3'></i>
 													</button>
 													<button class='btn btn-outline-dark btn-sm ml-2 btn-rounded' th:attr="data-id=${cliente.ID}" onclick="selectPersona(this.getAttribute('data-id'))" >Seleccionar</button>

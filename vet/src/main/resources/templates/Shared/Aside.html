@@ -15,16 +15,16 @@
 				<li th:if="${user_role == '[ADMIN]'}">
 					<a class="waves-effect waves-dark" href="/Proveedores/Index" aria-expanded="false"><i class="bi bi-truck"></i><span class="hide-menu">Proveedores</span></a>
 				</li>
-				<li th:unless="${user_role == '[USER]'}">
+				<li th:if="${user_role == '[ADMIN]' || user_role == '[VET]'}">
 					<a class="waves-effect waves-dark" href="/Clientes/Index" aria-expanded="false"><i class="bi bi-person-square"></i><span class="hide-menu">Clientes</span></a>
 				</li>
-				<li th:if="${user_role == '[VET]'}">
+				<li th:if="${user_role == '[ADMIN]'}">
 					<a class="waves-effect waves-dark" href="/Practicas/Index" aria-expanded="false"><i class="bi bi-file-ppt"></i><span class="hide-menu">Practicas</span></a>
 				</li>
 				<li th:if="${user_role == '[ADMIN]'}">
 					<a class="waves-effect waves-dark" href="/Productos/Index" aria-expanded="false"><i class="bi bi-bag"></i><span class="hide-menu">Productos</span></a>
 				</li>
-				<li th:unless="${user_role == '[VET]'}">
+				<li th:if="${user_role == '[ADMIN]' || user_role == '[USER]'}">
 					<a class="waves-effect waves-dark" href="/Reservas/Index" aria-expanded="false"><i class="bi bi-receipt"></i><span class="hide-menu">Reservas</span></a>
 				</li>
 

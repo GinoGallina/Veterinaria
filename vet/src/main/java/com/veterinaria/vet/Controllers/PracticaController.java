@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,6 +28,7 @@ import com.veterinaria.vet.Models.Precio;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.PracticaService;
 import com.veterinaria.vet.Services.PrecioService;
+import com.veterinaria.vet.annotations.CheckAdmin;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -40,11 +40,7 @@ public class PracticaController {
     @Autowired
     private PrecioService precioService;
 
-    @GetMapping(path = "/elegidas")
-    public ArrayList<Practica> getPracticasElegidas(@RequestParam("ids") List<Long> ids) {
-        return this.practicaService.getPracticasElegidas(ids);
-    }
-
+    @CheckAdmin
     @GetMapping(path = "/Index")
     public ModelAndView getPracticas(HttpSession session) {
         ArrayList<Practica> practicas = this.practicaService.getAllPracticas();
@@ -65,6 +61,7 @@ public class PracticaController {
         return modelAndView;
     }
 
+    @CheckAdmin
     @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> save(@Validated(PracticaDTO.PutAndPost.class) @RequestBody PracticaDTO practicaDTO)
             throws JsonProcessingException {
@@ -101,6 +98,7 @@ public class PracticaController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckAdmin
     @PutMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> updateEspecie(
             @Validated({ PracticaDTO.PutAndDelete.class,
@@ -135,6 +133,7 @@ public class PracticaController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckAdmin
     @DeleteMapping(produces = "application/json", consumes = "application/json")
     @Transactional
     public ResponseEntity<?> eliminarPractica(

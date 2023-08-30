@@ -34,6 +34,8 @@ import com.veterinaria.vet.Services.ClienteService;
 import com.veterinaria.vet.Services.MascotaService;
 import com.veterinaria.vet.Services.PracticaService;
 import com.veterinaria.vet.Services.RazaService;
+import com.veterinaria.vet.annotations.CheckAdmin;
+import com.veterinaria.vet.annotations.CheckAdminVet;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -41,37 +43,38 @@ import jakarta.transaction.Transactional;
 @Controller
 @RequestMapping("/Clientes")
 public class ClienteController {
-  
-    @Autowired
-    private ClienteService clienteService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private MascotaService mascotaService;
-    @Autowired
-    private AtencionService atencionService;
-    @Autowired
-    private RazaService razaService;
-    @Autowired
-    private PracticaService practicaService;
 
+	@Autowired
+	private ClienteService clienteService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private MascotaService mascotaService;
+	@Autowired
+	private AtencionService atencionService;
+	@Autowired
+	private RazaService razaService;
+	@Autowired
+	private PracticaService practicaService;
 
+	@CheckAdminVet
 	@GetMapping(path = "/Index")
-	public ModelAndView getClientes(HttpSession session){
-		ArrayList<Cliente> clientes =  clienteService.getAllClientes();
+	public ModelAndView getClientes(HttpSession session) {
+		ArrayList<Cliente> clientes = clienteService.getAllClientes();
 		ModelAndView modelAndView = new ModelAndView("Clientes/Index");
 		modelAndView.addObject("clientes", clientes);
 		modelAndView.addObject("user_role", session.getAttribute("user_role"));
 		return modelAndView;
 	}
 
+	@CheckAdminVet
 	@GetMapping(path = "/Details")
-	public String getClienteSeleccionado(@RequestParam Long id, Model model){
-		Optional<Cliente> cliente =  clienteService.getById(id);
-		//Response json = new Response();
+	public String getClienteSeleccionado(@RequestParam Long id, Model model, HttpSession session) {
+		Optional<Cliente> cliente = clienteService.getById(id);
+		// Response json = new Response();
 		if (!cliente.isPresent()) {
-			//return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-			//VER Q DEVUELVO
+			// return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+			// VER Q DEVUELVO
 		}
 		Mascota mascota = new Mascota();
 		ArrayList<Mascota> mascotas = mascota.orderByCreatedAt(mascotaService.getAllMascotasCliente(id));
@@ -83,13 +86,14 @@ public class ClienteController {
 		model.addAttribute("razas", razas);
 		model.addAttribute("practicas", practicas);
 		model.addAttribute("cliente", cliente.get());
+		model.addAttribute("user_role", session.getAttribute("user_role"));
 		return "Clientes/Details";
 	}
 
-
-
+	@CheckAdmin
 	@PostMapping(produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> save(@Validated(ClienteDTO.PutAndPost.class) @RequestBody ClienteDTO clienteDTO) throws JsonProcessingException {
+	public ResponseEntity<Object> save(@Validated(ClienteDTO.PutAndPost.class) @RequestBody ClienteDTO clienteDTO)
+			throws JsonProcessingException {
 		Optional<Cliente> existingCliente = clienteService.findByDni(clienteDTO.getDni());
 		Response json = new Response();
 		if (existingCliente.isPresent()) {
@@ -98,8 +102,8 @@ public class ClienteController {
 				json.setMessage("El cliente se encontraba eliminado y se ha recuperado");
 				json.setData(existingCliente.get().toJson());
 
-				//REESTABLECER USUARIO
-				
+				// REESTABLECER USUARIO
+
 				return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 			} else {
 				json.setMessage("El cliente ingresado ya existe");
@@ -114,7 +118,7 @@ public class ClienteController {
 		ResponseEntity<?> response = userService.save(newUser);
 		if (response.getStatusCode() == HttpStatus.OK) {
 			user = (User) response.getBody();
-		} else if(response.getStatusCode() == HttpStatus.BAD_REQUEST) {
+		} else if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
 			json.setMessage((String) response.getBody());
 			json.setTitle("ERROR");
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
@@ -130,58 +134,56 @@ public class ClienteController {
 		json.setMessage("Se ha guardado el cliente");
 		json.setData(savedCliente.toJson());
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-}
+	}
 
-
-
+	@CheckAdmin
 	@PutMapping(produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> updateCliente(@Validated({ClienteDTO.PutAndDelete.class,ClienteDTO.PutAndPost.class}) @RequestBody ClienteDTO clienteDTO) throws JsonProcessingException{
-	Optional<Cliente> existingCliente = clienteService.findByDni(clienteDTO.getDni());
-	Response json = new Response();
-	if(existingCliente.isPresent()){
-		json.setMessage("El cliente ingresado ya existe");
-		json.setTitle("ERROR");
-		return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST); 
-	}
-	Optional<Cliente> cliente = clienteService.getById(clienteDTO.getID());
-	if(cliente.isEmpty()){
-		json.setMessage("El cliente no existe");
-		json.setTitle("ERROR");
-		return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
-	}
-	cliente.get().setID(clienteDTO.getID());
-	cliente.get().setDni(clienteDTO.getDni());
-	cliente.get().setNombre(clienteDTO.getNombre());
-	cliente.get().setApellido(clienteDTO.getApellido());
-	cliente.get().setTelefono(clienteDTO.getTelefono());
-	cliente.get().setDireccion(clienteDTO.getDireccion());
-	Cliente updatedCliente = this.clienteService.updateById(cliente.get(),(long) cliente.get().getID());
-	json.setMessage("Se ha actualizado el cliente");
-	json.setData(updatedCliente.toJson());
-	return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+	public ResponseEntity<Object> updateCliente(@Validated({ ClienteDTO.PutAndDelete.class,
+			ClienteDTO.PutAndPost.class }) @RequestBody ClienteDTO clienteDTO) throws JsonProcessingException {
+		Optional<Cliente> existingCliente = clienteService.findByDni(clienteDTO.getDni());
+		Response json = new Response();
+		if (existingCliente.isPresent()) {
+			json.setMessage("El cliente ingresado ya existe");
+			json.setTitle("ERROR");
+			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+		}
+		Optional<Cliente> cliente = clienteService.getById(clienteDTO.getID());
+		if (cliente.isEmpty()) {
+			json.setMessage("El cliente no existe");
+			json.setTitle("ERROR");
+			return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
+		}
+		cliente.get().setID(clienteDTO.getID());
+		cliente.get().setDni(clienteDTO.getDni());
+		cliente.get().setNombre(clienteDTO.getNombre());
+		cliente.get().setApellido(clienteDTO.getApellido());
+		cliente.get().setTelefono(clienteDTO.getTelefono());
+		cliente.get().setDireccion(clienteDTO.getDireccion());
+		Cliente updatedCliente = this.clienteService.updateById(cliente.get(), (long) cliente.get().getID());
+		json.setMessage("Se ha actualizado el cliente");
+		json.setData(updatedCliente.toJson());
+		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 	}
 
+	@CheckAdmin
 	@DeleteMapping(produces = "application/json", consumes = "application/json")
 	@Transactional
-	public ResponseEntity<Object> eliminarCliente(@Validated(ClienteDTO.PutAndDelete.class) @RequestBody ClienteDTO clienteDTO) throws JsonProcessingException {
-	Optional<Cliente> existingCliente = clienteService.getById(clienteDTO.getID());
-	Response json = new Response();
-	if(existingCliente.isEmpty()){
-		json.setMessage("El cliente no existe");
-		json.setTitle("ERROR");
-		return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
+	public ResponseEntity<Object> eliminarCliente(
+			@Validated(ClienteDTO.PutAndDelete.class) @RequestBody ClienteDTO clienteDTO)
+			throws JsonProcessingException {
+		Optional<Cliente> existingCliente = clienteService.getById(clienteDTO.getID());
+		Response json = new Response();
+		if (existingCliente.isEmpty()) {
+			json.setMessage("El cliente no existe");
+			json.setTitle("ERROR");
+			return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
+		}
+		clienteService.eliminarLogico(clienteDTO.getID());
+		json.setMessage("Se ha eliminado el cliente");
+		json.setData(existingCliente.get().toJson());
+
+		// BORRAR USUARIO
+
+		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 	}
-	clienteService.eliminarLogico(clienteDTO.getID());
-	json.setMessage("Se ha eliminado el cliente");
-	json.setData(existingCliente.get().toJson());
-
-	//BORRAR USUARIO
-
-
-	return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-	}  
-
-
-
-
 }

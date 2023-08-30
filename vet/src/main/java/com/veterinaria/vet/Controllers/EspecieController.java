@@ -20,93 +20,94 @@ import com.veterinaria.vet.Models.Especie;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.EspecieService;
 import com.veterinaria.vet.annotations.CheckAdmin;
-import com.veterinaria.vet.annotations.CheckLogin;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
-
 
 //@RestController
 @Controller
 @RequestMapping("/Especies")
 public class EspecieController {
-        @Autowired
-        private EspecieService especieService;
+    @Autowired
+    private EspecieService especieService;
 
+    @CheckAdmin
+    @GetMapping(path = "/Index")
+    public ModelAndView getEspecies(HttpSession session) {
+        ArrayList<Especie> especies = this.especieService.getAllEspecies();
+        ModelAndView modelAndView = new ModelAndView("Especies/Index");
+        modelAndView.addObject("especies", especies);
+        modelAndView.addObject("user_role", session.getAttribute("user_role"));
+        return modelAndView;
+    }
 
-        @GetMapping(path = "/Index")
-        @CheckAdmin
-        public ModelAndView getEspecies(HttpSession session){
-            ArrayList<Especie> especies =  this.especieService.getAllEspecies();
-            ModelAndView modelAndView = new ModelAndView("Especies/Index");
-            modelAndView.addObject("especies", especies);
-            modelAndView.addObject("user_role", session.getAttribute("user_role"));
-            return modelAndView;
-        }
-
-
-        @CheckLogin
-        @PostMapping(produces = "application/json", consumes = "application/json")
-        public ResponseEntity<Object> save(@Validated(EspecieDTO.PutAndPost.class) @RequestBody EspecieDTO especieDTO) throws JsonProcessingException {
-            Optional<Especie> existingEspecie = especieService.findByDescripcion(especieDTO.getDescripcion());
-            Response json = new Response();
-            if (existingEspecie.isPresent()) {
-                if (!especieService.getById(existingEspecie.get().getID()).isPresent()) {
-                    especieService.saveLogico(existingEspecie.get().getID());
-                    json.setMessage("La especie se encontraba eliminada y se ha recuperado");
-                    json.setData(existingEspecie.get().toJson());
-                    return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-                } else {
-                    json.setMessage("La especie ingresada ya existe");
-                    json.setTitle("ERROR");
-                    return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-                }
-            }
-            Especie especie = new Especie();
-            especie.setDescripcion(especieDTO.getDescripcion());
-            Especie savedEspecie = especieService.saveEspecie(especie);
-            json.setMessage("Se ha guardado la especie");
-            json.setData(savedEspecie.toJson());
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-        }
-        @CheckLogin
-        @PutMapping(produces = "application/json", consumes = "application/json")
-        public ResponseEntity<Object> updateEspecie(@Validated({EspecieDTO.PutAndDelete.class,EspecieDTO.PutAndPost.class}) @RequestBody EspecieDTO especieDTO) throws JsonProcessingException{
-            Optional<Especie> existingEspecie = especieService.findByDescripcion(especieDTO.getDescripcion());
-            Response json = new Response();
-            if(existingEspecie.isPresent()){
+    @CheckAdmin
+    @PostMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> save(@Validated(EspecieDTO.PutAndPost.class) @RequestBody EspecieDTO especieDTO)
+            throws JsonProcessingException {
+        Optional<Especie> existingEspecie = especieService.findByDescripcion(especieDTO.getDescripcion());
+        Response json = new Response();
+        if (existingEspecie.isPresent()) {
+            if (!especieService.getById(existingEspecie.get().getID()).isPresent()) {
+                especieService.saveLogico(existingEspecie.get().getID());
+                json.setMessage("La especie se encontraba eliminada y se ha recuperado");
+                json.setData(existingEspecie.get().toJson());
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+            } else {
                 json.setMessage("La especie ingresada ya existe");
                 json.setTitle("ERROR");
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST); 
+                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
             }
-            Optional<Especie> especie = especieService.getById(especieDTO.getID());
-            if(!especie.isPresent()){
-                json.setMessage("La especie no existe");
-                json.setTitle("ERROR");
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);         
-            }
-            especie.get().setDescripcion(especieDTO.getDescripcion());
-            Especie updatedEspecie=this.especieService.updateById(especie.get(),(long) especie.get().getID());
-            json.setMessage("Se ha actualizado la especie");
-            json.setData(updatedEspecie.toJson());
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
         }
-        @CheckLogin
-        @DeleteMapping(produces = "application/json", consumes = "application/json")
-        @Transactional
-        public ResponseEntity<Object> eliminarEspecie(@Validated(EspecieDTO.PutAndDelete.class) @RequestBody EspecieDTO especieDTO) throws JsonProcessingException {
-            Optional<Especie> existingEspecie = especieService.getById(especieDTO.getID());
-            Response json = new Response();
-            if(existingEspecie.isEmpty()){
-                json.setMessage("La especie no existe");
-                json.setTitle("ERROR");
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
-            }
-            especieService.eliminarLogico(especieDTO.getID());
-            json.setMessage("Se ha eliminado la especie");
-            json.setData(existingEspecie.get().toJson());
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-        } 
-        
+        Especie especie = new Especie();
+        especie.setDescripcion(especieDTO.getDescripcion());
+        Especie savedEspecie = especieService.saveEspecie(especie);
+        json.setMessage("Se ha guardado la especie");
+        json.setData(savedEspecie.toJson());
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+    }
+
+    @CheckAdmin
+    @PutMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<Object> updateEspecie(@Validated({ EspecieDTO.PutAndDelete.class,
+            EspecieDTO.PutAndPost.class }) @RequestBody EspecieDTO especieDTO) throws JsonProcessingException {
+        Optional<Especie> existingEspecie = especieService.findByDescripcion(especieDTO.getDescripcion());
+        Response json = new Response();
+        if (existingEspecie.isPresent()) {
+            json.setMessage("La especie ingresada ya existe");
+            json.setTitle("ERROR");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+        }
+        Optional<Especie> especie = especieService.getById(especieDTO.getID());
+        if (!especie.isPresent()) {
+            json.setMessage("La especie no existe");
+            json.setTitle("ERROR");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
+        }
+        especie.get().setDescripcion(especieDTO.getDescripcion());
+        Especie updatedEspecie = this.especieService.updateById(especie.get(), (long) especie.get().getID());
+        json.setMessage("Se ha actualizado la especie");
+        json.setData(updatedEspecie.toJson());
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+    }
+
+    @CheckAdmin
+    @DeleteMapping(produces = "application/json", consumes = "application/json")
+    @Transactional
+    public ResponseEntity<Object> eliminarEspecie(
+            @Validated(EspecieDTO.PutAndDelete.class) @RequestBody EspecieDTO especieDTO)
+            throws JsonProcessingException {
+        Optional<Especie> existingEspecie = especieService.getById(especieDTO.getID());
+        Response json = new Response();
+        if (existingEspecie.isEmpty()) {
+            json.setMessage("La especie no existe");
+            json.setTitle("ERROR");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
+        }
+        especieService.eliminarLogico(especieDTO.getID());
+        json.setMessage("Se ha eliminado la especie");
+        json.setData(existingEspecie.get().toJson());
+        return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+    }
 
 }

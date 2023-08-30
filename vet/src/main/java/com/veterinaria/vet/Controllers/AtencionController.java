@@ -28,6 +28,7 @@ import com.veterinaria.vet.Services.AtencionService;
 import com.veterinaria.vet.Services.MascotaService;
 import com.veterinaria.vet.Services.PracticaService;
 import com.veterinaria.vet.Services.VeterinarioService;
+import com.veterinaria.vet.annotations.CheckVet;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -44,11 +45,13 @@ public class AtencionController {
     @Autowired
     private PracticaService practicaService;
 
+    @CheckVet
     @GetMapping(path = "/cliente")
     public ArrayList<Atencion> getAtencionesCliente(@RequestParam("id") Long id) {
         return this.atencionService.getAllAtencionesCliente(id);
     }
 
+    @CheckVet
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getAtencionById(@RequestParam("id") Long id) {
         Optional<Atencion> existingAtencion = atencionService.getById(id);
@@ -60,6 +63,7 @@ public class AtencionController {
         return ResponseEntity.ok(existingAtencion);
     }
 
+    @CheckVet
     @Transactional
     @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> save(@Validated(AtencionDTO.PutAndPost.class) @RequestBody AtencionDTO atencionDTO, HttpSession session) throws JsonProcessingException {
@@ -104,20 +108,14 @@ public class AtencionController {
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckVet
     @PutMapping()
-    public ResponseEntity<?> updateAtencion(@RequestBody Atencion Atencion) {
-        // Optional<Atencion> existingAtencion =
-        // atencionService.findByDni(Atencion.getDni());
-        // if(existingAtencion.isPresent() &&
-        // (existingAtencion.get().getID()!=Atencion.getID() )){
-        // return ResponseEntity.badRequest().body("Ya existe un Atencion con la misma
-        // matrícula");
-        // }
-        Atencion updatedAtencion = this.atencionService.updateById(Atencion, (long) Atencion.getID());
-
+    public ResponseEntity<?> updateAtencion(@RequestBody Atencion atencion) {
+        Atencion updatedAtencion = this.atencionService.updateById(atencion, (long) atencion.getID());
         return ResponseEntity.ok(updatedAtencion);
     }
 
+    @CheckVet
     @DeleteMapping()
     @Transactional
     public ResponseEntity<?> eliminarAtencion(@RequestBody Atencion Atencion) throws Exception {
@@ -129,5 +127,4 @@ public class AtencionController {
         atencionService.eliminarLogico(id);
         return ResponseEntity.ok().build();
     }
-
 }

@@ -28,6 +28,7 @@ import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.DeudaService;
 import com.veterinaria.vet.Services.PagosDeudaService;
 import com.veterinaria.vet.Services.ProveedorService;
+import com.veterinaria.vet.annotations.CheckAdmin;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -43,6 +44,7 @@ public class ProveedorController {
     @Autowired
     private DeudaService deudaService;
 
+    @CheckAdmin
     @GetMapping(path = "/Index")
     public ModelAndView getProveedores(HttpSession session) {
         ArrayList<Proveedor> proveedores = this.proveedorService.getAllProveedores();
@@ -52,6 +54,7 @@ public class ProveedorController {
         return modelAndView;
     }
 
+    @CheckAdmin
     @GetMapping(path = "/Details/{proveedorID}")
     public ModelAndView details(@PathVariable Long proveedorID, HttpSession session) {
         Deuda deuda = new Deuda();
@@ -64,6 +67,7 @@ public class ProveedorController {
         return modelAndView;
     }
 
+    @CheckAdmin
     @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> save(@Validated(ProveedorDTO.PutAndPost.class) @RequestBody ProveedorDTO proveedorDTO)
             throws JsonProcessingException {
@@ -95,51 +99,29 @@ public class ProveedorController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckAdmin
     @PostMapping(path = "/Details/New",produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> newDeuda(@Validated(DeudaDTO.PutAndPost.class) @RequestBody DeudaDTO deudaDTO) throws JsonProcessingException {
-        //Optional<Proveedor> existingProveedorEmail = proveedorService.findByEmail(proveedorDTO.getEmail());
         System.out.println("aAAA");
         Response json = new Response();
-        /*if (existingProveedor.isPresent()) {
-            if (!proveedorService.getById(existingProveedor.get().getID()).isPresent()) {
-                proveedorService.saveLogico(existingProveedor.get().getID());
-                json.setMessage("El Proveedor se encontraba eliminado y se ha recuperado");
-                json.setData(existingProveedor.get().toJson());
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-            } else {
-                json.setMessage("El Proveedor ingresado ya existe");
-                json.setTitle("ERROR");
-                return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-            }
-        }*/
         Optional<Proveedor> existingProveedor = proveedorService.getById(deudaDTO.getProveedorID());
         if(!existingProveedor.isPresent()){
             json.setMessage("El Proveedor no existe");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
         }
-        
-        
-        
         Deuda deuda = new Deuda();
         deuda.setPrecio(deudaDTO.getPrecio());
         deuda.setDescripcion(deudaDTO.getDescripcion());
         deuda.setProveedor(existingProveedor.get());
         Deuda savedDeuda = deudaService.saveDeuda(deuda);
 
-
-       /*  PagosDeuda pagosDeuda = new PagosDeuda();
-        pagosDeuda.setDeuda(deuda);
-        pagosDeuda.setPago(BigDecimal.ZERO);
-        PagosDeuda savedPagosDeuda = pagosDeudaService.savePagosDeuda(pagosDeuda);
-
-        deuda.addPagosDeuda(savedPagosDeuda);*/
-
         json.setMessage("Se ha guardado la deuda");
         json.setData(savedDeuda.toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckAdmin
     @PutMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> updateProveedor(
             @Validated({ ProveedorDTO.PutAndDelete.class,
@@ -171,15 +153,10 @@ public class ProveedorController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckAdmin
     @PostMapping(path = "/Details/PagarDeuda", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> pagarDeuda( @Validated( DeudaDTO.Put.class ) @RequestBody DeudaDTO deudaDTO) throws JsonProcessingException {
         Response json = new Response();
-        /*Optional<Proveedor> existingProveedorEmail = proveedorService.findByEmail(proveedorDTO.getEmail());
-        if (existingProveedor.isPresent()) {
-            json.setMessage("Ya existe un proveedor con ese mail o cuil");
-            json.setTitle("ERROR");
-            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-        }*/
         Optional<Deuda> deuda =deudaService.getById(deudaDTO.getID());
         if (deuda.isEmpty()) {
             json.setMessage("La deuda no existe");
@@ -206,6 +183,7 @@ public class ProveedorController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckAdmin
     @DeleteMapping(produces = "application/json", consumes = "application/json")
     @Transactional
     public ResponseEntity<Object> eliminarProveedor(
@@ -224,6 +202,7 @@ public class ProveedorController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckAdmin
     @DeleteMapping(path = "/Details", produces = "application/json", consumes = "application/json")
     @Transactional
     public ResponseEntity<Object> eliminarDeuda(

@@ -22,7 +22,7 @@ import com.veterinaria.vet.DTO.ProductoDTO;
 import com.veterinaria.vet.Models.Producto;
 import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.ProductosAdminService;
-import com.veterinaria.vet.annotations.CheckLogin;
+import com.veterinaria.vet.annotations.CheckAdmin;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -33,7 +33,7 @@ public class ProductosController {
     private ProductosAdminService productosAdminService;
 
     @GetMapping(path = "/Index")
-    @CheckLogin
+    @CheckAdmin
     public ModelAndView getProductos(HttpSession session) {
         ArrayList<Producto> productos = this.productosAdminService.getAllProductos();
         ModelAndView modelAndView = new ModelAndView("Productos/Index");
@@ -42,7 +42,7 @@ public class ProductosController {
         return modelAndView;
     }
     
-    @CheckLogin
+    @CheckAdmin
     @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> save(@Validated(ProductoDTO.PutAndPost.class) @RequestBody ProductoDTO productoDTO) throws JsonProcessingException {
         Optional<Producto> existingProducto = productosAdminService.findByDescripcion(productoDTO.getDescripcion());
@@ -62,7 +62,6 @@ public class ProductosController {
         Producto Producto = new Producto();
         Producto.setDescripcion(productoDTO.getDescripcion());
         Producto.setPrecio(productoDTO.getPrecio());
-        // Producto.setImg(productoDTO.getImg());
 
         Producto.setStock(productoDTO.getStock());
         Producto savedProducto = productosAdminService.saveProducto(Producto);
@@ -71,7 +70,7 @@ public class ProductosController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
     
-    @CheckLogin
+    @CheckAdmin
     @PutMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> updateProducto(
             @Validated({ ProductoDTO.PutAndDelete.class,
@@ -93,7 +92,6 @@ public class ProductosController {
         producto.get().setID(productoDTO.getID());
         producto.get().setDescripcion(productoDTO.getDescripcion());
         producto.get().setPrecio(productoDTO.getPrecio());
-        // Producto.setImg(productoDTO.getImg());
         producto.get().setStock(productoDTO.getStock());
         Producto updatedProducto = this.productosAdminService.updateById(producto.get(), (long) producto.get().getID());
         json.setMessage("Se ha actualizado el producto");
@@ -101,7 +99,7 @@ public class ProductosController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
     
-    @CheckLogin
+    @CheckAdmin
     @DeleteMapping(produces = "application/json", consumes = "application/json")
     @Transactional
     public ResponseEntity<Object> eliminarProducto(
@@ -119,5 +117,4 @@ public class ProductosController {
         json.setData(existingProducto.get().toJson());
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
-
 }

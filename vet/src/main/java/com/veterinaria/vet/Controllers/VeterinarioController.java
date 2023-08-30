@@ -23,6 +23,7 @@ import com.veterinaria.vet.Security.DTO.NewUser;
 import com.veterinaria.vet.Security.Models.User;
 import com.veterinaria.vet.Security.Services.UserService;
 import com.veterinaria.vet.Services.VeterinarioService;
+import com.veterinaria.vet.annotations.CheckAdmin;
 import com.veterinaria.vet.Models.Response;
 
 import jakarta.servlet.http.HttpSession;
@@ -30,26 +31,29 @@ import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/Veterinarios")
-public class VeterinarioController{
-  
+public class VeterinarioController {
+
 	@Autowired
 	private VeterinarioService veterinarioService;
 	@Autowired
 	private UserService userService;
 
-
-
+	@CheckAdmin
 	@GetMapping(path = "/Index")
-	public ModelAndView getVeterinarios(HttpSession session){
-		ArrayList<Veterinario> veterinarios =  this.veterinarioService.getAllVeterinarios();
+	public ModelAndView getVeterinarios(HttpSession session) {
+		ArrayList<Veterinario> veterinarios = this.veterinarioService.getAllVeterinarios();
 		ModelAndView modelAndView = new ModelAndView("Veterinarios/Index");
 		modelAndView.addObject("veterinarios", veterinarios);
 		modelAndView.addObject("user_role", session.getAttribute("user_role"));
 		return modelAndView;
 	}
 
+	@CheckAdmin
 	@PostMapping(produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> save(@Validated({VeterinarioDTO.PutAndPost.class,VeterinarioDTO.Post.class}) @RequestBody VeterinarioDTO veterinarioDTO) throws JsonProcessingException {
+	public ResponseEntity<Object> save(
+			@Validated({ VeterinarioDTO.PutAndPost.class,
+					VeterinarioDTO.Post.class }) @RequestBody VeterinarioDTO veterinarioDTO)
+			throws JsonProcessingException {
 		Optional<Veterinario> existingVeterinario = veterinarioService.findByMatricula(veterinarioDTO.getMatricula());
 		Response json = new Response();
 		if (existingVeterinario.isPresent()) {
@@ -58,8 +62,8 @@ public class VeterinarioController{
 				json.setMessage("El Veterinario se encontraba eliminado y se ha recuperado con sus datos antiguos");
 				json.setData(existingVeterinario.get().toJson());
 
-				//REESTABLECER USUARIO
-				
+				// REESTABLECER USUARIO
+
 				return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 			} else {
 				json.setMessage("El Veterinario ingresado ya existe");
@@ -74,7 +78,7 @@ public class VeterinarioController{
 		ResponseEntity<?> response = userService.save(newUser);
 		if (response.getStatusCode() == HttpStatus.OK) {
 			user = (User) response.getBody();
-		} else if(response.getStatusCode() == HttpStatus.BAD_REQUEST) {
+		} else if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
 			json.setMessage((String) response.getBody());
 			json.setTitle("ERROR");
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
@@ -90,54 +94,53 @@ public class VeterinarioController{
 		json.setMessage("Se ha guardado el Veterinario");
 		json.setData(savedVeterinario.toJson());
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-}
+	}
 
-
-
+	@CheckAdmin
 	@PutMapping(produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> updateVeterinario(@Validated({VeterinarioDTO.PutAndDelete.class,VeterinarioDTO.PutAndPost.class}) @RequestBody VeterinarioDTO veterinarioDTO) throws JsonProcessingException{
-	Optional<Veterinario> existingVeterinario = veterinarioService.findByMatricula(veterinarioDTO.getMatricula());
-	Response json = new Response();
-	if(existingVeterinario.isPresent()){
-		json.setMessage("El Veterinario ingresado ya existe");
-		json.setTitle("ERROR");
-		return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST); 
-	}
-	Veterinario veterinario = new Veterinario();
-	veterinario.setID(veterinarioDTO.getID());
-	veterinario.setMatricula(veterinarioDTO.getMatricula());
-	veterinario.setNombre(veterinarioDTO.getNombre());
-	veterinario.setApellido(veterinarioDTO.getApellido());
-	veterinario.setTelefono(veterinarioDTO.getTelefono());
-	veterinario.setDireccion(veterinarioDTO.getDireccion());
-	Veterinario updatedVeterinario=this.veterinarioService.updateById(veterinario,(long) veterinario.getID());
-	json.setMessage("Se ha actualizado el Veterinario");
-	json.setData(updatedVeterinario.toJson());
-	return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
+	public ResponseEntity<Object> updateVeterinario(
+			@Validated({ VeterinarioDTO.PutAndDelete.class,
+					VeterinarioDTO.PutAndPost.class }) @RequestBody VeterinarioDTO veterinarioDTO)
+			throws JsonProcessingException {
+		Optional<Veterinario> existingVeterinario = veterinarioService.findByMatricula(veterinarioDTO.getMatricula());
+		Response json = new Response();
+		if (existingVeterinario.isPresent()) {
+			json.setMessage("El Veterinario ingresado ya existe");
+			json.setTitle("ERROR");
+			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+		}
+		Veterinario veterinario = new Veterinario();
+		veterinario.setID(veterinarioDTO.getID());
+		veterinario.setMatricula(veterinarioDTO.getMatricula());
+		veterinario.setNombre(veterinarioDTO.getNombre());
+		veterinario.setApellido(veterinarioDTO.getApellido());
+		veterinario.setTelefono(veterinarioDTO.getTelefono());
+		veterinario.setDireccion(veterinarioDTO.getDireccion());
+		Veterinario updatedVeterinario = this.veterinarioService.updateById(veterinario, (long) veterinario.getID());
+		json.setMessage("Se ha actualizado el Veterinario");
+		json.setData(updatedVeterinario.toJson());
+		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 	}
 
+	@CheckAdmin
 	@DeleteMapping(produces = "application/json", consumes = "application/json")
 	@Transactional
-	public ResponseEntity<Object> eliminarVeterinario(@Validated(VeterinarioDTO.PutAndDelete.class) @RequestBody VeterinarioDTO veterinarioDTO) throws JsonProcessingException {
-	Optional<Veterinario> existingVeterinario = veterinarioService.getById(veterinarioDTO.getID());
-	Response json = new Response();
-	if(existingVeterinario.isEmpty()){
-		json.setMessage("El Veterinario no existe");
-		json.setTitle("ERROR");
-		return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND); 
+	public ResponseEntity<Object> eliminarVeterinario(
+			@Validated(VeterinarioDTO.PutAndDelete.class) @RequestBody VeterinarioDTO veterinarioDTO)
+			throws JsonProcessingException {
+		Optional<Veterinario> existingVeterinario = veterinarioService.getById(veterinarioDTO.getID());
+		Response json = new Response();
+		if (existingVeterinario.isEmpty()) {
+			json.setMessage("El Veterinario no existe");
+			json.setTitle("ERROR");
+			return new ResponseEntity<Object>(json.toJson(), HttpStatus.NOT_FOUND);
+		}
+		veterinarioService.eliminarLogico(veterinarioDTO.getID());
+		json.setMessage("Se ha eliminado el veterinario");
+		json.setData(existingVeterinario.get().toJson());
+
+		// BORRAR USUARIO
+
+		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 	}
-	veterinarioService.eliminarLogico(veterinarioDTO.getID());
-	json.setMessage("Se ha eliminado el veterinario");
-	json.setData(existingVeterinario.get().toJson());
-
-	//BORRAR USUARIO
-
-
-	return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
-	}  
-
-
-
-
-
 }

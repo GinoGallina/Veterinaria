@@ -21,7 +21,7 @@ import com.veterinaria.vet.Models.Response;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception e) {
         System.out.println(e);

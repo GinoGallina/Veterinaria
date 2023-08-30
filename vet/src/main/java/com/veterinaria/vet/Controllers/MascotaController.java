@@ -22,6 +22,7 @@ import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Services.ClienteService;
 import com.veterinaria.vet.Services.MascotaService;
 import com.veterinaria.vet.Services.RazaService;
+import com.veterinaria.vet.annotations.CheckVet;
 
 import jakarta.transaction.Transactional;
 
@@ -35,6 +36,7 @@ public class MascotaController {
     @Autowired
     private ClienteService clienteService;
 
+    @CheckVet
     @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> save(@Validated(MascotaDTO.PutAndPost.class) @RequestBody MascotaDTO mascotaDTO)
             throws JsonProcessingException {
@@ -62,6 +64,7 @@ public class MascotaController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckVet
     @PutMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> updateMascota(@Validated({ MascotaDTO.PutAndDelete.class,
             MascotaDTO.PutAndPost.class }) @RequestBody MascotaDTO mascotaDTO) throws JsonProcessingException {
@@ -95,6 +98,7 @@ public class MascotaController {
         return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
     }
 
+    @CheckVet
     @DeleteMapping(produces = "application/json", consumes = "application/json")
     @Transactional
     public ResponseEntity<Object> eliminarMascota(
