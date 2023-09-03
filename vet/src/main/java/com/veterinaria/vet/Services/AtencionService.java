@@ -36,7 +36,6 @@ public class AtencionService {
     Atencion.setVeterinario(ate.getVeterinario());
     Atencion.setFechaPago(ate.getFechaPago());
     Atencion.setFechaAtencion(ate.getFechaAtencion());
-    //Atencion.setUpdatedAt(LocalDateTime.now());
     atencionRepository.save(Atencion);
     return Atencion;
   }
@@ -45,9 +44,6 @@ public class AtencionService {
      return atencionRepository.save(cli);
   }
 
-  //  public Optional<Atencion> findByDni(String dni){
-  //    return atencionRepository.findByDni(dni);
-  //  }
    
 
     public void eliminarLogico(Long id){

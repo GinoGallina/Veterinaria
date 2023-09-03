@@ -39,7 +39,8 @@ $.urlParam = function (name) {
     return results[1] || 0;
 }
 
-function createLocalDate(date, addDay = false) {
+function createLocalDate(date, addDay=false) {
+    console.log(date)
     if (addDay) {
         let newDate = new Date(date);
         newDate.setDate(newDate.getDate() + 1);
@@ -49,6 +50,7 @@ function createLocalDate(date, addDay = false) {
             year: "numeric",
         });
     }
+
     return new Date(date).toLocaleString("es-AR", {
         day: "2-digit",
         month: "2-digit",
@@ -124,27 +126,31 @@ function sendForm(action) {
     let form = document.getElementById(`form-${action}`);
     let formData;
     if ($(form).attr("action") == '/Mascotas') {
+        let nacimiento;
+        if ($(form).find('[name="nacimiento"]').val() !== "") nacimiento = formatDate($(form).find('[name="nacimiento"]').val());
         formData = {
             id: $(form).find('[name="id"]').val(), 
             clienteID: $(form).find('[name="idCliente"]').val(), 
             nombre: $(form).find('[name="nombre"]').val(), 
-            nacimiento: formatDate($(form).find('[name="nacimiento"]').val()), 
+            nacimiento: nacimiento, 
             sexo: $(form).find('[name="comboSexo"]').val(),
             razaID: $(form).find('[name="comboRazas"]').val(),
         };
     } else {
         let fechaPago = "";
+        let fechaAtencion = "";
         if ($(form).find('[name="pago"]').val() !== "") fechaPago = formatDate($(form).find('[name="pago"]').val())
+        if ($(form).find('[name="atencion"]').val() !== "") fechaAtencion = formatDate($(form).find('[name="atencion"]').val());
         formData = {
-            id: $(form).find('[name="id"]').val(), 
-            mascotaID: $(form).find('[name="comboMascotas"]').val(), 
-            practicasID: $(form).find('[name="comboPracticas"]').val(), 
-            fechaAtencion: formatDate($(form).find('[name="atencion"]').val()), 
-            fechaPago: fechaPago, 
+          id: $(form).find('[name="id"]').val(),
+          mascotaID: $(form).find('[name="comboMascotas"]').val(),
+          practicasID: $(form).find('[name="comboPracticas"]').val(),
+          fechaAtencion: fechaAtencion,
+          fechaPago: fechaPago,
         };
 
     }
-
+    console.log(formData)
     // Enviar solicitud AJAX
     $.ajax({
         url: $(form).attr("action"), // Utiliza la ruta del formulario
@@ -152,7 +158,6 @@ function sendForm(action) {
         data: JSON.stringify(formData), // Utiliza los datos del formulario
         contentType: "application/json",
         success: function (response) {
-            let data = JSON.parse(response.data);
             Swal.fire({
                 icon: "success",
                 title: response.message,
@@ -166,11 +171,17 @@ function sendForm(action) {
             );
         },
         error: function (errorThrown) {
+            if (errorThrown.responseJSON.messages) {
+                errorMessage =
+                errorThrown.responseJSON.messages.join('<br>');
+            } else {
+                errorMessage = errorThrown.responseJSON.message;
+            }
             Swal.fire({
-                icon: "error",
-                title: errorThrown.responseJSON.title,
-                text: errorThrown.responseJSON.message,
-                confirmButtonColor: "#1e88e5",
+              icon: 'error',
+              title: errorThrown.responseJSON.title,
+              html: errorMessage,
+              confirmButtonColor: '#1e88e5',
             });
         },
     });
@@ -189,7 +200,7 @@ function editM(json) {
     $("input[name='idCliente']").prop("disabled", false);
     $("#modalTitleM").text("Editar Mascota");
     $("input[name='nombre']").val(entity.nombre);
-    $("input[name='nacimiento']").val(createLocalDate(moment(entity.nacimiento).format('YYYY-MM-DD'), true));
+    $("input[name='nacimiento']").val(createLocalDate(moment(entity.nacimiento).subtract(1, 'months').format('YYYY-MM-DD'), true));
     $("select[name='comboRazas']").val(entity.raza.id);
     $("select[name='comboSexo']").val(entity.sexo);
 
@@ -199,7 +210,11 @@ function editM(json) {
 
 function editA(json) {
     let entity = JSON.parse(json);
+    console.log(entity)
     $("#formContainerA form input:not([type='hidden']").val("");
+    console.log('a')
+    $("#formContainerA form option:not([type='hidden']").prop('selected', false)
+
     $("input[name='id']").val(entity.id);
     $("input[name='id']").prop("disabled", false);
 
@@ -207,17 +222,20 @@ function editA(json) {
     $("#formContainerA form").attr("id", "form-editA");
     $("#btnSendModalA").text("Confirmar");
 
-    const formattedDateTimeAtencion = moment(entity.fechaAtencion).format('YYYY-MM-DD || HH:mm:ss');
-    let formattedDateTimePago = 'No hay fecha';
+    let formattedDateTimePago = null;
     if (entity.fechaPago != null) {
-        formattedDateTimePago = moment(entity.fechaPago).format('YYYY-MM-DD HH:mm:ss');
+        formattedDateTimePago = createLocalDate(moment(entity.fechaPago).subtract(1, 'months').format('YYYY-MM-DD'), true);
     }
     $("#modalTitleA").text("Editar Atencion");
     $("select[name='comboVeterinarios']").val(entity.veterinario.id);
     $("select[name='comboMascotas']").val(entity.mascota.id);
-    $("select[name='comboPracticas']").val('');
-    $("select[name='precioPactado']").val('');
-    $("input[name='atencion']").val(formattedDateTimeAtencion);
+    entity.practicasAtenciones.forEach(practicaAtencion => {
+        console.log(practicaAtencion.practica.id)
+        const optionValue = practicaAtencion.practica.id;
+        $("select[name='comboPracticas'] option[value='" + optionValue + "']").prop('selected', true);
+    });
+
+    $("input[name='atencion']").val(createLocalDate(moment(entity.fechaAtencion).subtract(1, 'months').format('YYYY-MM-DD'), true));
     $("input[name='pago']").val(formattedDateTimePago);
 }
 

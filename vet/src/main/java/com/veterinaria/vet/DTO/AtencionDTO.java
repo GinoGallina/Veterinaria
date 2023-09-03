@@ -6,29 +6,28 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.veterinaria.vet.DTO.RazaDTO.PostAndPut;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.groups.Default;
 
 public class AtencionDTO {
     @NotNull(message = "El campo id no puede estar vacío",groups = { PutAndDelete.class })
     private Long ID;
 
-    @NotNull(message = "El campo especie no puede estar vacío", groups = { PostAndPut.class })
+    @NotNull(message = "El campo mascota no puede estar vacío", groups = { PutAndPost.class })
     private Long mascotaID;
 
     
-    @NotNull(message = "El campo practicasID no puede estar vacío", groups = { PutAndPost.class })
+    @NotEmpty(message = "Debe seleccionar al menos una práctica", groups = { PutAndPost.class })
     private List<Long> practicasID;
 
-    //Nose si van
-    //@PastOrPresent(message = "La fecha de atencion debe ser en el pasado o la fecha actual",groups = { PutAndPost.class })
+
+    @PastOrPresent(message = "La fecha de atencion debe ser en el pasado o la fecha actual",groups = { PutAndPost.class })
     @NotNull(message = "La fecha de atencion no puede estar vacía",groups = { PutAndPost.class })
     private LocalDate fechaAtencion;
 
-    //Nose si van
-    //@PastOrPresent(message = "La fecha de pago debe ser en el pasado o la fecha actual", groups = {PutAndPost.class })
-    //@NotNull(message = "La fecha de pago no puede estar vacía", groups = { PutAndPost.class })
+
     private LocalDate fechaPago; 
 
     public String toJson() throws JsonProcessingException {
@@ -81,4 +80,5 @@ public class AtencionDTO {
     public void setPracticasID(List<Long> practicasID) {
       this.practicasID = practicasID;
     }
+
 }

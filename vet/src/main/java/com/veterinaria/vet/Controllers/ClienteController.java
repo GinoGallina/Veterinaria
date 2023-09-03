@@ -64,6 +64,7 @@ public class ClienteController {
 		ModelAndView modelAndView = new ModelAndView("Clientes/Index");
 		modelAndView.addObject("clientes", clientes);
 		modelAndView.addObject("user_role", session.getAttribute("user_role"));
+		modelAndView.addObject("user_email", session.getAttribute("user_email"));
 		return modelAndView;
 	}
 
@@ -87,6 +88,7 @@ public class ClienteController {
 		model.addAttribute("practicas", practicas);
 		model.addAttribute("cliente", cliente.get());
 		model.addAttribute("user_role", session.getAttribute("user_role"));
+		model.addAttribute("user_email", session.getAttribute("user_email"));
 		return "Clientes/Details";
 	}
 
@@ -103,6 +105,7 @@ public class ClienteController {
 				json.setData(existingCliente.get().toJson());
 
 				// REESTABLECER USUARIO
+				userService.saveLogico(existingCliente.get().getUser().getID());
 
 				return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 			} else {
@@ -114,6 +117,7 @@ public class ClienteController {
 		NewUser newUser = new NewUser();
 		newUser.setEmail(clienteDTO.getEmail());
 		newUser.setPassword(clienteDTO.getPassword());
+		newUser.setRol("USER");
 		User user = new User();
 		ResponseEntity<?> response = userService.save(newUser);
 		if (response.getStatusCode() == HttpStatus.OK) {
@@ -183,6 +187,7 @@ public class ClienteController {
 		json.setData(existingCliente.get().toJson());
 
 		// BORRAR USUARIO
+		userService.eliminarLogico(existingCliente.get().getUser().getID());
 
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 	}

@@ -34,6 +34,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ModelAndView handleRuntimeException(RuntimeException e) {
         System.out.println(e);
+        System.out.println(e.fillInStackTrace());
         ModelAndView modelAndView = new ModelAndView("Shared/Error");
         modelAndView.addObject("code", 403);
         modelAndView.addObject("message", e.getMessage());
@@ -98,7 +99,7 @@ public class GlobalExceptionHandler {
     public Object handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         System.out.println(ex);
         Response json = new Response();
-        json.setMessage("Error al ingresar los datos 1");
+        json.setMessage("Error al ingresar los datos");
         json.setTitle("ERROR");
         return new ResponseEntity<Object>(json, HttpStatus.BAD_REQUEST);
     }
@@ -106,7 +107,7 @@ public class GlobalExceptionHandler {
     public Object handleJsonProcessingException(JsonProcessingException ex) {
         System.out.println(ex);
         Response json = new Response();
-        json.setMessage("Error al ingresar los datos JSON");
+        json.setMessage("Error al ingresar los datos");
         json.setTitle("ERROR");
         return new ResponseEntity<Object>(json, HttpStatus.BAD_REQUEST);
     }

@@ -51,6 +51,7 @@ public class ProveedorController {
         ModelAndView modelAndView = new ModelAndView("Proveedores/Index");
         modelAndView.addObject("proveedores", proveedores);
         modelAndView.addObject("user_role", session.getAttribute("user_role"));
+        modelAndView.addObject("user_email", session.getAttribute("user_email"));
         return modelAndView;
     }
 
@@ -64,6 +65,7 @@ public class ProveedorController {
         modelAndView.addObject("deudas", deudas);
         modelAndView.addObject("proveedor", proveedor);
         modelAndView.addObject("user_role", session.getAttribute("user_role"));
+        modelAndView.addObject("user_email", session.getAttribute("user_email"));
         return modelAndView;
     }
 
@@ -154,6 +156,7 @@ public class ProveedorController {
     }
 
     @CheckAdmin
+    @Transactional
     @PostMapping(path = "/Details/PagarDeuda", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> pagarDeuda( @Validated( DeudaDTO.Put.class ) @RequestBody DeudaDTO deudaDTO) throws JsonProcessingException {
         Response json = new Response();

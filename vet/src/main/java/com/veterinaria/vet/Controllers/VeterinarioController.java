@@ -45,6 +45,7 @@ public class VeterinarioController {
 		ModelAndView modelAndView = new ModelAndView("Veterinarios/Index");
 		modelAndView.addObject("veterinarios", veterinarios);
 		modelAndView.addObject("user_role", session.getAttribute("user_role"));
+		modelAndView.addObject("user_email", session.getAttribute("user_email"));
 		return modelAndView;
 	}
 
@@ -63,6 +64,7 @@ public class VeterinarioController {
 				json.setData(existingVeterinario.get().toJson());
 
 				// REESTABLECER USUARIO
+				userService.saveLogico(existingVeterinario.get().getUser().getID());
 
 				return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 			} else {
@@ -74,6 +76,7 @@ public class VeterinarioController {
 		NewUser newUser = new NewUser();
 		newUser.setEmail(veterinarioDTO.getEmail());
 		newUser.setPassword(veterinarioDTO.getPassword());
+		newUser.setRol("VET");
 		User user = new User();
 		ResponseEntity<?> response = userService.save(newUser);
 		if (response.getStatusCode() == HttpStatus.OK) {
@@ -84,6 +87,7 @@ public class VeterinarioController {
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
 		}
 		Veterinario veterinario = new Veterinario();
+
 		veterinario.setUser(user);
 		veterinario.setMatricula(veterinarioDTO.getMatricula());
 		veterinario.setNombre(veterinarioDTO.getNombre());
@@ -140,6 +144,7 @@ public class VeterinarioController {
 		json.setData(existingVeterinario.get().toJson());
 
 		// BORRAR USUARIO
+		userService.eliminarLogico(existingVeterinario.get().getUser().getID());
 
 		return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
 	}

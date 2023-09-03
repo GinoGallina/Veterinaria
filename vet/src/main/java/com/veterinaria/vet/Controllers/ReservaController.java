@@ -67,6 +67,7 @@ public class ReservaController {
             modelAndView.addObject("reservas", reservas);
             modelAndView.addObject("productos", productos);
             modelAndView.addObject("user_role", user_role);
+            modelAndView.addObject("user_email", session.getAttribute("user_email"));
             return modelAndView;
         }
 

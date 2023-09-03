@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.security.auth.login.LoginException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Security.DTO.JwtDTO;
 import com.veterinaria.vet.Security.DTO.LoginUser;
 import com.veterinaria.vet.Security.DTO.NewUser;
@@ -37,6 +39,7 @@ public class UserService {
 
     @Autowired
     AuthenticationManager authenticationManager;
+
 
     @Autowired
     RolService rolService;
@@ -70,7 +73,7 @@ public class UserService {
 
     public boolean login(LoginUser loginUser, HttpSession session) throws LoginException{
         try{
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getPassword()));
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(),loginUser.getPassword()));
             System.out.println(authentication.isAuthenticated());
             if (!authentication.isAuthenticated()) {
                 return false;
@@ -93,18 +96,33 @@ public class UserService {
         return new JwtDTO(token);
     }
 
-    public ResponseEntity<?> save(NewUser nuevoUser){
-        if(userRepository.existsByEmail(nuevoUser.getEmail()))
-            return ResponseEntity.badRequest().body("Email de usuario ya existe");
+    public ResponseEntity<Object> save(NewUser nuevoUser) throws JsonProcessingException{
+        Response json = new Response();
+        if(userRepository.existsByEmail(nuevoUser.getEmail())){
+            json.setMessage("Ya existe un usuario con dicho mail");
+            return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+            //return ResponseEntity.badRequest().body(json);
+        }
         User User =
                 new User(nuevoUser.getEmail(), 
                         passwordEncoder.encode(nuevoUser.getPassword()));
         Rol rol = new Rol();
         rol = (rolService.getByRolNombre("USER").get());
-        if(nuevoUser.getRol()=="ADMIN")
+        if(nuevoUser.getRol()=="ADMIN"){
             rol = (rolService.getByRolNombre("ADMIN").get());
+        } else if (nuevoUser.getRol()=="VET"){
+            rol = (rolService.getByRolNombre("VET").get());
+        } 
         User.setRol(rol);
         userRepository.save(User);
-        return ResponseEntity.ok(User);
+        return ResponseEntity.ok(User) ;
+    }
+    
+    public void eliminarLogico(Long id) {
+        userRepository.eliminarLogico(id);
+    }
+
+    public void saveLogico(Long id) {
+        userRepository.saveLogico(id);
     }
 }

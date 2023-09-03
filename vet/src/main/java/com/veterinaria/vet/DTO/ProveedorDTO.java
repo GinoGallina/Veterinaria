@@ -38,8 +38,8 @@ public class ProveedorDTO {
 
     @NotBlank(message = "El campo telefono no puede estar vacío",groups = { PutAndPost.class })
     @NotNull(message = "El campo telefono no puede estar vacío",groups = { PutAndPost.class })
-    @Pattern(regexp = "^[0-9]{9}$", message = "El telefono debe se de 9 digitos", groups = {
-        PutAndPost.class }) 
+    @Pattern(regexp = "^[0-9]+$", message = "El telefono debe contener sólo números", groups = {
+        PutAndPost.class })
     private String telefono;
     
 
