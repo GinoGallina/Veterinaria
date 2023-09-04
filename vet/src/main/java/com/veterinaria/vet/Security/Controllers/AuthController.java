@@ -29,19 +29,16 @@ import jakarta.servlet.http.HttpSession;
 public class AuthController {
     @Autowired
     UserService userService;
-    @Autowired
-    JwtProvider jwtProvider;
-
-
 
     @PostMapping(path = "/login")
     public RedirectView login(HttpSession session, @Validated @ModelAttribute LoginUser login) throws LoginException {
-        boolean is_loggued= userService.login(login, session);
+        boolean is_loggued = userService.login(login, session);
         if (is_loggued) {
             return new RedirectView("/inicio");
         }
         return new RedirectView("/Auth/Login");
     }
+
     @PostMapping(path = "/register")
     public Object register(HttpSession session, @Validated @ModelAttribute NewUser nuevoUsuario) throws JsonProcessingException, LoginException {
         ResponseEntity<?> response = userService.save(nuevoUsuario);
@@ -71,25 +68,6 @@ public class AuthController {
         userService.logout(session);
         return new RedirectView("/login");
     }
-
-   /*  @PostMapping("/refresh")
-    public ResponseEntity<JwtDTO> refresh(@RequestBody JwtDTO jwtDto) throws ParseException {
-        return ResponseEntity.ok(usuarioService.refresh(jwtDto));
-    }
-    @GetMapping("/validate-token")
-    public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String tokenHeader) {
-        // Extraer el token de la cabecera (ten en cuenta que el token incluye la palabra "Bearer ")
-        String token = tokenHeader.substring(7);
-
-        // Validar el token
-        boolean isValidToken = jwtProvider.validateToken(token);
-
-        if (isValidToken) {
-            return ResponseEntity.ok().build(); // Token válido, responder con OK (200)
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Token inválido, responder con UNAUTHORIZED (401)
-        }
-    }*/
 }
 
 

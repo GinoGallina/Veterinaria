@@ -1,5 +1,7 @@
 package com.veterinaria.vet.Security.Models;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,24 +25,22 @@ public class User {
     @Column(name = "Password",nullable = false)
     private String password;
 
-    @Column(name = "UserToken")
-    private String userToken;
-
     @ManyToOne
     @JoinColumn(name = "RolID", nullable = false)
     private Rol rol;
 
-//     @ManyToMany(fetch = FetchType.EAGER)
-//     @JoinTable(
-//         name = "users_roles",
-//         joinColumns = @JoinColumn(name = "user_id"),
-//         inverseJoinColumns = @JoinColumn(name = "rol_id")
-//     )
-//    private Set<Rol> roles = new HashSet<>();
+    @Column(name = "DeletedAt")
+    private LocalDateTime deletedAt;
 
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 
     public User(){
-
     }
 
     public Long getID() {
@@ -67,14 +67,6 @@ public class User {
         this.password = password;
     }
 
-    public String getUserToken() {
-        return userToken;
-    }
-
-    public void setUserToken(String userToken) {
-        this.userToken = userToken;
-    }
-
     public Rol getRol() {
         return rol;
     }
@@ -87,9 +79,4 @@ public class User {
         this.email = email;
         this.password = password;
     }
-
-   
-
-
-
 }
