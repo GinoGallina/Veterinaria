@@ -18,7 +18,6 @@ import com.veterinaria.vet.Models.Response;
 import com.veterinaria.vet.Security.DTO.LoginUser;
 import com.veterinaria.vet.Security.DTO.NewUser;
 import com.veterinaria.vet.Security.Services.UserService;
-import com.veterinaria.vet.Security.jwt.JwtProvider;
 import com.veterinaria.vet.annotations.CheckLogin;
 
 import jakarta.servlet.http.HttpSession;

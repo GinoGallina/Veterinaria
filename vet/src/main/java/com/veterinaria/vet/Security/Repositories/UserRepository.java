@@ -13,17 +13,10 @@ import com.veterinaria.vet.Security.Models.User;
 import jakarta.transaction.Transactional;
 @Repository
 public interface UserRepository extends JpaRepository<User,Long>{
-  //public Optional<User> findByUsername(String username);
   Optional<User> findByEmail(String email);
 
   Optional<User> findById(long id);
-  
-  //Optional<User> findByUsernameOrEmail(String nombreUsuario, String email);
 
-  //Optional<User> findByTokenPassword(String tokenPassword);
-  Optional<User> findByUserToken(String userToken);
-
-  //boolean existsByUsername(String nombreUsuario);
   @Transactional
   @Modifying
   @Query(value = "UPDATE users u SET u.DeletedAt = CURRENT_TIMESTAMP WHERE u.id = :id",nativeQuery = true)

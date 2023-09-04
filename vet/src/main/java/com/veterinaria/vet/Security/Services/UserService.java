@@ -1,6 +1,5 @@
 package com.veterinaria.vet.Security.Services;
 
-import java.text.ParseException;
 import java.util.Optional;
 
 import javax.security.auth.login.LoginException;
@@ -16,13 +15,11 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.veterinaria.vet.Models.Response;
-import com.veterinaria.vet.Security.DTO.JwtDTO;
 import com.veterinaria.vet.Security.DTO.LoginUser;
 import com.veterinaria.vet.Security.DTO.NewUser;
 import com.veterinaria.vet.Security.Models.Rol;
 import com.veterinaria.vet.Security.Models.User;
 import com.veterinaria.vet.Security.Repositories.UserRepository;
-import com.veterinaria.vet.Security.jwt.JwtProvider;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -44,9 +41,6 @@ public class UserService {
     @Autowired
     RolService rolService;
 
-    @Autowired
-    JwtProvider jwtProvider;
-
     public Optional<User> getByEmail(String email){
         return userRepository.findByEmail(email);
     }
@@ -54,18 +48,6 @@ public class UserService {
     public Optional<User> getById(long id){
         return userRepository.findById(id);
     }
-
-    // public Optional<User> getByUsernameOrEmail(String nombreOrEmail){
-    //     return userRepository.findByUsernameOrEmail(nombreOrEmail, nombreOrEmail);
-    // }
-
-    public Optional<User> getByUserToken(String userToken){
-        return userRepository.findByUserToken(userToken);
-    }
-
-    // public boolean existsByUsername(String nombreUser){
-    //     return userRepository.existsByUsername(nombreUser);
-    // }
 
     public boolean existsByEmail(String email){
         return userRepository.existsByEmail(email);
@@ -91,17 +73,11 @@ public class UserService {
         session.invalidate();
     }
 
-    public JwtDTO refresh(JwtDTO JwtDTO) throws ParseException {
-        String token = jwtProvider.refreshToken(JwtDTO);
-        return new JwtDTO(token);
-    }
-
     public ResponseEntity<Object> save(NewUser nuevoUser) throws JsonProcessingException{
         Response json = new Response();
         if(userRepository.existsByEmail(nuevoUser.getEmail())){
             json.setMessage("Ya existe un usuario con dicho mail");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
-            //return ResponseEntity.badRequest().body(json);
         }
         User User =
                 new User(nuevoUser.getEmail(), 
