@@ -58,10 +58,12 @@ public class PracticaController {
         ModelAndView modelAndView = new ModelAndView("Practicas/Index");
         modelAndView.addObject("practicas", practicas);
         modelAndView.addObject("user_role", session.getAttribute("user_role"));
+        modelAndView.addObject("user_email", session.getAttribute("user_email"));
         return modelAndView;
     }
 
     @CheckAdmin
+    @Transactional
     @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> save(@Validated(PracticaDTO.PutAndPost.class) @RequestBody PracticaDTO practicaDTO)
             throws JsonProcessingException {

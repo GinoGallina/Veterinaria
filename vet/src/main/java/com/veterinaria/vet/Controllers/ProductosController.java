@@ -39,6 +39,7 @@ public class ProductosController {
         ModelAndView modelAndView = new ModelAndView("Productos/Index");
         modelAndView.addObject("productos", productos);
         modelAndView.addObject("user_role", session.getAttribute("user_role"));
+        modelAndView.addObject("user_email", session.getAttribute("user_email"));
         return modelAndView;
     }
     

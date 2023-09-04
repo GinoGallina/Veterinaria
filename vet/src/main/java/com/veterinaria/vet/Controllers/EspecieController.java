@@ -38,6 +38,7 @@ public class EspecieController {
         ModelAndView modelAndView = new ModelAndView("Especies/Index");
         modelAndView.addObject("especies", especies);
         modelAndView.addObject("user_role", session.getAttribute("user_role"));
+        modelAndView.addObject("user_email", session.getAttribute("user_email"));
         return modelAndView;
     }
 

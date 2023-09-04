@@ -30,6 +30,13 @@ public class HomeController {
         }
         return "Auth/Login"; // Nombre de la vista Thymeleaf (index.html)
     }
+    @GetMapping("/register")
+    public String register(HttpSession session) {
+        if (session.getAttribute("user_id") != null) {
+            return "redirect:/inicio";
+        }
+        return "Auth/Register"; // Nombre de la vista Thymeleaf (index.html)
+    }
 
     @CheckLogin
     @GetMapping("/inicio")

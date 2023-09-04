@@ -14,14 +14,17 @@ function fillTable(item) {
     let content = `
         <tr data-id='${item.id}'>
             <td>${item.dni}</td>
-            <td>${item.nombre}</td>
-            <td>${item.apellido}</td>
+            <td>${item.apellido}, ${item.nombre}</td>
             <td>${item.telefono}</td>
             <td>${item.direccion}</td>
             <td>${item.direccion}</td>
             <td class='d-flex flex-row justify-content-center'>
-                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-veterinario=${JSON.stringify(item)} onclick="edit(this.getAttribute('data-veterinario'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
-                <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id=${item.id} onclick="deleteObj(this.getAttribute('data-id'))"><i class='bi bi-trash3'></i></button>
+                <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-veterinario=${JSON.stringify(
+                  item
+                )} onclick="edit(this.getAttribute('data-veterinario'))" data-bs-toggle="modal" data-bs-target="#modalCreate"><i class="bi bi-pencil"></i></button>
+                <button type='button' class='btn btn-danger btn-rounded btn-sm ml-2' data-id=${
+                  item.id
+                } onclick="deleteObj(this.getAttribute('data-id'))"><i class='bi bi-trash3'></i></button>
             </td>
         </tr>`;
     $('#DataTable').DataTable().row.add($(content)).draw();
@@ -90,7 +93,11 @@ function sendForm(action) {
             }
         },
         error: function (errorThrown) {
-            let errorMessage = errorThrown.responseJSON.messages.join("<br>");
+            if (errorThrown.responseJSON.messages) {
+              errorMessage = errorThrown.responseJSON.messages.join('<br>');
+            } else {
+              errorMessage = errorThrown.responseJSON.message;
+            }
             Swal.fire({
             icon: "error",
             title: errorThrown.responseJSON.title,

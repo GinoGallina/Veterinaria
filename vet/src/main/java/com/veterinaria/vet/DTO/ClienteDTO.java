@@ -34,7 +34,8 @@ public class ClienteDTO {
     @NotNull(message = "El campo telefono no puede estar vacío",groups = { PutAndDelete.class })
     @NotBlank(message = "El campo telefono no puede estar vacío", groups = { PutAndPost.class })
     //VER SI VA ESTA 
-    //@Pattern(regexp = "^[+()-]*[0-9][+()-0-9]*$", message = "El teléfono no es válido", groups = { PutAndPost.class, PutAndDelete.class })
+    @Pattern(regexp = "^[0-9]+$", message = "El telefono debe contener sólo números", groups = {
+        PutAndPost.class })
     private String telefono;
 
     @NotNull(message = "El campo email no puede estar vacío",groups = { PutAndDelete.class })
