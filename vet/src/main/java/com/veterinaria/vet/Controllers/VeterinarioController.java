@@ -108,7 +108,7 @@ public class VeterinarioController {
 			throws JsonProcessingException {
 		Optional<Veterinario> existingVeterinario = veterinarioService.findByMatricula(veterinarioDTO.getMatricula());
 		Response json = new Response();
-		if (existingVeterinario.isPresent()) {
+		if (existingVeterinario.isPresent() && existingVeterinario.get().getID() != veterinarioDTO.getID()) {
 			json.setMessage("El Veterinario ingresado ya existe");
 			json.setTitle("ERROR");
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);

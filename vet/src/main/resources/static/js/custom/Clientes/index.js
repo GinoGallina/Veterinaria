@@ -17,7 +17,7 @@ function fillTable(item) {
             <td>${item.apellido}, ${item.nombre}</td>
             <td>${item.telefono}</td>
             <td>${item.direccion}</td>
-            <td>${item.direccion}</td>
+            <td>${item.user.email}</td>
             <td class='d-flex flex-row justify-content-center'>
                 <button type='button' class='btn btn-outline-info btn-rounded btn-sm mr-2' data-veterinario=${JSON.stringify(
                   item
@@ -36,7 +36,7 @@ function removeFromTable(id) {
 
 function deleteObj(id) {
     Swal.fire({
-        title: "¿Seguro deseas eliminar esta veterinario?",
+        title: "¿Seguro deseas eliminar este cliente?",
         text: "Esta acción no se puede deshacer",
         icon: 'warning',
         showCancelButton: true,
@@ -124,7 +124,7 @@ function edit(json) {
     $("input[name='apellido']").val(entity.apellido);
     $("input[name='telefono']").val(entity.telefono);
     $("input[name='direccion']").val(entity.direccion);
-    $("input[name='email']").val(entity.direccion);
+    $("input[name='email']").val(entity.user.email);
 } 
 
 $("#btnSendModal").on("click", function () {
@@ -135,7 +135,7 @@ $("#btnSendModal").on("click", function () {
     }
 });
 $("#btnAdd").on("click", function () {
-    $("#modalTitle").text("Agregar veterinario");
+    $("#modalTitle").text("Agregar Cliente");
     $("#formContainer form").attr("method", "POST");
     $("#formContainer form").attr("id", "form-create");
     $("#formContainer form input:not([type='hidden']").val("");

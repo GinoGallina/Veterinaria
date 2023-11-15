@@ -34,7 +34,6 @@ public class ProductosAdminService {
   public Producto updateById(Producto prod, Long id){
     Producto producto= productosAdminRepository.findById(id).get();
     producto.setDescripcion(prod.getDescripcion());
-    producto.setImg(prod.getImg());
     producto.setPrecio(prod.getPrecio());
     producto.setStock(prod.getStock());
     producto.setUpdatedAt(LocalDateTime.now());
@@ -58,5 +57,7 @@ public class ProductosAdminService {
     public void saveLogico(Long id){
       productosAdminRepository.saveLogico(id);
     }
+
+    
 
 }

@@ -95,7 +95,7 @@ public class RazaController {
 			json.setTitle("ERROR");
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
 		}
-		if (existingRaza.isPresent()) {
+		if (existingRaza.isPresent() && existingRaza.get().getID() != razaDTO.getID()) {
 			json.setMessage("La raza ingresada ya existe");
 			json.setTitle("ERROR");
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);

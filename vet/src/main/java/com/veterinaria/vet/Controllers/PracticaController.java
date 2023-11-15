@@ -108,7 +108,7 @@ public class PracticaController {
             throws JsonProcessingException {
         Optional<Practica> existingPractica = practicaService.findByDescripcion(practicaDTO.getDescripcion());
         Response json = new Response();
-        if (existingPractica.isPresent()) {
+        if (existingPractica.isPresent() && existingPractica.get().getID() != practicaDTO.getID()) {
             json.setMessage("La práctica ingresada ya existe");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);

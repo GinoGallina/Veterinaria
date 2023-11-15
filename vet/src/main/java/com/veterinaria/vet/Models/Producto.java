@@ -30,8 +30,7 @@ public class Producto {
     @Column(name = "Precio",nullable = false)
     private BigDecimal precio;
 
-    @Column(name = "IMG",nullable = false)
-    private byte[] img;
+
 
     @Column(name = "Stock",nullable = false)
     private int stock;
@@ -68,12 +67,7 @@ public class Producto {
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
-    public byte[] getImg() {
-        return img;
-    }
-    public void setImg(byte[] img) {
-        this.img = img;
-    }
+
     public int getStock() {
         return stock;
     }

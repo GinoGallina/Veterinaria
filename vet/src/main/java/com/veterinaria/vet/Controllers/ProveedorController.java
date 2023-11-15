@@ -133,7 +133,7 @@ public class ProveedorController {
         Optional<Proveedor> existingProveedorCuil = proveedorService.findByCuil(proveedorDTO.getCuil());
         Optional<Proveedor> existingProveedor = existingProveedorEmail.or(() -> existingProveedorCuil);
         Response json = new Response();
-        if (existingProveedor.isPresent()) {
+        if (existingProveedor.isPresent() && existingProveedor.get().getID() != proveedorDTO.getID()) {
             json.setMessage("Ya existe un proveedor con ese mail o cuil");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
