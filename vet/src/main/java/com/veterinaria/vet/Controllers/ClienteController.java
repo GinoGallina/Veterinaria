@@ -146,7 +146,7 @@ public class ClienteController {
 			ClienteDTO.PutAndPost.class }) @RequestBody ClienteDTO clienteDTO) throws JsonProcessingException {
 		Optional<Cliente> existingCliente = clienteService.findByDni(clienteDTO.getDni());
 		Response json = new Response();
-		if (existingCliente.isPresent()) {
+		if (existingCliente.isPresent() && existingCliente.get().getID() != clienteDTO.getID()) {
 			json.setMessage("El cliente ingresado ya existe");
 			json.setTitle("ERROR");
 			return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);

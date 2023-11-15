@@ -74,7 +74,7 @@ public class EspecieController {
             EspecieDTO.PutAndPost.class }) @RequestBody EspecieDTO especieDTO) throws JsonProcessingException {
         Optional<Especie> existingEspecie = especieService.findByDescripcion(especieDTO.getDescripcion());
         Response json = new Response();
-        if (existingEspecie.isPresent()) {
+        if (existingEspecie.isPresent() && existingEspecie.get().getID() != especieDTO.getID()) {
             json.setMessage("La especie ingresada ya existe");
             json.setTitle("ERROR");
             return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
