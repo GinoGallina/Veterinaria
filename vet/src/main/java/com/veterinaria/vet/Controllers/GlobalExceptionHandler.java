@@ -8,6 +8,7 @@ import javax.security.auth.login.LoginException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +19,9 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.veterinaria.vet.Models.Response;
+
+import jakarta.transaction.Transaction;
+import jakarta.transaction.TransactionRolledbackException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -108,6 +112,14 @@ public class GlobalExceptionHandler {
         System.out.println(ex);
         Response json = new Response();
         json.setMessage("Error al ingresar los datos");
+        json.setTitle("ERROR");
+        return new ResponseEntity<Object>(json, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(UnexpectedRollbackException.class)
+    public Object handleJsonProcessingException(UnexpectedRollbackException ex) {
+        System.out.println(ex);
+        Response json = new Response();
+        json.setMessage("Error en la transacción");
         json.setTitle("ERROR");
         return new ResponseEntity<Object>(json, HttpStatus.BAD_REQUEST);
     }

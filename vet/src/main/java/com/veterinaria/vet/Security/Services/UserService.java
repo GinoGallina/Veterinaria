@@ -56,7 +56,6 @@ public class UserService {
     public boolean login(LoginUser loginUser, HttpSession session) throws LoginException{
         try{
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getEmail(),loginUser.getPassword()));
-            System.out.println(authentication.isAuthenticated());
             if (!authentication.isAuthenticated()) {
                 return false;
             }        

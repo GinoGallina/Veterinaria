@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +52,12 @@ public class ReservaController {
         @Autowired
         private ReservaProductoService reservaProductoService;
 
+        private final PlatformTransactionManager transactionManager;
+
+        public ReservaController(PlatformTransactionManager transactionManager) {
+            this.transactionManager = transactionManager;
+        }
+
         @CheckAdminUser
         @GetMapping(path = "/Index")
         public ModelAndView getReservas(HttpSession session) {
@@ -81,8 +91,14 @@ public class ReservaController {
         }
 
         @CheckAdminUser
+        @Transactional
         @PostMapping(path = "/New", produces = "application/json", consumes = "application/json")
         public ResponseEntity<Object> save(@RequestBody List<ReservaProducto> prodQuantity, HttpSession session) throws JsonProcessingException {
+            DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+            def.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+            def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+            
+            TransactionStatus status = transactionManager.getTransaction(def);
             try {
                 Long user_id = (Long) session.getAttribute("user_id");
                 Response json = new Response();
@@ -98,16 +114,23 @@ public class ReservaController {
                     product.setPrecio(productosAdminService.getById(product.getProducto().getID()).get().getPrecio());
                     productos.add(product);
                     Producto producto = productosAdminService.getById(product.getProducto().getID()).get();
+                    if (producto.getStock() < product.getCantidad()) {
+                        json.setMessage("No hay stock suficiente para el producto " + producto.getDescripcion());
+                        json.setTitle("ERROR");
+                        transactionManager.rollback(status);
+                        return new ResponseEntity<Object>(json.toJson(), HttpStatus.BAD_REQUEST);
+                    }
                     producto.setStock(producto.getStock() - product.getCantidad());
                 }
 
                 reservaProductoService.saveProductos(productos);
-
+                transactionManager.commit(status);
 
                 json.setMessage("Se ha guardado la reserva");
                 json.setData(savedReserva.toJson());
                 return new ResponseEntity<Object>(json.toJson(), HttpStatus.OK);
             } catch (Exception e) {
+                transactionManager.rollback(status);
                 Response json = new Response();
                 json.setMessage("No se ha podido guardar la reserva");
                 json.setTitle("ERROR");
